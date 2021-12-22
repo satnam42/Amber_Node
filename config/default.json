@@ -1,0 +1,41 @@
+{
+    "db": {
+        "url": "mongodb://superadmin:Doller$$1984@93.188.167.68:33017",
+        "database": "datingApp"
+    },
+    "app": {
+        "url": "http://93.188.167.68",
+        "port": 8007
+    },
+    "webServer": {
+        "url": "http://93.188.167.68/",
+        "port": 8007
+    },
+    "auth": {
+        "jwtKey": "supersecret"
+    },
+    "image": {
+        "url": "http://93.188.167.68/projects/dating_nodejs/assets/images/",
+        "port": 8007
+    },
+    "providers": {},
+    "logger": {
+        "logStart": false,
+        "file": {
+            "filename": "logs/logs.json",
+            "level": "silly",
+            "handleExceptions": true,
+            "json": true,
+            "maxsize": 512000,
+            "maxFiles": 5,
+            "colorize": false
+        },
+        "console": {
+            "level": "debug",
+            "handleExceptions": true,
+            "json": false,
+            "colorize": true
+        },
+        "http": {}
+    }
+}
