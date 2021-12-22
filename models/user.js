@@ -1,11 +1,11 @@
 "use strict";
 const mongoose = require("mongoose");
 const user = mongoose.Schema({
-  username: { type: String, required: true, trim: true, lowercase: true },
+  username: { type: String, required: true, trim: true, lowercase: true, unique: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: false },
   email: { type: String, required: true, trim: true, unique: true },
-  phoneNumber: { type: String, required: false, trim: true },
+  phoneNo: { type: String, required: false, trim: true },
   dob: { type: Date, required: false, trim: true },
   gender: {
     type: String,
@@ -27,16 +27,6 @@ const user = mongoose.Schema({
     enum: ["active", "inactive"],
   },
   avatar: { type: String, default: "" },
-  // role: { type: mongoose.Schema.Types.ObjectId, ref: "role" },
-  // roleType: {
-  //   type: String,
-  //   trim: true,
-  //   required: false,
-  //   enum: {
-  //     values: ["admin", "user"],
-  //     message: "You filled wrong role.",
-  //   },
-  // },
   isDeleted: {
     type: Boolean,
     required: true,
@@ -68,11 +58,9 @@ const user = mongoose.Schema({
     coordinates: [Number],
     default: "",
   },
-  deviceToken: { type: String, default: "" },
-  createdOn: { type: Date, default: Date.now },
-  updatedOn: { type: Date, default: Date.now },
-  deletedAt: { type: Date, default: "" },
+  deviceToken: { type: String, default: "" }
 });
+
 user.index({ loc: "2dsphere" });
 mongoose.model("user", user);
 module.exports = user;
