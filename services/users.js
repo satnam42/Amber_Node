@@ -2,12 +2,18 @@ const encrypt = require("../permit/crypto.js");
 const auth = require("../permit/auth");
 
 const buildUser = async (model, context) => {
-    const { name, phoneNo, email, password, } = model;
+    const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob } = model;
     const log = context.logger.start(`services:users:buildUser${model}`);
     const user = await new db.user({
-        name: name,
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
         email: email,
+        gender: gender,
+        country: country,
+        dob: dob,
         phoneNo: phoneNo,
+        status: status,
         password: password
     }).save();
     log.end();
@@ -16,55 +22,48 @@ const buildUser = async (model, context) => {
 
 const setUser = async (model, user, context) => {
     const log = context.logger.start("services:users:setUser");
-    if (model.name !== "string" && model.name !== undefined) {
-        user.name = model.name;
+    if (model.username !== "string" && model.username !== undefined) {
+        user.username = model.username;
     }
-    if (model.gender !== "string" && model.gender !== undefined) {
-        user.gender = model.gender;
+    if (model.firstName !== "string" && model.firstName !== undefined) {
+        user.firstName = model.firstName;
     }
-    if (model.interestedIn !== "string" && model.interestedIn !== undefined) {
-        user.interestedIn = model.interestedIn;
-    }
-    if (model.address !== "string" && model.address !== undefined) {
-        user.address = model.address;
-    }
-    if (model.city !== "string" && model.city !== undefined) {
-        user.city = model.city;
+    if (model.lastName !== "string" && model.lastName !== undefined) {
+        user.lastName = model.lastName;
     }
     if (model.dob !== "string" && model.dob !== undefined) {
         user.dob = model.dob;
     }
-    if (model.interests.length !== "string" && model.interests.length !== undefined) {
-        user.interests = model.interests;
+    if (model.phoneNo !== "string" && model.phoneNo !== undefined) {
+        user.phoneNo = model.phoneNo;
     }
-    if (model.education !== undefined && model.education.isVisible !== "string") {
-        user.education = model.education;
+    if (model.email !== "string" && model.email !== undefined) {
+        user.email = model.email;
     }
-    if (model.career.isVisible !== "string" && model.career !== undefined) {
-        user.career = model.career;
+    if (model.country !== "string" && model.country !== undefined) {
+        user.country = model.country;
     }
-    if (model.drinking.isVisible !== "string" && model.drinking !== undefined) {
-        user.drinking = model.drinking;
+    if (model.gender !== "string" && model.gender !== undefined) {
+        user.gender = model.gender;
     }
-    if (model.smoking.isVisible !== "string" && model.smoking !== undefined) {
-        user.smoking = model.smoking;
+    if (model.bio !== "string" && model.bio !== undefined) {
+        user.bio = model.bio;
     }
-    if (model.religion.isVisible !== "string" && model.religion !== undefined) {
-        user.religion = model.religion;
+    if (model.website !== "string" && model.website !== undefined) {
+        user.website = model.website;
     }
-    if (model.political.isVisible !== "string" && model.political !== undefined) {
-        user.political = model.political;
-    }
+
     log.end();
     await user.save();
     return user;
 };
 
 const create = async (model, context) => {
+
     const log = context.logger.start("services:users:create");
-    let user = await db.user.findOne({ email: model.email });
+    let user = await db.user.findOne({ username: model.username });
     if (user) {
-        throw new Error("user already exists");
+        throw new Error(`${model.username} already taken choose another!`);
     } else {
         model.password = encrypt.getHash(model.password, context);
         user = buildUser(model, context);
@@ -75,7 +74,7 @@ const create = async (model, context) => {
 
 const login = async (model, context) => {
     const log = context.logger.start("services:users:login");
-    const user = await db.user.findOne({ email: model.phoneNo })
+    const user = await db.user.findOne({ $or: [{ username: model.username }, { email: model.username }] })
     if (!user) {
         log.end();
         throw new Error("user not found");
@@ -99,7 +98,7 @@ const login = async (model, context) => {
 };
 
 const resetPassword = async (id, model, context) => {
-    const log = context.logger.start(`service/users/resetPassword`);
+    const log = context.logger.start(`service / users / resetPassword`);
     if (!id) {
         throw new Error("user id is required");
     }
@@ -129,7 +128,7 @@ const resetPassword = async (id, model, context) => {
 };
 
 const update = async (id, model, context) => {
-    const log = context.logger.start(`services:users:update`);
+    const log = context.logger.start(`services: users: update`);
     let entity = await db.user.findById(id)
     if (!entity) {
         throw new Error("invalid user");
@@ -140,7 +139,7 @@ const update = async (id, model, context) => {
 };
 
 const profile = async (id, context) => {
-    const log = context.logger.start(`services:users:profile`);
+    const log = context.logger.start(`services: users: profile`);
     if (!id) {
         throw new Error("user id is required");
     }
@@ -152,8 +151,37 @@ const profile = async (id, context) => {
     return user;
 };
 
+const uploadProfilePic = async (id, files, context) => {
+    const log = context.logger.start(`services:users:uploadProfilePic`);
+    let fileName = files[0].filename.replace(/ /g, '')
+    let file = files[0]
+    if (!id) {
+        throw new Error("user id is required");
+    }
+    let user = await db.user.findById(id)
+    if (!user) {
+        throw new Error("user not found");
+    }
+    if (file == undefined || file.size == undefined || file.size <= 0) throw new Error("image is required");
+    if (user.avatar != "") {
+        const path = file.destination + '/' + user.avatar
+        try {
+            fs.unlinkSync(path);
+            console.log(`image successfully removed from ${path}`);
+        } catch (error) {
+            console.error('there was an error to remove image:', error.message);
+        }
+    }
+    user.avatar = fileName
+    user.save()
+    log.end();
+    return 'image uploaded successfully'
+
+}
+
 exports.create = create;
 exports.resetPassword = resetPassword;
 exports.update = update;
 exports.login = login;
 exports.profile = profile;
+exports.uploadProfilePic = uploadProfilePic;

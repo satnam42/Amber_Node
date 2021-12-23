@@ -19,9 +19,9 @@ const create = (req, res, next) => {
         log.end();
         return response.failure(res, "password is required");
     }
-    if (!req.body.name) {
+    if (!req.body.username) {
         log.end();
-        return response.failure(res, "name is required");
+        return response.failure(res, "username is required");
     }
     log.end();
     return next();
@@ -33,9 +33,9 @@ const login = (req, res, next) => {
         log.end();
         return response.failure(res, "body is required");
     }
-    if (!req.body.phoneNo) {
+    if (!req.body.username) {
         log.end();
-        return response.failure(res, "phoneNo is required");
+        return response.failure(res, "username is required");
     }
     if (!req.body.password) {
         log.end();

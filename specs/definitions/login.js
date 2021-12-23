@@ -2,7 +2,7 @@ module.exports = [
   {
     name: "login",
     properties: {
-      phoneNo: {
+      username: {
         type: "string"
       },
       password: {

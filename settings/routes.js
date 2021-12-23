@@ -58,7 +58,11 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.profile
     );
-
+    app.put(
+        "/api/users/profileImageUpload/:id",
+        permit.context.validateToken,
+        api.users.uploadProfileImage
+    );
 
     log.end();
 };

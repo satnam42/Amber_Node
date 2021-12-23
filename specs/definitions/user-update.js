@@ -4,109 +4,33 @@ module.exports = [
         name: "userUpdate",
         properties: {
 
-            name: {
+            firstName: {
                 type: "string"
             },
-            phoneNo: {
+            lastName: {
                 type: "string"
             },
             email: {
                 type: "string"
             },
-            password: {
-                type: "string"
-            },
-            address: {
-                type: "string"
-            },
-            city: {
-                type: "string"
-            },
-            interests: {
-                type: 'array',
-                items: {
-                    type: 'string'
-                }
-            },
-            interestedIn: {
-                type: "string"
-            },
             gender: {
                 type: "string"
             },
-            education: {
-                properties: {
-                    content: {
-                        type: "string"
-                    },
-                    isVisible: {
-                        type: "string"
-                    },
-                }
-
+            country: {
+                type: "string"
             },
-            career: {
-                properties: {
-                    content: {
-                        type: "string"
-                    },
-                    isVisible: {
-                        type: "string"
-                    },
-                }
+            dob: {
+                type: "date"
             },
-            height: {
-                properties: {
-                    content: {
-                        type: "string"
-                    },
-                    isVisible: {
-                        type: "string"
-                    },
-                }
+            phoneNo: {
+                type: "string"
             },
-            drinking: {
-                properties: {
-                    content: {
-                        type: "string"
-                    },
-                    isVisible: {
-                        type: "string"
-                    },
-                }
+            website: {
+                type: "string"
             },
-            smoking: {
-                properties: {
-                    content: {
-                        type: "string"
-                    },
-                    isVisible: {
-                        type: "string"
-                    },
-                }
-            },
-            religion: {
-                properties: {
-                    content: {
-                        type: "string"
-                    },
-                    isVisible: {
-                        type: "string"
-                    },
-                }
-            },
-            political: {
-                properties: {
-                    content: {
-                        type: "string"
-                    },
-                    isVisible: {
-                        type: "string"
-                    },
-                }
-            },
-
-        },
+            bio: {
+                type: "string"
+            }
+        }
     }
-
-];
+]

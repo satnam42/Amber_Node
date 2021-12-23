@@ -1,22 +1,22 @@
 {
     "db": {
-        "url": "mongodb://superadmin:Doller$$1984@93.188.167.68:33017",
-        "database": "datingApp"
+        "url": "mongodb://superadmin:Power$$2022@93.188.167.68:33017",
+        "database": "amber"
     },
     "app": {
         "url": "http://93.188.167.68",
-        "port": 8007
+        "port": 8003
     },
     "webServer": {
-        "url": "http://93.188.167.68/",
-        "port": 8007
+        "url": "http://93.188.167.68",
+        "port": 8003
     },
     "auth": {
         "jwtKey": "supersecret"
     },
     "image": {
-        "url": "http://93.188.167.68/projects/dating_nodejs/assets/images/",
-        "port": 8007
+        "url": "http://93.188.167.68/projects/amber_nodejs/assets/images/",
+        "port": 8003
     },
     "providers": {},
     "logger": {

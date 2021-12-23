@@ -4,7 +4,7 @@ const user = mongoose.Schema({
   username: { type: String, required: true, trim: true, lowercase: true, unique: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: false },
-  email: { type: String, required: true, trim: true, unique: true },
+  email: { type: String, required: true, trim: true },
   phoneNo: { type: String, required: false, trim: true },
   dob: { type: Date, required: false, trim: true },
   gender: {
@@ -20,18 +20,12 @@ const user = mongoose.Schema({
   socialLinkId: { type: String, required: false, default: "" },
   platform: { type: String, required: false, default: "" },
   otp: { type: Number, required: false, trim: true, default: "" },
-  token: { type: String, default: "" }, //access token
   status: {
     type: String,
     default: "active",
     enum: ["active", "inactive"],
   },
   avatar: { type: String, default: "" },
-  isDeleted: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
   bio: { type: String, default: "" },
   website: { type: String, default: "" },
   friends: [
@@ -61,6 +55,6 @@ const user = mongoose.Schema({
   deviceToken: { type: String, default: "" }
 });
 
-user.index({ loc: "2dsphere" });
+user.index({ location: "2dsphere" });
 mongoose.model("user", user);
 module.exports = user;
