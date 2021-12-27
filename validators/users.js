@@ -65,8 +65,46 @@ const resetPassword = (req, res, next) => {
 };
 
 
+const follow = (req, res, next) => {
+    const log = req.context.logger.start("validators:users:follow");
+
+    if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
+        log.end();
+        return response.failure(res, "body is required");
+    }
+    if (!req.body.userId) {
+        log.end();
+        return response.failure(res, "userId is required");
+    }
+    if (!req.body.toFollowUserId) {
+        log.end();
+        return response.failure(res, "Follow id is required");
+    }
+
+    log.end();
+    return next();
+};
+const unfollow = (req, res, next) => {
+    const log = req.context.logger.start("validators:users:unfollow");
+
+    if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
+        log.end();
+        return response.failure(res, "body is required");
+    }
+    if (!req.body.userId) {
+        log.end();
+        return response.failure(res, "userId is required");
+    }
+    if (!req.body.toUnFollowUserId) {
+        log.end();
+        return response.failure(res, "UnFollow id is required");
+    }
+    log.end();
+    return next();
+};
 
 exports.create = create;
 exports.resetPassword = resetPassword;
 exports.login = login;
-exports.resetPassword = resetPassword;
+exports.follow = follow;
+exports.unfollow = unfollow;

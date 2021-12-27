@@ -4,7 +4,9 @@ const response = require("../exchange/response");
 const mapper = require("../mappers/user");
 
 //register api
+
 const create = async (req, res) => {
+
     const log = req.context.logger.start(`api:users:create`);
     try {
         const user = await service.create(req.body, req.context);
@@ -16,9 +18,11 @@ const create = async (req, res) => {
         log.end();
         return response.failure(res, err.message);
     }
+
 };
 
 //login api
+
 const login = async (req, res) => {
     const log = req.context.logger.start("api:users:login");
     try {
@@ -32,9 +36,11 @@ const login = async (req, res) => {
         log.end();
         return response.failure(res, err.message);
     }
+
 };
 
 // profile user
+
 const profile = async (req, res) => {
     const log = req.context.logger.start(`api:users:currentUser`);
     try {
@@ -51,8 +57,9 @@ const profile = async (req, res) => {
 };
 
 // reset password
+
 const resetPassword = async (req, res) => {
-    const log = req.context.logger.start("api:users:changePassword");
+    const log = req.context.logger.start("api:users:resetPassword");
     try {
         const message = await service.resetPassword(req.params.id, req.body, req.context);
         log.end();
@@ -65,6 +72,7 @@ const resetPassword = async (req, res) => {
 };
 
 //update user
+
 const update = async (req, res) => {
     const log = req.context.logger.start(`api:users:update`);
     try {
@@ -92,9 +100,72 @@ const uploadProfileImage = async (req, res) => {
     }
 };
 
+//follow api
+const follow = async (req, res) => {
+    const log = req.context.logger.start(`api:users:follow`);
+    try {
+        const resMsg = await service.follow(req.body, req.context);
+        log.end();
+        return response.success(res, resMsg, '');
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
+//unFollow api
+const unfollow = async (req, res) => {
+    const log = req.context.logger.start(`api:users:unfollow`);
+    try {
+        const resMsg = await service.unFollow(req.body, req.context);
+        log.end();
+        return response.success(res, resMsg, '');
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
+//following api
+const following = async (req, res) => {
+    const log = req.context.logger.start(`api:users:following`);
+    try {
+        const users = await service.following(req.params.id, req.context);
+        const msg = 'list fetched successfully'
+        log.end();
+        return response.success(res, msg, users);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
+//followers api
+const followers = async (req, res) => {
+    const log = req.context.logger.start(`api:users:followers`);
+    try {
+        const users = await service.followers(req.params.id, req.context);
+        const msg = 'list fetched successfully'
+        log.end();
+        return response.success(res, msg, users);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
 exports.create = create;
 exports.login = login;
 exports.resetPassword = resetPassword;
 exports.update = update;
 exports.profile = profile;
 exports.uploadProfileImage = uploadProfileImage;
+
+exports.follow = follow;
+exports.unfollow = unfollow;
+exports.following = following;
+exports.followers = followers;

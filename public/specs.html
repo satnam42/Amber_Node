@@ -13,7 +13,7 @@
 
 <body>
     <div ng-controller="MyCtrl" class="container my-ctrl">
-        <!--<h1><span swagger-translate="appTitle"></span> <span class="version">v0.4.1</span></h1>-->
+        <h1><span swagger-translate="appTitle"></span> <span class="version">v0.4.1</span></h1>
         <form name="urlForm" ng-submit="swaggerUrl=url" class="form-inline">
             <!--<input type="text" placeholder="swagger URL" class="form-control" id="url" name="url" ng-model="url" required>
             <button type="submit" class="btn btn-primary" swagger-translate="explore"></button>
@@ -51,7 +51,7 @@
                 swaggerTranslatorProvider
                     .setLanguage('en')
                     .addTranslations('en', {
-                        appTitle: 'success-tracker-api-specs-ui',
+                        appTitle: 'amber-api-specs-ui',
                         explore: 'Explore',
                         loading: 'loading...',
                         error: 'Failed to generate Swagger-UI: {{code}} {{message}}',

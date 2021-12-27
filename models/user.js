@@ -28,23 +28,33 @@ const user = mongoose.Schema({
   avatar: { type: String, default: "" },
   bio: { type: String, default: "" },
   website: { type: String, default: "" },
-  friends: [
-    {
-      friendId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
-        required: false,
-      },
-      status: {
-        type: String,
-        default: "un-block",
-        enum: {
-          values: ["block", "un-block"],
-          message: "Please enter block or un-block !",
-        },
-      },
-    },
-  ],
+  following: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: false,
+  }],
+  followers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: false,
+  }],
+  // friends: [
+  //   {
+  //     friendId: {
+  //       type: mongoose.Schema.Types.ObjectId,
+  //       ref: "user",
+  //       required: false,
+  //     },
+  //     status: {
+  //       type: String,
+  //       default: "un-block",
+  //       enum: {
+  //         values: ["block", "un-block"],
+  //         message: "Please enter block or un-block !",
+  //       },
+  //     },
+  //   },
+  // ],
   location: {
     type: {
       type: String,

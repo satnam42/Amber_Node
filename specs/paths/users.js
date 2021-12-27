@@ -192,5 +192,132 @@ module.exports = [{
         }
     }
 },
+{
+    url: "/follow",
+    post: {
+        summary: "follow ",
+        description: "follow user",
+        parameters: [
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "body",
+                name: "body",
+                description: "follow user model",
+                required: true,
+                schema: {
+                    $ref: "#/definitions/follow"
+                }
+            }],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
+{
+    url: "/unfollow",
+    post: {
+        summary: "unfollow",
+        description: "unfollow ",
+        parameters: [
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "body",
+                name: "body",
+                description: "unfollow user model",
+                required: true,
+                schema: {
+                    $ref: "#/definitions/unfollow"
+                }
+            }],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
+
+{
+    url: "/following/{id}",
+    get: {
+        summary: "following list ",
+        description: "following list ",
+        parameters: [
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "path",
+                type: "string",
+                name: "id",
+                description: "user id",
+                required: true
+            }
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
+{
+    url: "/followers/{id}",
+    get: {
+        summary: "followers list ",
+        description: "followers list ",
+        parameters: [
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "path",
+                type: "string",
+                name: "id",
+                description: "user id",
+                required: true
+            }
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+}
 
 ];

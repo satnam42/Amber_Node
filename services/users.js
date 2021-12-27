@@ -98,7 +98,7 @@ const login = async (model, context) => {
 };
 
 const resetPassword = async (id, model, context) => {
-    const log = context.logger.start(`service / users / resetPassword`);
+    const log = context.logger.start(`service:users:resetPassword`);
     if (!id) {
         throw new Error("user id is required");
     }
@@ -131,6 +131,7 @@ const update = async (id, model, context) => {
     const log = context.logger.start(`services: users: update`);
     let entity = await db.user.findById(id)
     if (!entity) {
+        log.end();
         throw new Error("invalid user");
     }
     const user = await setUser(model, entity, context);
@@ -141,10 +142,12 @@ const update = async (id, model, context) => {
 const profile = async (id, context) => {
     const log = context.logger.start(`services: users: profile`);
     if (!id) {
+        log.end();
         throw new Error("user id is required");
     }
     let user = await db.user.findById(id)
     if (!user) {
+        log.end();
         throw new Error("user not found");
     }
     log.end();
@@ -160,6 +163,7 @@ const uploadProfilePic = async (id, files, context) => {
     }
     let user = await db.user.findById(id)
     if (!user) {
+        log.end();
         throw new Error("user not found");
     }
     if (file == undefined || file.size == undefined || file.size <= 0) throw new Error("image is required");
@@ -173,11 +177,106 @@ const uploadProfilePic = async (id, files, context) => {
         }
     }
     user.avatar = fileName
-    user.save()
+    await user.save()
     log.end();
     return 'image uploaded successfully'
 
 }
+const follow = async (model, context) => {
+    const log = context.logger.start("services:users:follow");
+    // ===========following logic ===============
+    // add the id of the user you want to follow in following array
+    if (model.toFollowUserId == model.userId) {
+        log.end();
+        throw new Error("userId and toFollowUserId not be same")
+    }
+    const filter = {
+        _id: model.userId,
+        following: { $not: { $elemMatch: { $eq: model.toFollowUserId } } }
+    }
+
+    const update = {
+        $addToSet: { following: model.toFollowUserId }
+    }
+
+    const updated = await db.user.findOneAndUpdate(filter, update)
+
+    // add your id to the followers array of the user you want to follow
+    const secondFilter = {
+        _id: model.toFollowUserId,
+        followers: { $not: { $elemMatch: { $eq: model.userId } } }
+    }
+    const secondUpdate = {
+        $addToSet: { followers: model.userId }
+    }
+    const secondUpdated = await db.user.findOneAndUpdate(secondFilter, secondUpdate)
+
+    if (!updated && !secondUpdated) {
+        throw new Error('something went wrong')
+    }
+    log.end()
+    return "follow successfully"
+};
+
+const unfollow = async (model, context) => {
+    const log = context.logger.start("services:users:unFollow");
+    // ===========unfollower logic end ===============
+    // remove the id of the user you want to unfollow from following array
+    if (model.toUnfollowUserId == model.userId) {
+        log.end();
+        throw new Error("userId and toUnfollowUserId not be same")
+    }
+
+    const query = {
+        _id: model.userId,
+        following: { $elemMatch: { $eq: model.toUnfollowUserId } }
+    }
+
+    const update = {
+        $pull: { following: model.toUnfollowUserId }
+    }
+
+    const updated = await db.user.updateOne(query, update)
+
+    // remove your id from the followers array of the user you want to unfollow
+    const secondQuery = {
+        _id: model.toUnfollowUserId,
+        followers: { $elemMatch: { $eq: model.userId } }
+    }
+
+    const secondUpdate = {
+        $pull: { followers: model.userId }
+    }
+
+    const secondUpdated = await db.user.updateOne(secondQuery, secondUpdate)
+
+    if (!updated && !secondUpdated) {
+        throw new Error('something went wrong')
+    }
+    log.end()
+    return "unfollow successfully"
+};
+
+const following = async (id, context) => {
+    const log = context.logger.start(`services:users:following`);
+    if (id) {
+        throw new Error('user id is requried')
+
+    }
+    const user = await db.user.findById(id).populate('following')
+    log.end();
+    return user.following
+};
+
+const followers = async (id, context) => {
+    const log = context.logger.start(`services:users:followers`);
+    if (id) {
+        throw new Error('user id is requried')
+    }
+    const user = await db.user.findById(id).populate('followers')
+    log.end();
+    return user.followers
+};
 
 exports.create = create;
 exports.resetPassword = resetPassword;
@@ -185,3 +284,8 @@ exports.update = update;
 exports.login = login;
 exports.profile = profile;
 exports.uploadProfilePic = uploadProfilePic;
+// ============follow==============
+exports.follow = follow;
+exports.unfollow = unfollow;
+exports.following = following;
+exports.followers = followers;

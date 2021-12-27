@@ -7,7 +7,7 @@ const spec = {
     swagger: '2.0',
     info: {
         version: about.version,
-        title: about.name
+        // title: about.name
     },
     host: webServer.rootUrl,
     basePath: '/api',

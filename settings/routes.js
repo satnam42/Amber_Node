@@ -58,11 +58,35 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.profile
     );
+
     app.put(
         "/api/users/profileImageUpload/:id",
         permit.context.validateToken,
         api.users.uploadProfileImage
     );
+
+
+    app.post("/api/users/follow",
+        permit.context.validateToken,
+        validator.users.follow,
+        api.users.follow
+    );
+
+    app.post("/api/users/unfollow",
+        permit.context.validateToken,
+        validator.users.unfollow,
+        api.users.unfollow
+    );
+
+    app.get("/api/users/following/:id",
+        permit.context.validateToken,
+        api.users.following
+    )
+
+    app.get("/api/users/followers/:id",
+        permit.context.validateToken,
+        api.users.followers
+    )
 
     log.end();
 };
