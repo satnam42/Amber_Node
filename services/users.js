@@ -59,7 +59,6 @@ const setUser = async (model, user, context) => {
 };
 
 const create = async (model, context) => {
-
     const log = context.logger.start("services:users:create");
     let user = await db.user.findOne({ username: model.username });
     if (user) {
@@ -83,16 +82,11 @@ const login = async (model, context) => {
         throw new Error("user Is inactive please contect with admin");
     }
     const isMatched = encrypt.compareHash(model.password, user.password, context);
-
     if (!isMatched) {
         log.end();
         throw new Error("password mismatch");
     }
-
-    const token = auth.getToken(user.id, false, context);
-    user.token = token;
-    user.updatedOn = new Date();
-    await user.save();
+    user.token = auth.getToken(user.id, false, context);
     log.end();
     return user;
 };
@@ -259,7 +253,7 @@ const unfollow = async (model, context) => {
 
 const following = async (id, context) => {
     const log = context.logger.start(`services:users:following`);
-    if (id) {
+    if (!id) {
         throw new Error('user id is requried')
 
     }
@@ -270,7 +264,7 @@ const following = async (id, context) => {
 
 const followers = async (id, context) => {
     const log = context.logger.start(`services:users:followers`);
-    if (id) {
+    if (!id) {
         throw new Error('user id is requried')
     }
     const user = await db.user.findById(id).populate('followers')
@@ -284,8 +278,12 @@ exports.update = update;
 exports.login = login;
 exports.profile = profile;
 exports.uploadProfilePic = uploadProfilePic;
+
 // ============follow==============
+
 exports.follow = follow;
 exports.unfollow = unfollow;
 exports.following = following;
 exports.followers = followers;
+
+// ============follow==============

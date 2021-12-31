@@ -95,7 +95,7 @@ const unfollow = (req, res, next) => {
         log.end();
         return response.failure(res, "userId is required");
     }
-    if (!req.body.toUnFollowUserId) {
+    if (!req.body.toUnfollowUserId) {
         log.end();
         return response.failure(res, "UnFollow id is required");
     }

@@ -87,7 +87,6 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.followers
     )
-
     log.end();
 };
 

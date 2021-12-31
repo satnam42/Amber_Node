@@ -118,7 +118,7 @@ const follow = async (req, res) => {
 const unfollow = async (req, res) => {
     const log = req.context.logger.start(`api:users:unfollow`);
     try {
-        const resMsg = await service.unFollow(req.body, req.context);
+        const resMsg = await service.unfollow(req.body, req.context);
         log.end();
         return response.success(res, resMsg, '');
     } catch (err) {
