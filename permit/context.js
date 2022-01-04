@@ -74,6 +74,22 @@ const requiresToken = async (req, res, next) => {
     return next();
 };
 
+const checkUserBlockedOrNot = async (req, res, next) => {
+    const log = req.context.logger.start(`permit:auth:requiresToken`);
+    const token = req.headers["x-access-token"];
+    if (!token) {
+        return response.failure(res, "token is required");
+    }
+    const decodedUser = auth.extractToken(token, req.context);
+    const user = await db.user.findById(decodedUser.id);
+    if (!user) {
+        return response.failure(res, "invalid user");
+    }
+    req.context.user = user
+    log.end();
+    return next();
+};
+
 exports.builder = builder;
 exports.requiresToken = requiresToken;
 exports.validateToken = validateToken;

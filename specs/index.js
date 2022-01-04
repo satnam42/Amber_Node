@@ -20,7 +20,6 @@ const spec = {
     ],
     produces: [
         'application/json'
-
     ],
     paths: {},
     definitions: {}

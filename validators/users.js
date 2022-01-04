@@ -1,8 +1,8 @@
 "use strict";
 const response = require("../exchange/response");
+
 const create = (req, res, next) => {
     const log = req.context.logger.start("validators:users:create");
-
     if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
         log.end();
         return response.failure(res, "body is required");
@@ -26,9 +26,9 @@ const create = (req, res, next) => {
     log.end();
     return next();
 };
+
 const login = (req, res, next) => {
     const log = req.context.logger.start("validators:users:login");
-
     if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
         log.end();
         return response.failure(res, "body is required");
@@ -84,9 +84,9 @@ const follow = (req, res, next) => {
     log.end();
     return next();
 };
+
 const unfollow = (req, res, next) => {
     const log = req.context.logger.start("validators:users:unfollow");
-
     if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
         log.end();
         return response.failure(res, "body is required");
@@ -101,6 +101,7 @@ const unfollow = (req, res, next) => {
     }
     log.end();
     return next();
+
 };
 
 exports.create = create;
