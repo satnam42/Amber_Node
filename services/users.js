@@ -272,6 +272,24 @@ const followers = async (id, context) => {
     return user.followers
 };
 
+const block = async (modal, context) => {
+    const log = context.logger.start(`services:users:block`);
+    const block = await new db.block({
+        toUser: modal.toUser,
+        byUser: modal.byUser,
+        to: modal.to,
+    }).save();
+    log.end();
+    return block
+};
+
+const unblock = async (modal, context) => {
+    const log = context.logger.start(`services:users:unblock`);
+    const user = await db.user.findById(id).populate('followers')
+    log.end();
+    return user.followers
+};
+
 exports.create = create;
 exports.resetPassword = resetPassword;
 exports.update = update;
@@ -287,3 +305,6 @@ exports.following = following;
 exports.followers = followers;
 
 // ============follow==============
+
+exports.block = block;
+exports.unblock = unblock;
