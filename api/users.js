@@ -18,7 +18,6 @@ const create = async (req, res) => {
         log.end();
         return response.failure(res, err.message);
     }
-
 };
 
 //login api
@@ -40,7 +39,6 @@ const login = async (req, res) => {
 };
 
 // profile user
-
 const profile = async (req, res) => {
     const log = req.context.logger.start(`api:users:currentUser`);
     try {
@@ -157,33 +155,7 @@ const followers = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
-const block = async (req, res) => {
-    const log = req.context.logger.start(`api:users:block ${req.params.id}`);
-    try {
-        const users = await service.block(req.body, req.context);
-        const msg = 'user blocked successfully'
-        log.end();
-        return response.success(res, msg, users);
-    } catch (err) {
-        log.error(err);
-        log.end();
-        return response.failure(res, err.message);
-    }
-};
 
-const unblock = async (req, res) => {
-    const log = req.context.logger.start(`api:users:unblock `);
-    try {
-        const users = await service.unblock(req.body, req.context);
-        const msg = 'user unblock successfully'
-        log.end();
-        return response.success(res, msg, users);
-    } catch (err) {
-        log.error(err);
-        log.end();
-        return response.failure(res, err.message);
-    }
-};
 
 exports.create = create;
 exports.login = login;
@@ -191,10 +163,7 @@ exports.resetPassword = resetPassword;
 exports.update = update;
 exports.profile = profile;
 exports.uploadProfileImage = uploadProfileImage;
-
 exports.follow = follow;
 exports.unfollow = unfollow;
 exports.following = following;
 exports.followers = followers;
-exports.block = block;
-exports.unblock = unblock;

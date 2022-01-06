@@ -48,6 +48,11 @@ const user = mongoose.Schema({
           message: "Please enter block or un-block !",
         },
       },
+      blockId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "block",
+        required: false,
+      },
     },
   ],
   followers: [{
@@ -60,9 +65,14 @@ const user = mongoose.Schema({
       type: String,
       default: "un-block",
       enum: {
-        values: ["un-block", "block"],
+        values: ["un-block", "blocked"],
         message: "Please enter block or un-block !",
       },
+    },
+    blockId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "block",
+      required: false,
     },
 
   },],

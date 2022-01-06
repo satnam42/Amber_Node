@@ -81,12 +81,28 @@ const configure = (app, logger) => {
     app.get("/api/users/following/:id",
         permit.context.validateToken,
         api.users.following
-    )
+    );
 
     app.get("/api/users/followers/:id",
         permit.context.validateToken,
         api.users.followers
-    )
+    );
+
+    app.post("/api/blocks/block",
+        permit.context.validateToken,
+        validator.blocks.block,
+        api.blocks.block
+    );
+    app.post("/api/blocks/unblock",
+        permit.context.validateToken,
+        validator.blocks.block,
+        api.blocks.unblock
+    );
+    app.get("/api/blocks/list:id",
+        permit.context.validateToken,
+        validator.blocks.block,
+        api.blocks.blockList
+    );
     log.end();
 };
 
