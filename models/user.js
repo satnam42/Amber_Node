@@ -1,13 +1,12 @@
 "use strict";
 const mongoose = require("mongoose");
 const user = mongoose.Schema({
-  username: { type: String, required: true, trim: true, lowercase: true, unique: true },
-  firstName: { type: String, required: true },
+  username: { type: String, required: false, trim: true, lowercase: true, unique: true },
+  firstName: { type: String, required: false },
   lastName: { type: String, required: false },
-  email: { type: String, required: true, trim: true },
+  email: { type: String, required: false, trim: true },
   phoneNo: { type: String, required: false, trim: true },
   dob: { type: Date, required: false, trim: true },
-
   gender: {
     type: String,
     required: true,
@@ -16,23 +15,19 @@ const user = mongoose.Schema({
       messages: "Please enter value Male or female",
     },
   },
-
   password: { type: String, required: false },
   country: { type: String, required: false },
   socialLinkId: { type: String, required: false, default: "" },
   platform: { type: String, required: false, default: "" },
   otp: { type: Number, required: false, trim: true, default: "" },
-
   status: {
     type: String,
     default: "active",
     enum: ["active", "inactive"],
   },
-
   avatar: { type: String, default: "" },
   bio: { type: String, default: "" },
   website: { type: String, default: "" },
-
   following: [
     {
       userId: {

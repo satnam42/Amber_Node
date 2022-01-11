@@ -156,6 +156,18 @@ const followers = async (req, res) => {
     }
 };
 
+const socialLogin = async (req, res) => {
+    const log = req.context.logger.start(`api:users:socialLogin`);
+    try {
+        const user = await service.socialLogin(req.params.id, req.context);
+        log.end();
+        return response.authorized(res, message, user, user.token);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
 
 exports.create = create;
 exports.login = login;
@@ -167,3 +179,4 @@ exports.follow = follow;
 exports.unfollow = unfollow;
 exports.following = following;
 exports.followers = followers;
+exports.socialLogin = socialLogin;

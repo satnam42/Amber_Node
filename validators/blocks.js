@@ -9,17 +9,20 @@ const block = (req, res, next) => {
         log.end();
         return response.failure(res, "body is required");
     }
+
     if (!req.body.toUser) {
         log.end();
         return response.failure(res, "toUser id is required");
     }
+
     if (!req.body.byUser) {
         log.end();
         return response.failure(res, "byUser id is required");
     }
+
     if (!req.body.to) {
         log.end();
-        return response.failure(res, "to  is required ");
+        return response.failure(res, "to is required ");
     }
 
     log.end();

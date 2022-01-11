@@ -65,7 +65,6 @@ const configure = (app, logger) => {
         api.users.uploadProfileImage
     );
 
-
     app.post("/api/users/follow",
         permit.context.validateToken,
         validator.users.follow,
@@ -93,16 +92,19 @@ const configure = (app, logger) => {
         validator.blocks.block,
         api.blocks.block
     );
+
     app.post("/api/blocks/unblock",
         permit.context.validateToken,
         validator.blocks.block,
         api.blocks.unblock
     );
+
     app.get("/api/blocks/list:id",
         permit.context.validateToken,
         validator.blocks.block,
         api.blocks.blockList
     );
+
     log.end();
 };
 

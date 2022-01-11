@@ -273,8 +273,19 @@ const followers = async (id, context) => {
     log.end();
     return user.followers
 };
+const socialLogin = async (model, context) => {
+    const log = context.logger.start(`services:users:socialLogin`);
+    let user = await db.user.findOne({ socialLoginId: model.socialLoginId });
 
+    if (!user) {
+        user = await buildUser(model, context);
+        log.end()
+    };
 
+    user.token = auth.getToken(user.id, false, context);
+    return user
+
+}
 exports.create = create;
 exports.resetPassword = resetPassword;
 exports.update = update;
@@ -290,4 +301,6 @@ exports.following = following;
 exports.followers = followers;
 
 // ============follow==============
+
+exports.socialLogin = socialLogin
 
