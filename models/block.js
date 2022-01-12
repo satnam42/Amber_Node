@@ -16,7 +16,9 @@ const block = mongoose.Schema({
         ref: "user",
         required: false,
     },
-}, { timestamps: true });
+},
+    { timestamps: true }
+);
 
 mongoose.model("block", block);
 module.exports = block;

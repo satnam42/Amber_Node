@@ -105,6 +105,17 @@ const configure = (app, logger) => {
         api.blocks.blockList
     );
 
+    app.post("/api/history/create",
+        permit.context.validateToken,
+        validator.history.create,
+        api.history.create
+    );
+
+    app.get("/api/history/getByUserId/:id",
+        permit.context.validateToken,
+        api.history.getByUserId
+    );
+
     log.end();
 };
 

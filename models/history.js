@@ -6,20 +6,28 @@ const history = mongoose.Schema({
         ref: "user",
         required: false,
     },
+
     type: {
         type: String,
         default: "",
         enum: ["", "video", "voice"],
     },
+
     duration: {
         type: String,
         default: "",
+    },
+
+    dateTime: {
+        type: Date,
+        default: Date.now
     },
     toUser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
         required: false,
     },
+
 }, { timestamps: true });
 
 mongoose.model("history", history);

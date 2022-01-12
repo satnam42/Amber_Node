@@ -1,6 +1,5 @@
 const encrypt = require("../permit/crypto.js");
 const auth = require("../permit/auth");
-const { model } = require("mongoose");
 
 const buildUser = async (model, context) => {
     const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob } = model;
