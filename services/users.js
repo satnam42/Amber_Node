@@ -135,10 +135,12 @@ const update = async (id, model, context) => {
 
 const profile = async (id, context) => {
     const log = context.logger.start(`services: users: profile`);
+
     if (!id) {
         log.end();
         throw new Error("user id is required");
     }
+
     let user = await db.user.findById(id)
     if (!user) {
         log.end();
@@ -147,6 +149,15 @@ const profile = async (id, context) => {
     log.end();
     return user;
 };
+const search = async (name, context) => {
+    const log = context.logger.start(`services:users:search`);
+    if (!name) {
+        throw new Error("name is required");
+    }
+    const users = await db.user.find({ name: { "$regex": '.*' + name + '.*', "$options": 'i' } }).limit(5);
+    return users
+};
+
 
 const uploadProfilePic = async (id, files, context) => {
     const log = context.logger.start(`services:users:uploadProfilePic`);
@@ -189,13 +200,10 @@ const follow = async (model, context) => {
         _id: model.userId,
         following: { $not: { $elemMatch: { $eq: model.toFollowUserId } } }
     }
-
     const update = {
         $addToSet: { following: model.toFollowUserId }
     }
-
     const updated = await db.user.findOneAndUpdate(filter, update)
-
     // add your id to the followers array of the user you want to follow
     const secondFilter = {
         _id: model.toFollowUserId,
@@ -205,7 +213,6 @@ const follow = async (model, context) => {
         $addToSet: { followers: model.userId }
     }
     const secondUpdated = await db.user.findOneAndUpdate(secondFilter, secondUpdate)
-
     if (!updated && !secondUpdated) {
         throw new Error('something went wrong')
     }
@@ -255,7 +262,7 @@ const unfollow = async (model, context) => {
 const following = async (id, context) => {
     const log = context.logger.start(`services:users:following`);
     if (!id) {
-        throw new Error('user id is requried')
+        throw new Error('user id is required')
 
     }
     const user = await db.user.findById(id).populate('following')
@@ -266,7 +273,7 @@ const following = async (id, context) => {
 const followers = async (id, context) => {
     const log = context.logger.start(`services:users:followers`);
     if (!id) {
-        throw new Error('user id is requried')
+        throw new Error('user id is required')
     }
     const user = await db.user.findById(id).populate('followers')
     log.end();
@@ -285,12 +292,33 @@ const socialLogin = async (model, context) => {
     return user
 
 }
+
+const random = async (query, context) => {
+    const log = context.logger.start(`services:users:random`);
+    let pageNo = Number(query.pageNo) || 1;
+    let pageSize = Number(query.pageSize) || 10;
+    let skipCount = pageSize * (pageNo - 1);
+
+    const users = await db.user.aggregate([
+        { $match: { gender: query.gender } },
+        { $sample: { size: pageSize } },
+        { $limit: pageSize },
+        { $skip: skipCount }
+    ])
+
+    users.count = await db.user.find().count();
+    return users
+};
+
+
 exports.create = create;
 exports.resetPassword = resetPassword;
 exports.update = update;
 exports.login = login;
 exports.profile = profile;
 exports.uploadProfilePic = uploadProfilePic;
+exports.search = search;
+exports.random = random;
 
 // ============follow==============
 

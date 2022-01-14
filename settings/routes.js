@@ -87,6 +87,11 @@ const configure = (app, logger) => {
         api.users.followers
     );
 
+    app.get("/api/users/random",
+        permit.context.builder,
+        api.users.random
+    );
+
     app.post("/api/blocks/block",
         permit.context.validateToken,
         validator.blocks.block,

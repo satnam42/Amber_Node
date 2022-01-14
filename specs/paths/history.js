@@ -21,7 +21,6 @@ module.exports = [
                         $ref: "#/definitions/historyCreate"
                     }
                 },
-
             ],
             responses: {
                 default: {
@@ -65,5 +64,4 @@ module.exports = [
             }
         }
     },
-
 ];

@@ -388,6 +388,52 @@ module.exports = [{
             }
         }
     }
-}
+},
+{
+    url: "/random",
+    get: {
+        summary: "get user random user list",
+        description: "get user random user list",
+        parameters: [
+            // {
+            //     in: "header",
+            //     name: "x-access-token",
+            //     description: "token to access api",
+            //     required: true,
+            //     type: "string"
+            // },
+            {
+                in: "query",
+                type: "string",
+                name: "gender",
+                description: "gender",
+                required: true
+            },
+            {
+                in: "query",
+                type: "integer",
+                name: "pageNo",
+                description: "pageNo",
+                required: true
+            },
+            {
+                in: "query",
+                type: "integer",
+                name: "pageSize",
+                description: "pageSize",
+                required: true
+            },
+
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
 
 ];

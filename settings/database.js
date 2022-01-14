@@ -8,11 +8,12 @@ const configure = async logger => {
   try {
     await mongoose.connect(dbConfig.url + "/" + dbConfig.database + '?authSource=admin', {
       useNewUrlParser: true,
+      useUnifiedTopology: true
     });
     if (process.env.NODE_ENV !== 'prod') {
       mongoose.set('debug', true)
-    }
-    console.log(`mongoose default connection is open to ${dbConfig.url}`);
+    } +
+      console.log(`mongoose default connection is open to ${dbConfig.url}`);
     await require("../models").configure();
     global.db = mongoose.models;
     log.end();

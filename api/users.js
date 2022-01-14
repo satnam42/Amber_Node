@@ -168,7 +168,20 @@ const socialLogin = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+const random = async (req, res) => {
 
+    const log = req.context.logger.start(`api:users:random:${req.query}`);
+    try {
+        const users = await service.random(req.query, req.context);
+        log.end();
+        return response.data(res, users);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+
+};
 exports.create = create;
 exports.login = login;
 exports.resetPassword = resetPassword;
@@ -180,3 +193,4 @@ exports.unfollow = unfollow;
 exports.following = following;
 exports.followers = followers;
 exports.socialLogin = socialLogin;
+exports.random = random;
