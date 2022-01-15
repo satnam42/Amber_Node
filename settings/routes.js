@@ -121,6 +121,16 @@ const configure = (app, logger) => {
         api.history.getByUserId
     );
 
+    app.put("/api/club/join/:id",
+        permit.context.validateToken,
+        validator.club.join,
+        api.club.join
+    );
+    app.put("/api/club/leave/:id",
+        permit.context.validateToken,
+        validator.blocks.leave,
+        api.club.leave
+    );
     log.end();
 };
 
