@@ -6,7 +6,6 @@ const club = mongoose.Schema({
         default: "",
         enum: ["", "follower", "following"],
     },
-    email: { type: String, required: false, trim: true },
     members: [
         {
             type: mongoose.Schema.Types.ObjectId,
