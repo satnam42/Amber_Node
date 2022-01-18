@@ -36,7 +36,7 @@ module.exports = [
     {
         url: "/unblock",
         post: {
-            summary: "unblock user ",
+            summary: "unblock user",
             description: "unblock user",
             parameters: [
                 {
@@ -70,8 +70,8 @@ module.exports = [
     {
         url: "/blockList/{id}",
         get: {
-            summary: "block list ",
-            description: "block list by user id ",
+            summary: "block list",
+            description: "block list by user id",
             parameters: [
                 {
                     in: "header",

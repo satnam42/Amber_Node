@@ -15,48 +15,48 @@ const join = async (model, context) => {
         $addToSet: { members: model.userId }
     }
     const joined = await db.club.findOneAndUpdate(query, Update)
-    return joined
     log.end();
+    return joined
 };
 
 
 const leave = async (model, context) => {
     const log = context.logger.start(`services:club:leave`);
-    const user = await db.user.findById(model.byUser)
-    const club = await db.club({ toUser: model.toUser, byUser: model.byUser })
-    if (!club) {
-        throw new Error('user not found')
+    const query = {
+        name: model.clubName,
+        members: { $elemMatch: { $eq: model.userId, } }
+    }
+    let leave
+    const isMember = await db.user.find(query)
+    if (isMember) {
+        const Update = {
+            $pull: { members: model.userId }
+        }
+        leave = await db.club.findOneAndUpdate(query, Update)
+        // throw new Error('user already clubed')
     }
 
-    let index = 0
-
-    if (model.to == 'following') {
-        for (const item of user.following) {
-            if (model.toUser == item.userId) {
-                user.following[0].status = 'un-club'
-                user.following[0].clubId = ""
-                index++
-            }
-            else {
-                throw new Error('user not present in your following list please check ')
-            }
-        }
-    } else {
-        for (const item of user.followers) {
-            if (model.toUser == item.userId) {
-                user.followers[0].status = 'un-club'
-                user.followers[0].clubId = ""
-                index++
-            } else {
-                throw new Error('user not present in your followers list please check ')
-            }
-        }
-    }
-    await user.save()
     log.end();
-    return club
+    return leave
+};
+
+const memberList = async (name, context) => {
+    const log = context.logger.start(`services:club:memberList`);
+
+    if (!name) {
+        throw new Error('club name is required')
+    }
+
+    const query = {
+        name: name
+    }
+
+    const club = await db.user.find(query).populate('members')
+    log.end();
+    return members
 };
 
 
 exports.join = join;
 exports.leave = leave;
+exports.memberList = memberList;

@@ -6,13 +6,9 @@ module.exports = [
             userId: {
                 type: "string"
             },
-
             toFollowUserId: {
                 type: "string"
             },
-
-
-
         },
     }
 

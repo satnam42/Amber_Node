@@ -1,7 +1,6 @@
 "use strict";
 const response = require("../exchange/response");
 
-
 const create = (req, res, next) => {
     const log = req.context.logger.start("validators:users:follow");
 
@@ -24,10 +23,12 @@ const create = (req, res, next) => {
         log.end();
         return response.failure(res, "type is required ");
     }
+
     if (!req.body.duration) {
         log.end();
         return response.failure(res, "duration is required ");
     }
+
     if (!req.body.dateTime) {
         log.end();
         return response.failure(res, "dateTime is required ");

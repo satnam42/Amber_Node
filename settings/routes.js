@@ -131,6 +131,11 @@ const configure = (app, logger) => {
         validator.club.joinOrLeave,
         api.club.leave
     );
+
+    app.get("/api/club/membersByClubName/:name",
+        permit.context.validateToken,
+        api.club.getMembersByClubName
+    );
     log.end();
 };
 
