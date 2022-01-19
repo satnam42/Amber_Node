@@ -12,8 +12,8 @@ const configure = async logger => {
     });
     if (process.env.NODE_ENV !== 'prod') {
       mongoose.set('debug', true)
-    } +
-      console.log(`mongoose default connection is open to ${dbConfig.url}`);
+    }
+    console.log(`mongoose default connection is open to ${dbConfig.url}`);
     await require("../models").configure();
     global.db = mongoose.models;
     log.end();

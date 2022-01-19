@@ -4,7 +4,7 @@ const club = mongoose.Schema({
     name: {
         type: String,
         default: "",
-        enum: ["", "follower", "following"],
+
     },
     members: [
         {

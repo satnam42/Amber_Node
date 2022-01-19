@@ -1,6 +1,9 @@
+"use strict";
+const service = require("../services/club");
+const response = require("../exchange/response");
 
 const join = async (req, res) => {
-    const log = req.context.logger.start(`api:club:block ${req.params.id}`);
+    const log = req.context.logger.start(`api:club:join `);
     try {
         const club = await service.join(req.body, req.context);
         const msg = 'club joined successfully'

@@ -182,6 +182,21 @@ const random = async (req, res) => {
     }
 
 };
+
+const myStatistics = async (req, res) => {
+
+    const log = req.context.logger.start(`api:users:myStatistics:${req.params.id}`);
+    try {
+        const myStatistics = await service.myStatistics(req.params.id, req.context);
+        log.end();
+        return response.data(res, myStatistics);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+
+};
 exports.create = create;
 exports.login = login;
 exports.resetPassword = resetPassword;
@@ -194,3 +209,4 @@ exports.following = following;
 exports.followers = followers;
 exports.socialLogin = socialLogin;
 exports.random = random;
+exports.myStatistics = myStatistics;

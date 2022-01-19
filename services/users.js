@@ -309,6 +309,22 @@ const random = async (query, context) => {
     users.count = await db.user.find().count();
     return users
 };
+const myStatistics = async (id, context) => {
+    const log = context.logger.start(`services:users:myStatistics`);
+    if (!id) {
+        throw new Error('user id is required')
+    }
+
+    const users = await db.user.aggregate([
+        { $match: { gender: query.gender } },
+        { $sample: { size: pageSize } },
+        { $limit: pageSize },
+        { $skip: skipCount }
+    ])
+
+    users.count = await db.user.find().count();
+    return users
+};
 
 
 exports.create = create;

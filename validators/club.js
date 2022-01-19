@@ -17,3 +17,5 @@ const joinOrLeave = (req, res, next) => {
     log.end();
     return next();
 };
+
+exports.joinOrLeave = joinOrLeave

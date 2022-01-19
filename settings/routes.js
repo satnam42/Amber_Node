@@ -121,12 +121,12 @@ const configure = (app, logger) => {
         api.history.getByUserId
     );
 
-    app.post("/api/club/join/:id",
+    app.post("/api/club/join",
         permit.context.validateToken,
         validator.club.joinOrLeave,
         api.club.join
     );
-    app.post("/api/club/leave/:id",
+    app.post("/api/club/leave",
         permit.context.validateToken,
         validator.club.joinOrLeave,
         api.club.leave

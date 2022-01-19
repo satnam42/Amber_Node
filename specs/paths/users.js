@@ -28,15 +28,16 @@ module.exports = [{
     post: {
         summary: "login",
         description: "login",
-        parameters: [{
-            in: "body",
-            name: "body",
-            description: "Model of user login",
-            required: true,
-            schema: {
-                $ref: "#/definitions/login"
-            }
-        }],
+        parameters: [
+            {
+                in: "body",
+                name: "body",
+                description: "Model of user login",
+                required: true,
+                schema: {
+                    $ref: "#/definitions/login"
+                }
+            }],
         responses: {
             default: {
                 description: "Unexpected error",
@@ -257,7 +258,6 @@ module.exports = [{
         }
     }
 },
-
 {
     url: "/following/{id}",
     get: {
@@ -309,75 +309,6 @@ module.exports = [{
                 description: "user id",
                 required: true
             }
-        ],
-        responses: {
-            default: {
-                description: "Unexpected error",
-                schema: {
-                    $ref: "#/definitions/Error"
-                }
-            }
-        }
-    }
-},
-{
-    url: "/block",
-    get: {
-        summary: "block user",
-        description: "block user",
-        parameters: [
-
-            {
-                in: "header",
-                name: "x-access-token",
-                description: "token to access api",
-                required: true,
-                type: "string"
-            },
-            {
-                in: "body",
-                name: "body",
-                description: "model of register user",
-                required: true,
-                schema: {
-                    $ref: "#/definitions/blockCreate"
-                }
-            },
-
-        ],
-        responses: {
-            default: {
-                description: "Unexpected error",
-                schema: {
-                    $ref: "#/definitions/Error"
-                }
-            }
-        }
-    }
-},
-{
-    url: "/unblock",
-    get: {
-        summary: "unblock user ",
-        description: "unblock user",
-        parameters: [
-            {
-                in: "header",
-                name: "x-access-token",
-                description: "token to access api",
-                required: true,
-                type: "string"
-            },
-            {
-                in: "body",
-                name: "body",
-                description: "model of register user",
-                required: true,
-                schema: {
-                    $ref: "#/definitions/blockCreate"
-                }
-            },
-
         ],
         responses: {
             default: {

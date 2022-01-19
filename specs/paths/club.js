@@ -60,5 +60,41 @@ module.exports = [{
                 }
             }
         }
-    }
-},]
+    },
+},
+{
+    url: "/membersByClubName/{name}",
+    get: {
+        summary: "member list  by club name",
+        description: "member list  by club name",
+        parameters: [
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+
+            // {
+            //     in: "body",
+            //     name: "body",
+            //     description: "leave club model",
+            //     required: true,
+            //     schema: {
+            //         $ref: "#/definitions/joinOrLeave"
+            //     }
+            // }
+
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    },
+},
+]
