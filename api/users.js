@@ -29,7 +29,8 @@ const login = async (req, res) => {
         let message = "login successfully"
         return response.authorized(res, message, mapper.toModel(user), user.token);
         // return response.authorized(res, message, user, user.token);
-    } catch (err) {
+    }
+    catch (err) {
         log.error(err);
         log.end();
         return response.failure(res, err.message);
@@ -100,6 +101,7 @@ const uploadProfileImage = async (req, res) => {
 //follow api
 const follow = async (req, res) => {
     const log = req.context.logger.start(`api:users:follow`);
+
     try {
         const resMsg = await service.follow(req.body, req.context);
         log.end();
@@ -109,6 +111,7 @@ const follow = async (req, res) => {
         log.end();
         return response.failure(res, err.message);
     }
+
 };
 
 //unFollow api
@@ -169,7 +172,6 @@ const socialLogin = async (req, res) => {
 };
 
 const random = async (req, res) => {
-
     const log = req.context.logger.start(`api:users:random:${req.query}`);
     try {
         const users = await service.random(req.query, req.context);
@@ -183,7 +185,6 @@ const random = async (req, res) => {
 };
 
 const myStatistics = async (req, res) => {
-
     const log = req.context.logger.start(`api:users:myStatistics:${req.params.id}`);
     try {
         const myStatistics = await service.myStatistics(req.params.id, req.context);
@@ -194,7 +195,6 @@ const myStatistics = async (req, res) => {
         log.end();
         return response.failure(res, err.message);
     }
-
 };
 
 exports.create = create;

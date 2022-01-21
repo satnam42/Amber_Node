@@ -29,7 +29,7 @@ const unblock = async (req, res) => {
 
 
 const blockList = async (req, res) => {
-    const log = req.context.logger.start(`api:blocks:blockLilst`);
+    const log = req.context.logger.start(`api:blocks:blockList`);
     try {
         const users = await service.blockList(req.params.id, req.context);
         const msg = 'list fetched successfully'
@@ -41,6 +41,7 @@ const blockList = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 exports.block = block;
 exports.unblock = unblock;
 exports.blockList = blockList;

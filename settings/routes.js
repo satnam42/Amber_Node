@@ -120,7 +120,6 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.history.getByUserId
     );
-
     app.post("/api/club/join",
         permit.context.validateToken,
         validator.club.joinOrLeave,
@@ -131,10 +130,13 @@ const configure = (app, logger) => {
         validator.club.joinOrLeave,
         api.club.leave
     );
-
     app.get("/api/club/membersByClubName/:name",
         permit.context.validateToken,
         api.club.getMembersByClubName
+    );
+    app.get("/api/club/membersByFilter",
+        permit.context.validateToken,
+        api.club.getMembersByFilter
     );
     log.end();
 };

@@ -97,4 +97,53 @@ module.exports = [{
         }
     },
 },
+{
+    url: "/membersByFilter",
+    get: {
+        summary: "member list  according to filter",
+        description: "member list  according to filter",
+        parameters: [
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "query",
+                type: "string",
+                name: "popular",
+                description: "pageNo",
+                required: true
+            },
+            {
+                in: "nearByMe",
+                type: "string",
+                name: "lat,long",
+                description: "please lat long ",
+                required: true
+            },
+
+            // {
+            //     in: "body",
+            //     name: "body",
+            //     description: "leave club model",
+            //     required: true,
+            //     schema: {
+            //         $ref: "#/definitions/joinOrLeave"
+            //     }
+            // }
+
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    },
+},
 ]

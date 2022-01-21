@@ -51,12 +51,36 @@ const memberList = async (name, context) => {
         name: name
     }
 
-    const club = await db.user.find(query).populate('members')
+    const club = await db.club.find(query).populate('members')
     log.end();
     return members
+};
+const membersByFilter = async (name, context) => {
+    const log = context.logger.start(`services:club:membersByFilter`);
+
+    // if (!name) {
+    //     throw new Error('club name is required')
+    // }
+
+    // const query = {
+    //     name: name
+    // }
+
+    const club = await db.club.aggregate([
+        {
+            $lookup: {
+                from: "users",
+                localField: "members",
+                foreignField: "userId",
+                as: "users"
+            }
+        },
+    ])
+    return club
 };
 
 
 exports.join = join;
 exports.leave = leave;
 exports.memberList = memberList;
+exports.membersByFilter = membersByFilter;

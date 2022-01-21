@@ -20,7 +20,8 @@ const getByUserId = async (req, res) => {
         const msg = 'fetched history successfully'
         log.end();
         return response.success(res, msg, history);
-    } catch (err) {
+    }
+    catch (err) {
         log.error(err);
         log.end();
         return response.failure(res, err.message);
