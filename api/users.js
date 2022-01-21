@@ -6,7 +6,6 @@ const mapper = require("../mappers/user");
 //register api
 
 const create = async (req, res) => {
-
     const log = req.context.logger.start(`api:users:create`);
     try {
         const user = await service.create(req.body, req.context);
@@ -86,7 +85,7 @@ const update = async (req, res) => {
 };
 
 const uploadProfileImage = async (req, res) => {
-    const log = req.context.logger.start(`api:posts:uploadProfileImage`);
+    const log = req.context.logger.start(`api:users:uploadProfileImage`);
     try {
         const product = await service.uploadProfilePic(req.params.id, req.files, req.context);
         log.end();
@@ -168,6 +167,7 @@ const socialLogin = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const random = async (req, res) => {
 
     const log = req.context.logger.start(`api:users:random:${req.query}`);
@@ -180,7 +180,6 @@ const random = async (req, res) => {
         log.end();
         return response.failure(res, err.message);
     }
-
 };
 
 const myStatistics = async (req, res) => {
@@ -197,6 +196,7 @@ const myStatistics = async (req, res) => {
     }
 
 };
+
 exports.create = create;
 exports.login = login;
 exports.resetPassword = resetPassword;

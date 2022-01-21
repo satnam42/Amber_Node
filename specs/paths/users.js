@@ -158,7 +158,7 @@ module.exports = [{
     }
 },
 {
-    url: "/uploadProfileImage/{id}",
+    url: "/profileImageUpload/{id}",
     put: {
         summary: "upload Profile Pic ",
         description: "upload Profile Pic ",
