@@ -4,9 +4,11 @@ const block = async (model, context) => {
     const log = context.logger.start(`services:users:block`);
     const user = await db.user.findById(model.byUser)
     const isBlocked = await db.block({ toUser: model.toUser, byUser: model.byUser })
+
     if (isBlocked) {
         throw new Error('user already blocked')
     }
+
     const block = await new db.block({
         toUser: model.toUser,
         byUser: model.byUser,
@@ -31,9 +33,11 @@ const block = async (model, context) => {
             }
         }
     }
+
     await user.save()
     log.end();
     return block
+
 };
 
 const unblock = async (model, context) => {
@@ -43,9 +47,7 @@ const unblock = async (model, context) => {
     if (!block) {
         throw new Error('user not found')
     }
-
     let index = 0
-
     if (model.to == 'following') {
         for (const item of user.following) {
             if (model.toUser == item.userId) {
@@ -68,15 +70,17 @@ const unblock = async (model, context) => {
             }
         }
     }
+
     await user.save()
     log.end();
     return block
+
 };
 
 const blockList = async (id, context) => {
-    const log = context.logger.start(`services:blocks:blockLilst`);
+    const log = context.logger.start(`services:blocks:blockList`);
     if (!id) {
-        throw new Error('user id is requried')
+        throw new Error('user id is required')
     }
     const block = await db.block.find({ byUser: id }).populate('toUser')
     log.end();

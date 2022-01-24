@@ -64,6 +64,11 @@ const configure = (app, logger) => {
         permit.context.builder,
         api.users.uploadProfileImage
     );
+    app.put(
+        "/api/users/removeProfilePic/:id",
+        permit.context.validateToken,
+        api.users.removeProfilePic
+    );
 
     app.post("/api/users/follow",
         permit.context.validateToken,
@@ -138,6 +143,7 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.club.getMembersByFilter
     );
+
     log.end();
 };
 

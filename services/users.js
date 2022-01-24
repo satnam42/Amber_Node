@@ -1,5 +1,7 @@
 const encrypt = require("../permit/crypto.js");
 const auth = require("../permit/auth");
+const path = require("path");
+const fs = require("fs");
 
 const buildUser = async (model, context) => {
     const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob } = model;
@@ -326,6 +328,26 @@ const myStatistics = async (id, context) => {
     return users
 };
 
+const removeProfilePic = async (id, context) => {
+    const log = context.logger.start(`services:users:removeProfilePic`);
+    if (!id) {
+        throw new Error("user id is required");
+    }
+    const destination = path.join(__dirname, '../', 'assets/images')
+    // /home/satnam/code/amber_nodejs/assets/images
+    let user = await db.user.findById(id)
+    if (!user) {
+        log.end();
+        throw new Error("user not found");
+    }
+    const picLocation = destination + '/' + user.avatar
+    fs.unlinkSync(picLocation);
+    user.avatar = null
+    await user.save()
+    log.end();
+    return 'image successfully removed'
+
+}
 
 exports.create = create;
 exports.resetPassword = resetPassword;
@@ -346,4 +368,5 @@ exports.followers = followers;
 // ============follow==============
 
 exports.socialLogin = socialLogin
+exports.removeProfilePic = removeProfilePic
 

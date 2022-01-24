@@ -101,7 +101,6 @@ const uploadProfileImage = async (req, res) => {
 //follow api
 const follow = async (req, res) => {
     const log = req.context.logger.start(`api:users:follow`);
-
     try {
         const resMsg = await service.follow(req.body, req.context);
         log.end();
@@ -111,7 +110,6 @@ const follow = async (req, res) => {
         log.end();
         return response.failure(res, err.message);
     }
-
 };
 
 //unFollow api
@@ -128,7 +126,7 @@ const unfollow = async (req, res) => {
     }
 };
 
-//following api
+//following api                 
 const following = async (req, res) => {
     const log = req.context.logger.start(`api:users:following`);
     try {
@@ -196,7 +194,18 @@ const myStatistics = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
-
+const removeProfilePic = async (req, res) => {
+    const log = req.context.logger.start(`api:users:removeProfilePic`);
+    try {
+        const product = await service.removeProfilePic(req.params.id, req.context);
+        log.end();
+        return response.data(res, product);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
 exports.create = create;
 exports.login = login;
 exports.resetPassword = resetPassword;
@@ -210,3 +219,5 @@ exports.followers = followers;
 exports.socialLogin = socialLogin;
 exports.random = random;
 exports.myStatistics = myStatistics;
+exports.removeProfilePic = removeProfilePic;
+

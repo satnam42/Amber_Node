@@ -6,14 +6,18 @@ const join = async (model, context) => {
         name: model.clubName,
         members: { $elemMatch: { $eq: model.userId, } }
     }
+
     const isMember = await db.user.find(query)
+
     if (isMember) {
         return isMember
         // throw new Error('user already clubed')
     }
+
     const Update = {
         $addToSet: { members: model.userId }
     }
+
     const joined = await db.club.findOneAndUpdate(query, Update)
     log.end();
     return joined
@@ -55,6 +59,7 @@ const memberList = async (name, context) => {
     log.end();
     return members
 };
+
 const membersByFilter = async (name, context) => {
     const log = context.logger.start(`services:club:membersByFilter`);
 

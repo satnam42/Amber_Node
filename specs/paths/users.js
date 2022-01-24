@@ -366,5 +366,44 @@ module.exports = [{
         }
     }
 },
+{
+    url: "/removeProfilePic/{id}",
+    put: {
+        summary: "remove Profile",
+        description: "remove Profile Pic by userId ",
+        parameters: [
+
+            //     {
+            //     in: "formData",
+            //     name: "image",
+            //     type: "file",
+            //     description: "The file to upload.",
+            //     required: true,
+            // },
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "path",
+                type: "string",
+                name: "id",
+                description: "user id",
+                required: true
+            }
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
 
 ];
