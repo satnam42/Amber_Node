@@ -14,6 +14,7 @@ exports.toModel = entity => {
         firstName: entity.firstName,
         lastName: entity.lastName,
         email: entity.email,
+        dob: entity.dob,
         password: entity.password,
         gender: entity.gender,
         avatar: entity.avatar ? `${imageUrl}${entity.avatar}` : "",
