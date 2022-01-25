@@ -1,7 +1,7 @@
 module.exports = [
 
     {
-        name: "joinOrleave",
+        name: "joinOrLeave",
         properties: {
             userId: {
                 type: "string"

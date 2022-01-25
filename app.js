@@ -10,7 +10,7 @@ var server = Http.createServer(app);
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
-const boot = () => {
+const boot = async () => {
   const log = logger.start("app:boot");
   log.info(`environment:  ${process.env.NODE_ENV}`);
   log.info("starting server");
@@ -18,6 +18,11 @@ const boot = () => {
     log.info(`listening on port: ${port}`);
     log.end();
   });
+
+  // await new db.club({
+  //   name: "Amber club"
+  // }).save();
+
 };
 
 const init = async () => {

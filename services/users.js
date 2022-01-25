@@ -200,19 +200,22 @@ const follow = async (model, context) => {
     }
     const filter = {
         _id: model.userId,
-        following: { $not: { $elemMatch: { $eq: model.toFollowUserId } } }
+        following: { $not: { $elemMatch: { userId: model.toFollowUserId } } }
     }
+    // const update = {
+    //     $addToSet: { "following.userId": model.toFollowUserId }
+    // }
     const update = {
-        $addToSet: { following: model.toFollowUserId }
+        $push: { following: { userId: model.toFollowUserId } }
     }
     const updated = await db.user.findOneAndUpdate(filter, update)
     // add your id to the followers array of the user you want to follow
     const secondFilter = {
         _id: model.toFollowUserId,
-        followers: { $not: { $elemMatch: { $eq: model.userId } } }
+        followers: { $not: { $elemMatch: { userId: model.userId } } }
     }
     const secondUpdate = {
-        $addToSet: { followers: model.userId }
+        $push: { followers: { userId: model.userId } }
     }
     const secondUpdated = await db.user.findOneAndUpdate(secondFilter, secondUpdate)
     if (!updated && !secondUpdated) {
@@ -233,11 +236,11 @@ const unfollow = async (model, context) => {
 
     const query = {
         _id: model.userId,
-        following: { $elemMatch: { $eq: model.toUnfollowUserId } }
+        following: { $elemMatch: { userId: model.toUnfollowUserId } }
     }
 
     const update = {
-        $pull: { following: model.toUnfollowUserId }
+        $pull: { following: { userId: model.toUnfollowUserId } }
     }
 
     const updated = await db.user.updateOne(query, update)
@@ -245,11 +248,11 @@ const unfollow = async (model, context) => {
     // remove your id from the followers array of the user you want to unfollow
     const secondQuery = {
         _id: model.toUnfollowUserId,
-        followers: { $elemMatch: { $eq: model.userId } }
+        followers: { $elemMatch: { userId: model.userId } }
     }
 
     const secondUpdate = {
-        $pull: { followers: model.userId }
+        $pull: { followers: { userId: model.userId } }
     }
 
     const secondUpdated = await db.user.updateOne(secondQuery, secondUpdate)
@@ -281,18 +284,16 @@ const followers = async (id, context) => {
     log.end();
     return user.followers
 };
+
 const socialLogin = async (model, context) => {
     const log = context.logger.start(`services:users:socialLogin`);
     let user = await db.user.findOne({ socialLoginId: model.socialLoginId });
-
     if (!user) {
         user = await buildUser(model, context);
         log.end()
     };
-
     user.token = auth.getToken(user.id, false, context);
     return user
-
 }
 
 const random = async (query, context) => {

@@ -42,6 +42,7 @@ const user = mongoose.Schema({
 
   following: [
     {
+      _id: false,
       userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
@@ -64,6 +65,7 @@ const user = mongoose.Schema({
   ],
 
   followers: [{
+    _id: false,
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",

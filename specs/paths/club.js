@@ -114,15 +114,15 @@ module.exports = [{
                 in: "query",
                 type: "string",
                 name: "popular",
-                description: "pageNo",
-                required: true
+                description: "set it true if you want popular member",
+                required: false
             },
             {
                 in: "nearByMe",
                 type: "string",
                 name: "lat,long",
-                description: "please lat long ",
-                required: true
+                description: "enter lat long comma separator like(1321313,2131331) ",
+                required: false
             },
 
             // {
