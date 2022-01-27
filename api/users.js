@@ -193,7 +193,8 @@ const myStatistics = async (req, res) => {
         log.end();
         return response.failure(res, err.message);
     }
-};
+}
+    ;
 const removeProfilePic = async (req, res) => {
     const log = req.context.logger.start(`api:users:removeProfilePic`);
     try {
@@ -206,6 +207,20 @@ const removeProfilePic = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
+const getRtcToken = async (req, res) => {
+    const log = req.context.logger.start(`api:users:getRtcToken`);
+    try {
+        const token = await service.generateRtcToken(req.body, req.context);
+        log.end();
+        return response.data(res, token);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
 exports.create = create;
 exports.login = login;
 exports.resetPassword = resetPassword;
@@ -220,4 +235,5 @@ exports.socialLogin = socialLogin;
 exports.random = random;
 exports.myStatistics = myStatistics;
 exports.removeProfilePic = removeProfilePic;
+exports.getRtcToken = getRtcToken;
 

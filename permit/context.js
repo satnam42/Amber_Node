@@ -89,7 +89,13 @@ const checkUserBlockedOrNot = async (req, res, next) => {
     log.end();
     return next();
 };
-
+const nocache = (req, res, next) => {
+    resp.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    resp.header('Expires', '-1');
+    resp.header('Pragma', 'no-cache');
+    next();
+}
 exports.builder = builder;
 exports.requiresToken = requiresToken;
 exports.validateToken = validateToken;
+exports.nocache = nocache;

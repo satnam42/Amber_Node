@@ -68,54 +68,68 @@ const memberList = async (name, context) => {
 
 const membersByFilter = async (query, context) => {
     const log = context.logger.start(`services:club:membersByFilter`);
-    const club = await db.club.aggregate([
-        {
+
+    let filter = {}
+    // ===============================================for you=================================================
+
+    if (query.gander.trim() !== "" && query.gander == undefined) {
+        filter = {
+            $lookup: {
+                from: "users",
+                localField: "members",
+                pipeline: [
+                    { $match: { gender: context.user.gender == 'male' ? 'female' : 'male' } },],
+                foreignField: "_id",
+                as: "users"
+            },
+        }
+    }
+
+    // ================================================= nearBy ==================================================
+
+    else if (query.lat & query.long) {
+        filter = {
+            "location": {
+                $near: {
+                    $geometry:
+                        { type: "Point", coordinates: [query.lat, query.long] }, $maxDistance: 10000 // 10 kilometer
+                }
+            }
+        }
+    }
+
+    // ========================================== popular ========================================================
+
+    else if (query.popular) {
+        filter = {
             $lookup: {
                 from: "users",
                 localField: "members",
                 foreignField: "_id",
                 as: "users"
             },
-            // },
         },
-        { $unwind: "$users" },
+            { $unwind: "$users" },
         {
             $project: {
                 name: "$users.firstName",
-                followers: { $cond: { if: { $isArray: "$users.following" }, then: { $size: "$users.following" }, else: 0 } }
+                followers: { $cond: { if: { $isArray: "$users.followers" }, then: { $size: "$users.followers" }, else: 0 } }
             }
         },
-        { $sort: { followers: -1 } }
-        // {
-        //     $group: {
-        //         _id: "$users._id",
-        //         size: { $sum: "users.following" }
-        //     }
-        // },
-        // {
-        //     $group: {
-        //         _id: { $size: users.following },
-        //         total: { $sum: 1 },
-        //     }
-        // }
-        // {}
-        //     $group: {
-        //         _id: "$size",
-        //         frequency: {
-        //              1
-        //         }
-        //     }
-        // },
-        // {
-        //     $project: {
-        //         size: "$_id",
-        //         frequency: 1,
-        //         _id: 0
-        //     }
+            { $sort: { followers: -1 } }
+    }
 
-    ])
+    else {
+        throw new Error('At least one filter is required')
+    }
+
+    const club = await db.club.aggregate([filter])
+    log.end()
     return club
+
 };
+
+
 
 
 exports.join = join;

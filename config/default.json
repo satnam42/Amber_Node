@@ -14,6 +14,10 @@
     "auth": {
         "jwtKey": "supersecret"
     },
+    "agora": {
+        "appID": "a1395860593f4d6e96486a96fb4ea8dc",
+        "appCertificate": "4bf5602754394e3cb40941e447eee6ff"
+    },
     "image": {
         "url": "http://93.188.167.68/projects/amber_nodejs/assets/images/",
         "port": 8003

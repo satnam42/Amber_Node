@@ -2,6 +2,8 @@ const encrypt = require("../permit/crypto.js");
 const auth = require("../permit/auth");
 const path = require("path");
 const fs = require("fs");
+const { RtcTokenBuilder, RtcRole } = require('agora-access-token');
+
 
 const buildUser = async (model, context) => {
     const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob } = model;
@@ -348,6 +350,20 @@ const removeProfilePic = async (id, context) => {
     log.end();
     return 'image successfully removed'
 
+}
+const generateRtcToken = async (modal, context) => {
+    const log = context.logger.start(`services:users:generateRtcToken`);
+    if (!modal.cannelId) {
+        throw new Error("cannel id is required");
+    }
+    const expirationTimeInSeconds = 3600;
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
+    const role = req.body.isPublisher ? RtcRole.PUBLISHER : RtcRole.SUBSCRIBER;
+    const channel = req.body.channel;
+    const token = RtcTokenBuilder.buildTokenWithUid(appID, appCertificate, channel, uid, role, privilegeExpiredTs);
+    log.end
+    return token
 }
 
 exports.create = create;
