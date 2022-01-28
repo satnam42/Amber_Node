@@ -97,6 +97,11 @@ const configure = (app, logger) => {
         api.users.random
     );
 
+    app.post("/api/users/generateRtcToken",
+        permit.context.validateToken,
+        api.users.getRtcToken
+    );
+
     app.post("/api/blocks/block",
         permit.context.validateToken,
         validator.blocks.block,
@@ -120,7 +125,6 @@ const configure = (app, logger) => {
         validator.history.create,
         api.history.create
     );
-
     app.get("/api/history/getByUserId/:id",
         permit.context.validateToken,
         api.history.getByUserId
@@ -143,6 +147,7 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.club.getMembersByFilter
     );
+
 
     log.end();
 };

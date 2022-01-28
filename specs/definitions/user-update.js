@@ -3,7 +3,6 @@ module.exports = [
     {
         name: "userUpdate",
         properties: {
-
             firstName: {
                 type: "string"
             },

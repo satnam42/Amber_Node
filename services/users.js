@@ -3,7 +3,7 @@ const auth = require("../permit/auth");
 const path = require("path");
 const fs = require("fs");
 const { RtcTokenBuilder, RtcRole } = require('agora-access-token');
-
+const { appID, appCertificate } = require('config').get('agora')
 
 const buildUser = async (model, context) => {
     const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob } = model;
@@ -314,22 +314,22 @@ const random = async (query, context) => {
     users.count = await db.user.find().count();
     return users
 };
-const myStatistics = async (id, context) => {
-    const log = context.logger.start(`services:users:myStatistics`);
-    if (!id) {
-        throw new Error('user id is required')
-    }
+// const myStatistics = async (id, context) => {
+//     const log = context.logger.start(`services:users:myStatistics`);
+//     if (!id) {
+//         throw new Error('user id is required')
+//     }
 
-    const users = await db.user.aggregate([
-        { $match: { gender: query.gender } },
-        { $sample: { size: pageSize } },
-        { $limit: pageSize },
-        { $skip: skipCount }
-    ])
+//     const users = await db.user.aggregate([
+//         { $match: { gender: query.gender } },
+//         { $sample: { size: pageSize } },
+//         { $limit: pageSize },
+//         { $skip: skipCount }
+//     ])
 
-    users.count = await db.user.find().count();
-    return users
-};
+//     users.count = await db.user.find().count();
+//     return users
+// };
 
 const removeProfilePic = async (id, context) => {
     const log = context.logger.start(`services:users:removeProfilePic`);
@@ -353,15 +353,18 @@ const removeProfilePic = async (id, context) => {
 }
 const generateRtcToken = async (modal, context) => {
     const log = context.logger.start(`services:users:generateRtcToken`);
-    if (!modal.cannelId) {
-        throw new Error("cannel id is required");
+    if (!modal.channelId) {
+        throw new Error("channelId id is required");
+    }
+    if (!modal.userId) {
+        throw new Error("user id is required");
     }
     const expirationTimeInSeconds = 3600;
     const currentTimestamp = Math.floor(Date.now() / 1000);
     const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
-    const role = req.body.isPublisher ? RtcRole.PUBLISHER : RtcRole.SUBSCRIBER;
-    const channel = req.body.channel;
-    const token = RtcTokenBuilder.buildTokenWithUid(appID, appCertificate, channel, uid, role, privilegeExpiredTs);
+    const role = modal.isPublisher ? RtcRole.PUBLISHER : RtcRole.SUBSCRIBER;
+    const channel = modal.channelId;
+    const token = RtcTokenBuilder.buildTokenWithUid(appID, appCertificate, channel, modal.userId, role, privilegeExpiredTs);
     log.end
     return token
 }
@@ -386,4 +389,5 @@ exports.followers = followers;
 
 exports.socialLogin = socialLogin
 exports.removeProfilePic = removeProfilePic
+exports.generateRtcToken = generateRtcToken
 

@@ -405,5 +405,39 @@ module.exports = [{
         }
     }
 },
+{
+    url: "/generateRtcToken",
+    post: {
+        summary: "Rtc Token",
+        description: "RtcToken",
+        parameters: [
+            {
+                in: "body",
+                name: "body",
+                description: "model of Rtc Token",
+                required: true,
+                schema: {
+                    $ref: "#/definitions/rtcToken"
+                }
+            },
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
 
 ];
