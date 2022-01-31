@@ -22,6 +22,10 @@
         "url": "http://93.188.167.68/projects/amber_nodejs/assets/images/",
         "port": 8003
     },
+    "video": {
+        "url": "http://93.188.167.68/projects/amber_nodejs/assets/videos/",
+        "port": 8003
+    },
     "providers": {},
     "logger": {
         "logStart": false,

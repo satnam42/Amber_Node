@@ -7,7 +7,12 @@ var multer = require('multer');
 // image uplaod location //
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '../', 'assets/images'));
+
+    if (!file.originalname.match(/\.(mp4|MPEG-4|mkv|avi|mov)$/)) {
+      cb(null, path.join(__dirname, '../', 'assets/videos'));
+    } else {
+      cb(null, path.join(__dirname, '../', 'assets/images'));
+    }
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + file.originalname.replace(/ /g, ''));

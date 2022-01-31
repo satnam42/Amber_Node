@@ -28,8 +28,19 @@ const user = mongoose.Schema({
     enum: ["active", "inactive"],
   },
   avatar: { type: String, default: "" },
+
+  images: [{
+    name: { type: String, default: "" },
+    createdAt: { type: Date, default: Date.now() }
+  }],
+  story: { type: String, default: "" },
+  videos: [{
+    name: { type: String, default: "" },
+    createdAt: { type: Date, default: Date.now() }
+  }],
   bio: { type: String, default: "" },
   website: { type: String, default: "" },
+
   following: [
     {
       _id: false,
@@ -76,6 +87,7 @@ const user = mongoose.Schema({
     },
 
   },],
+
   location: {
     type: {
       type: String,

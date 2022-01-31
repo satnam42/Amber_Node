@@ -88,9 +88,21 @@ const update = async (req, res) => {
 const uploadProfileImage = async (req, res) => {
     const log = req.context.logger.start(`api:users:uploadProfileImage`);
     try {
-        const product = await service.uploadProfilePic(req.params.id, req.files, req.context);
+        const image = await service.uploadProfilePic(req.params.id, req.files, req.context);
         log.end();
-        return response.data(res, product);
+        return response.data(res, image);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+const uploadStory = async (req, res) => {
+    const log = req.context.logger.start(`api:users:uploadStory`);
+    try {
+        const story = await service.uploadStory(req.params.id, req.files, req.context);
+        log.end();
+        return response.data(res, story);
     } catch (err) {
         log.error(err);
         log.end();
@@ -227,6 +239,7 @@ exports.resetPassword = resetPassword;
 exports.update = update;
 exports.profile = profile;
 exports.uploadProfileImage = uploadProfileImage;
+exports.uploadStory = uploadStory;
 exports.follow = follow;
 exports.unfollow = unfollow;
 exports.following = following;

@@ -58,7 +58,6 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.profile
     );
-
     app.put(
         "/api/users/profileImageUpload/:id",
         permit.context.builder,
@@ -69,6 +68,17 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.removeProfilePic
     );
+    app.put(
+        "/api/users/uploadStory/:id",
+        permit.context.validateToken,
+        api.users.uploadStory
+    );
+    // app.put(
+    //     "/api/users/removeStory/:id",
+    //     permit.context.builder,
+    //     api.users.removeStory
+    // );
+
 
     app.post("/api/users/follow",
         permit.context.validateToken,

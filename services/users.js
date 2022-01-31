@@ -176,16 +176,47 @@ const uploadProfilePic = async (id, files, context) => {
         throw new Error("user not found");
     }
     if (file == undefined || file.size == undefined || file.size <= 0) throw new Error("image is required");
-    if (user.avatar != "") {
-        const path = file.destination + '/' + user.avatar
-        try {
-            fs.unlinkSync(path);
-            console.log(`image successfully removed from ${path}`);
-        } catch (error) {
-            console.error('there was an error to remove image:', error.message);
-        }
-    }
+    // if (user.avatar != "") {
+    //     const path = file.destination + '/' + user.avatar
+    //     try {
+    //         fs.unlinkSync(path);
+    //         console.log(`image successfully removed from ${path}`);
+    //     } catch (error) {
+    //         console.error('there was an error to remove image:', error.message);
+    //     }
+    // }
+    user.images.push({ name: fileName })
     user.avatar = fileName
+    await user.save()
+    log.end();
+    return 'image uploaded successfully'
+
+}
+const uploadStory = async (id, files, context) => {
+    const log = context.logger.start(`services:users:uploadStory`);
+    let fileName = files[0].filename.replace(/ /g, '')
+    let file = files[0]
+    if (!id) {
+        throw new Error("user id is required");
+    }
+    let user = await db.user.findById(id)
+    if (!user) {
+        log.end();
+        throw new Error("user not found");
+    }
+    if (file == undefined || file.size == undefined || file.size <= 0) throw new Error("video  is required");
+    // if (user.avatar != "") {
+    //     const path = file.destination + '/' + user.avatar
+    //     try {
+    //         fs.unlinkSync(path);
+    //         console.log(`image successfully removed from ${path}`);
+    //     } catch (error) {
+    //         console.error('there was an error to remove image:', error.message);
+    //     }
+    // }
+    // user.avatar = fileName
+    user.videos.push({ name: fileName })
+    user.story = fileName
     await user.save()
     log.end();
     return 'image uploaded successfully'
@@ -345,12 +376,14 @@ const removeProfilePic = async (id, context) => {
     }
     const picLocation = destination + '/' + user.avatar
     fs.unlinkSync(picLocation);
+    const images = user.images.filter(obj => obj.name !== user.avatar)
     user.avatar = null
+    user.images = images
     await user.save()
     log.end();
     return 'image successfully removed'
-
 }
+
 const generateRtcToken = async (modal, context) => {
     const log = context.logger.start(`services:users:generateRtcToken`);
     if (!modal.channelId) {
@@ -364,7 +397,7 @@ const generateRtcToken = async (modal, context) => {
     const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
     const role = modal.isPublisher ? RtcRole.PUBLISHER : RtcRole.SUBSCRIBER;
     const channel = modal.channelId;
-    const token = RtcTokenBuilder.buildTokenWithUid(appID, appCertificate, channel, modal.userId, role, privilegeExpiredTs);
+    const token = RtcTokenBuilder.buildTokenWithUid(appID.trim(), appCertificate.trim(), channel, modal.userId, role, privilegeExpiredTs);
     log.end
     return token
 }
@@ -390,4 +423,5 @@ exports.followers = followers;
 exports.socialLogin = socialLogin
 exports.removeProfilePic = removeProfilePic
 exports.generateRtcToken = generateRtcToken
+exports.uploadStory = uploadStory
 

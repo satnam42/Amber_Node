@@ -406,6 +406,45 @@ module.exports = [{
     }
 },
 {
+    url: "/uploadStory/{id}",
+    put: {
+        summary: "upload Story",
+        description: "upload Story by userId ",
+        parameters: [
+
+            {
+                in: "formData",
+                name: "video",
+                type: "file",
+                description: "The file to upload.",
+                required: true,
+            },
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "path",
+                type: "string",
+                name: "id",
+                description: "user id",
+                required: true
+            }
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
+{
     url: "/generateRtcToken",
     post: {
         summary: "Rtc Token",
