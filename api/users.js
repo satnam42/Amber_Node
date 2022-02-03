@@ -97,6 +97,7 @@ const uploadProfileImage = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const uploadStory = async (req, res) => {
     const log = req.context.logger.start(`api:users:uploadStory`);
     try {
@@ -145,7 +146,9 @@ const following = async (req, res) => {
         const users = await service.following(req.params.id, req.context);
         const msg = 'list fetched successfully'
         log.end();
-        return response.success(res, msg, users);
+        return response.success(res, msg, mapper.toSearchModel(users));
+        // return response.page(res, mapper.toSearchModel(users), Number(req.query.pageNo) || 1, Number(req.query.pageSize) || 10, users.count);
+        // return response.success(res, msg, users);
     } catch (err) {
         log.error(err);
         log.end();
@@ -160,7 +163,9 @@ const followers = async (req, res) => {
         const users = await service.followers(req.params.id, req.context);
         const msg = 'list fetched successfully'
         log.end();
-        return response.success(res, msg, users);
+        return response.success(res, msg, mapper.toSearchModel(users));
+        // return response.page(res, mapper.toSearchModel(users), Number(req.query.pageNo) || 1, Number(req.query.pageSize) || 10, users.count);
+        // return response.success(res, msg, users);
     } catch (err) {
         log.error(err);
         log.end();
@@ -182,19 +187,22 @@ const socialLogin = async (req, res) => {
 };
 
 const random = async (req, res) => {
+
     const log = req.context.logger.start(`api:users:random:${req.query}`);
     try {
         const users = await service.random(req.query, req.context);
         log.end();
-        return response.data(res, users);
+        return response.page(res, mapper.toSearchModel(users), Number(req.query.pageNo) || 1, Number(req.query.pageSize) || 10, users.count);
     } catch (err) {
         log.error(err);
         log.end();
         return response.failure(res, err.message);
     }
+
 };
 
 const myStatistics = async (req, res) => {
+
     const log = req.context.logger.start(`api:users:myStatistics:${req.params.id}`);
     try {
         const myStatistics = await service.myStatistics(req.params.id, req.context);
@@ -205,6 +213,7 @@ const myStatistics = async (req, res) => {
         log.end();
         return response.failure(res, err.message);
     }
+
 }
     ;
 const removeProfilePic = async (req, res) => {

@@ -30,6 +30,7 @@ const leave = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const getMembersByClubName = async (req, res) => {
     const log = req.context.logger.start(`api:club:getMembersByClubName `);
     try {
@@ -43,6 +44,7 @@ const getMembersByClubName = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const getMembersByFilter = async (req, res) => {
     const log = req.context.logger.start(`api:club:getMembersByFilter `);
     try {

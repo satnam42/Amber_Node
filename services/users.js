@@ -298,24 +298,28 @@ const unfollow = async (model, context) => {
 };
 
 const following = async (id, context) => {
+
     const log = context.logger.start(`services:users:following`);
     if (!id) {
         throw new Error('user id is required')
 
     }
-    const user = await db.user.findById(id).populate('following')
+    const user = await db.user.findById(id).populate('following.userId')
     log.end();
     return user.following
+
 };
 
 const followers = async (id, context) => {
+
     const log = context.logger.start(`services:users:followers`);
     if (!id) {
         throw new Error('user id is required')
     }
-    const user = await db.user.findById(id).populate('followers')
+    const user = await db.user.findById(id).populate('followers.userId')
     log.end();
     return user.followers
+
 };
 
 const socialLogin = async (model, context) => {
@@ -334,6 +338,7 @@ const random = async (query, context) => {
     let pageNo = Number(query.pageNo) || 1;
     let pageSize = Number(query.pageSize) || 10;
     let skipCount = pageSize * (pageNo - 1);
+    const userId = context.user.id || context.user._id
 
     const users = await db.user.aggregate([
         { $match: { gender: query.gender } },
@@ -397,7 +402,7 @@ const generateRtcToken = async (modal, context) => {
     const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
     const role = modal.isPublisher ? RtcRole.PUBLISHER : RtcRole.SUBSCRIBER;
     const channel = modal.channelId;
-    const token = RtcTokenBuilder.buildTokenWithUid(appID.trim(), appCertificate.trim(), channel, modal.userId, role, privilegeExpiredTs);
+    const token = RtcTokenBuilder.buildTokenWithAccount(appID.trim(), appCertificate.trim(), channel, modal.userId, role, privilegeExpiredTs);
     log.end
     return token
 }

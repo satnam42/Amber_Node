@@ -4,8 +4,8 @@ const imageUrl = require('config').get('image').url
 
 exports.toModel = entity => {
 
-    if (entity.friendId) {
-        entity = entity.friendId
+    if (entity.userId) {
+        entity = entity.userId
     }
 
     const model = {
@@ -21,17 +21,21 @@ exports.toModel = entity => {
         phoneNo: entity.phoneNo,
         location: entity.location,
         status: entity.status,
+        followingCount: entity.following.length || 0,
+        followerCount: entity.followers.length || 0,
         bio: entity.bio,
         website: entity.website,
         country: entity.country,
         token: entity.token
     };
+
     // if (entity.gallery && entity.gallery.length > 0) {
     //     for (let index = 0; index < entity.gallery.length; index++) {
     //         entity.gallery[index].image = `${imageUrl}${entity.gallery[index].image}`;
     //     }
     //     model.gallery = entity.gallery
     // }
+
     return model;
 
 };
