@@ -338,7 +338,7 @@ const random = async (query, context) => {
     let pageNo = Number(query.pageNo) || 1;
     let pageSize = Number(query.pageSize) || 10;
     let skipCount = pageSize * (pageNo - 1);
-    const userId = context.user.id || context.user._id
+    // const userId = context.user.id || context.user._id
 
     const users = await db.user.aggregate([
         { $match: { gender: query.gender } },
@@ -348,6 +348,7 @@ const random = async (query, context) => {
     ])
 
     users.count = await db.user.find().count();
+    log.end()
     return users
 };
 // const myStatistics = async (id, context) => {
