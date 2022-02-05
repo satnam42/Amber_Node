@@ -75,7 +75,13 @@ module.exports = [{
                 required: true,
                 type: "string"
             },
-
+            {
+                in: "query",
+                type: "string",
+                name: "name",
+                description: "club name",
+                required: false
+            },
             // {
             //     in: "body",
             //     name: "body",

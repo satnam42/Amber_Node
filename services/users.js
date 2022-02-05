@@ -139,12 +139,10 @@ const update = async (id, model, context) => {
 
 const profile = async (id, context) => {
     const log = context.logger.start(`services: users: profile`);
-
     if (!id) {
         log.end();
         throw new Error("user id is required");
     }
-
     let user = await db.user.findById(id)
     if (!user) {
         log.end();
@@ -153,6 +151,7 @@ const profile = async (id, context) => {
     log.end();
     return user;
 };
+
 const search = async (name, context) => {
     const log = context.logger.start(`services:users:search`);
     if (!name) {

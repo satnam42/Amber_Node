@@ -187,7 +187,6 @@ const socialLogin = async (req, res) => {
 };
 
 const random = async (req, res) => {
-
     const log = req.context.logger.start(`api:users:random:${req.query}`);
     try {
         const users = await service.random(req.query, req.context);

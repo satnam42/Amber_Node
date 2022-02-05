@@ -1,6 +1,7 @@
 "use strict";
 const mongoose = require("mongoose");
 const history = mongoose.Schema({
+
     byUser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
@@ -22,6 +23,7 @@ const history = mongoose.Schema({
         type: Date,
         default: Date.now
     },
+
     toUser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",

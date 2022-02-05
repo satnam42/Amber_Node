@@ -34,7 +34,7 @@ const leave = async (req, res) => {
 const getMembersByClubName = async (req, res) => {
     const log = req.context.logger.start(`api:club:getMembersByClubName `);
     try {
-        const members = await service.memberList(req.params.name, req.context);
+        const members = await service.memberList(req.query.name, req.context);
         const msg = 'list fetched successfully'
         log.end();
         return response.success(res, msg, members);

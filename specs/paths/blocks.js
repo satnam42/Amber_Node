@@ -20,7 +20,7 @@ module.exports = [
                     schema: {
                         $ref: "#/definitions/blockCreate"
                     }
-                },
+                }
 
             ],
             responses: {

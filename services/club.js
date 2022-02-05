@@ -1,5 +1,5 @@
 
-
+const ObjectId = require('mongodb').ObjectId
 const join = async (model, context) => {
     const log = context.logger.start(`services:club:join`);
     const query = {
@@ -56,14 +56,81 @@ const memberList = async (name, context) => {
     if (!name) {
         throw new Error('club name is required')
     }
+    // const club = await db.club.find(query).populate('members')
+    const club = await db.club.aggregate([
+        { $match: { name: name } },
+        {
+            $lookup: {
+                from: "users",
+                localField: "members",
+                // pipeline: [
+                //     { $match: { gender: context.user.gender == 'male' ? 'female' : 'male' } },],
+                foreignField: "_id",
+                as: "users"
+            },
+        },
+        { $unwind: "$users" },
+        {
+            $project: {
+                _id: 0,
+                "_id": "$users._id",
+                "firstName": "$users.firstName",
+                "lastName": "$users.lastName",
+                "avtar": "$users.avtar",
+                "following": {
+                    $cond: {
+                        if: { $isArray: "$users.following" }, then: "$users.following", else: []
+                    }
+                }
 
-    const query = {
-        name: name
-    }
-
-    const club = await db.club.find(query).populate('members')
+            }
+        },
+        {
+            $unwind: {
+                path: '$following',
+                preserveNullAndEmptyArrays: true
+            },
+        },
+        {
+            $addFields: {
+                "isFollowing":
+                {
+                    $cond: {
+                        if: {
+                            $eq: ["$following.userId", ObjectId(context.user.id)]
+                        }, then: true, else: false
+                        // $cond: {
+                        //     if: {
+                        //         "following": {
+                        //             $filter: {
+                        //                 input: "$following",
+                        //                 as: "following",
+                        //                 cond: { $eq: ["$$following.userId", ObjectId(context.user.id)] }
+                        //             }
+                        //         }
+                        //     }, then: true, else: false
+                        // }
+                    }
+                }
+            }
+        },
+        {
+            $group: {
+                _id: { _id: "$_id", isFollowing: '$isFollowing' },
+                firstName: { $first: '$firstName' },
+                lastName: { $first: '$lastName' },
+                avtar: { $first: '$avtar' },
+                isFollowing: { $last: '$isFollowing' }, //Todo handle true false
+            }
+        }
+        //         // {
+        //         //     $cond: { if: { '$users.following': { $eq: { $elemMatch: { userId: context.user.id } } } }, then: true, else: false }
+        //         // }
+        //     }
+        // },
+    ])
     log.end();
-    return members
+    return club
 };
 
 const membersByFilter = async (query, context) => {
@@ -113,6 +180,8 @@ const membersByFilter = async (query, context) => {
         {
             $project: {
                 name: "$users.firstName",
+
+
                 followers: { $cond: { if: { $isArray: "$users.followers" }, then: { $size: "$users.followers" }, else: 0 } }
             }
         },

@@ -33,7 +33,6 @@ const validateToken = async (req, res, next) => {
     if (!token) {
         return response.failure(res, "token is required");
     }
-
     const details = auth.extractToken(token, req.context);
 
     if (details.name === "TokenExpiredError") {
@@ -89,12 +88,14 @@ const checkUserBlockedOrNot = async (req, res, next) => {
     log.end();
     return next();
 };
-const nocache = (req, res, next) => {
+
+const nocache = (req, resp, next) => {
     resp.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     resp.header('Expires', '-1');
     resp.header('Pragma', 'no-cache');
     next();
 }
+
 exports.builder = builder;
 exports.requiresToken = requiresToken;
 exports.validateToken = validateToken;
