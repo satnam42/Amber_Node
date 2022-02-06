@@ -78,9 +78,16 @@ const memberList = async (name, context) => {
                 "lastName": "$users.lastName",
                 "avtar": "$users.avtar",
                 "following": {
-                    $cond: {
-                        if: { $isArray: "$users.following" }, then: "$users.following", else: []
+                    $filter: {
+                        input: "$users.following",
+                        as: "following",
+                        cond: { $eq: ["$$following.userId", ObjectId(context.user.id)] }
                     }
+
+
+                    // $cond: {
+                    //     if: { $isArray: "$users.following" }, then: "$users.following", else: []
+                    // }
                 }
 
             }
@@ -114,20 +121,16 @@ const memberList = async (name, context) => {
                 }
             }
         },
-        {
-            $group: {
-                _id: { _id: "$_id", isFollowing: '$isFollowing' },
-                firstName: { $first: '$firstName' },
-                lastName: { $first: '$lastName' },
-                avtar: { $first: '$avtar' },
-                isFollowing: { $last: '$isFollowing' }, //Todo handle true false
-            }
-        }
-        //         // {
-        //         //     $cond: { if: { '$users.following': { $eq: { $elemMatch: { userId: context.user.id } } } }, then: true, else: false }
-        //         // }
+        // {
+        //     $group: {
+        //         _id: { _id: "$_id", isFollowing: '$isFollowing' },
+        //         firstName: { $first: '$firstName' },
+        //         lastName: { $first: '$lastName' },
+        //         avtar: { $first: '$avtar' },
+        //         isFollowing: { $last: '$isFollowing' }, //Todo handle true false
         //     }
-        // },
+        // }
+
     ])
     log.end();
     return club
