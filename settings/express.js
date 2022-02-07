@@ -8,7 +8,7 @@ var multer = require('multer');
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
 
-    if (!file.originalname.match(/\.(mp4|MPEG-4|mkv|avi|mov)$/)) {
+    if (file.originalname.match(/\.(mp4|MPEG-4|mkv|avi|mov)$/)) {
       cb(null, path.join(__dirname, '../', 'assets/videos'));
     } else {
       cb(null, path.join(__dirname, '../', 'assets/images'));
