@@ -19,7 +19,7 @@ exports.toModel = entity => {
         password: entity.password,
         gender: entity.gender,
         avatar: entity.avatar ? `${imageUrl}${entity.avatar}` : "",
-        story: entity.story ? `${imageUrl}${entity.story}` : "",
+        story: entity.story ? `${videoUrl}${entity.story}` : "",
         phoneNo: entity.phoneNo,
         location: entity.location,
         status: entity.status,
@@ -40,7 +40,7 @@ exports.toModel = entity => {
 
     if (entity.videos && entity.videos.length > 0) {
         for (let index = 0; index < entity.videos.length; index++) {
-            entity.videos[index].name = `${imageUrl}${entity.videos[index].name}`;
+            entity.videos[index].name = `${videoUrl}${entity.videos[index].name}`;
         }
         model.videos = entity.videos
     }
