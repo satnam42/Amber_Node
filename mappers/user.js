@@ -28,6 +28,12 @@ exports.toModel = entity => {
         country: entity.country,
         token: entity.token
     };
+    if (entity.images && entity.images.length > 0) {
+        for (let index = 0; index < entity.images.length; index++) {
+            entity.images[index].name = `${imageUrl}${entity.images[index].name}`;
+        }
+        model.images = entity.images
+    }
 
     // if (entity.gallery && entity.gallery.length > 0) {
     //     for (let index = 0; index < entity.gallery.length; index++) {
