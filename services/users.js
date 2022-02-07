@@ -218,7 +218,7 @@ const uploadStory = async (id, files, context) => {
     user.story = fileName
     await user.save()
     log.end();
-    return 'image uploaded successfully'
+    return 'video uploaded successfully'
 
 }
 

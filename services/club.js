@@ -76,15 +76,13 @@ const memberList = async (name, context) => {
                 "_id": "$users._id",
                 "firstName": "$users.firstName",
                 "lastName": "$users.lastName",
-                "avtar": "$users.avtar",
+                "avatar": "$users.avatar",
                 "following": {
                     $filter: {
                         input: "$users.following",
                         as: "following",
                         cond: { $eq: ["$$following.userId", ObjectId(context.user.id)] }
                     }
-
-
                     // $cond: {
                     //     if: { $isArray: "$users.following" }, then: "$users.following", else: []
                     // }

@@ -28,7 +28,6 @@ const user = mongoose.Schema({
     enum: ["active", "inactive"],
   },
   avatar: { type: String, default: "" },
-
   images: [{
     name: { type: String, default: "" },
     createdAt: { type: Date, default: Date.now() }
