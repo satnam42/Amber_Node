@@ -159,6 +159,8 @@ const profile = async (id, context) => {
                 "followers": "$followers",
                 "gender": "$gender",
                 "bio": "$bio",
+                "videos": "$videos",
+                "images": "$images",
                 "followingMe": {
                     $filter: {
                         input: "$followers",

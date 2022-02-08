@@ -15,8 +15,8 @@
         "jwtKey": "supersecret"
     },
     "agora": {
-        "appID": "a1395860593f4d6e96486a96fb4ea8dc",
-        "appCertificate": "4bf5602754394e3cb40941e447eee6ff"
+        "appID": "3657a47331774170b994f79bdcbe7352",
+        "appCertificate": "0865ff0782964305b92c33d16544cbb9"
     },
     "image": {
         "url": "http://93.188.167.68/projects/amber_nodejs/assets/images/",
