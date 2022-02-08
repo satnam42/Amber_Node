@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const { RtcTokenBuilder, RtcRole } = require('agora-access-token');
 const { appID, appCertificate } = require('config').get('agora')
+const ObjectId = require("mongodb").ObjectId
 
 const buildUser = async (model, context) => {
     const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob } = model;
@@ -110,7 +111,6 @@ const resetPassword = async (id, model, context) => {
         user.password,
         context
     );
-
     if (isMatched) {
         const newPassword = encrypt.getHash(model.newPassword, context);
         user.password = newPassword;
@@ -143,13 +143,77 @@ const profile = async (id, context) => {
         log.end();
         throw new Error("user id is required");
     }
-    let user = await db.user.findById(id)
+    // let user = await db.user.findById(id)
+
+
+    const user = await db.user.aggregate([
+        { $match: { _id: ObjectId(id) } },
+        {
+            $project: {
+                _id: 0,
+                "_id": "$_id",
+                "firstName": "$firstName",
+                "lastName": "$lastName",
+                "avatar": "$avatar",
+                "following": "$follower",
+                "followers": "$followers",
+                "gender": "$gender",
+                "bio": "$bio",
+                "followingMe": {
+                    $filter: {
+                        input: "$following",
+                        as: "following",
+                        cond: { $eq: ["$$following.userId", ObjectId(context.user.id)] }
+                    }
+                }
+
+            }
+        },
+        {
+            $unwind: {
+                path: '$followingMe',
+                preserveNullAndEmptyArrays: true
+            },
+        },
+
+        {
+            $addFields: {
+                "isFollowing":
+                {
+                    $cond: {
+                        if: {
+                            $eq: ["$followingMe.userId", ObjectId(context.user.id)]
+                        }, then: true, else: false
+                    }
+                }
+            }
+        },
+
+        {
+            $project: {
+                _id: 0,
+                "_id": "$_id",
+                "firstName": "$firstName",
+                "lastName": "$lastName",
+                "avatar": "$avatar",
+                "following": "$follower",
+                "followers": "$followers",
+                "gender": "$gender",
+                "bio": "$bio",
+                "videos": "$videos",
+                "images": "$images",
+                "isFollowing": "$isFollowing",
+            }
+        },
+
+
+    ])
     if (!user) {
         log.end();
         throw new Error("user not found");
     }
     log.end();
-    return user;
+    return user[0];
 };
 
 const search = async (name, context) => {
@@ -341,7 +405,10 @@ const random = async (query, context) => {
 
     const users = await db.user.aggregate([
         { $match: { gender: query.gender } },
-        { $sample: { size: pageSize } },
+        // { $sample: { size: pageSize } },
+
+
+
         { $limit: pageSize },
         { $skip: skipCount }
     ])
