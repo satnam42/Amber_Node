@@ -161,9 +161,9 @@ const profile = async (id, context) => {
                 "bio": "$bio",
                 "followingMe": {
                     $filter: {
-                        input: "$following",
-                        as: "following",
-                        cond: { $eq: ["$$following.userId", ObjectId(context.user.id)] }
+                        input: "$followers",
+                        as: "followers",
+                        cond: { $eq: ["$$followers.userId", ObjectId(context.user.id)] }
                     }
                 }
 
