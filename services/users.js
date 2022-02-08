@@ -196,7 +196,7 @@ const profile = async (id, context) => {
                 "firstName": "$firstName",
                 "lastName": "$lastName",
                 "avatar": "$avatar",
-                "following": "$follower",
+                "following": "$following",
                 "followers": "$followers",
                 "gender": "$gender",
                 "bio": "$bio",
