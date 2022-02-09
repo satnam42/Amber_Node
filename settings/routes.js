@@ -109,6 +109,7 @@ const configure = (app, logger) => {
 
     app.post("/api/users/generateRtcToken",
         permit.context.validateToken,
+        permit.context.nocache,
         api.users.getRtcToken
     );
 
@@ -124,9 +125,8 @@ const configure = (app, logger) => {
         api.blocks.unblock
     );
 
-    app.get("/api/blocks/list:id",
+    app.get("/api/blocks/list/:id",
         permit.context.validateToken,
-        validator.blocks.block,
         api.blocks.blockList
     );
 
