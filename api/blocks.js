@@ -1,6 +1,11 @@
 
+"use strict";
+const service = require("../services/blocks");
+const response = require("../exchange/response");
+
+
 const block = async (req, res) => {
-    const log = req.context.logger.start(`api:blocks:block ${req.params.id}`);
+    const log = req.context.logger.start(`api:blocks:block `);
     try {
         const blocks = await service.block(req.body, req.context);
         const msg = 'user blocked successfully'
