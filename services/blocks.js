@@ -44,10 +44,15 @@ const block = async (model, context) => {
 const unblock = async (model, context) => {
     const log = context.logger.start(`services:users:unblock`);
     const user = await db.user.findById(model.byUser)
-    const block = await db.block({ toUser: model.toUser, byUser: model.byUser })
+    const block = await db.block.findOne({ toUser: model.toUser, byUser: model.byUser })
     if (!block) {
-        throw new Error('user not found')
+        throw new Error('block user not found')
     }
+    let blockUser = await db.block.deleteOne({ toUser: model.toUser, byUser: model.byUser });
+    if (blockUser.deletedCount == 0) {
+        throw new Error("something went wrong");
+    }
+
     let index = 0
     if (model.to == 'following') {
         let index = 0
