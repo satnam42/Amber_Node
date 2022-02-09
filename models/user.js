@@ -51,10 +51,7 @@ const user = mongoose.Schema({
       status: {
         type: String,
         default: "un-block",
-        enum: {
-          values: ["un-block", "block"],
-          message: "Please enter block or un-block !",
-        },
+        enum: ["un-block", "blocked"],
       },
       blockId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -73,11 +70,14 @@ const user = mongoose.Schema({
     },
     status: {
       type: String,
-      default: "un-block",
-      enum: {
-        values: ["un-block", "blocked"],
-        message: "Please enter block or un-block !",
-      },
+      default: "",
+      enum: ["un-block", "blocked"],
+      // type: String,
+      // default: "un-block",
+      // enum: {
+      //   values: ["un-block", "blocked"],
+      //   message: "Please enter block or un-block !",
+      // },
     },
     blockId: {
       type: mongoose.Schema.Types.ObjectId,
