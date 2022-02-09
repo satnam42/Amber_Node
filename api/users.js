@@ -228,16 +228,17 @@ const removeProfilePic = async (req, res) => {
     }
 };
 
-const getRtcToken = async (req, res) => {
+const getRtcToken = async (req, resp) => {
     const log = req.context.logger.start(`api:users:getRtcToken`);
+    resp.header('Acess-Control-Allow-Origin', '*');
     try {
         const token = await service.generateRtcToken(req.body, req.context);
         log.end();
-        return response.data(res, token);
+        return response.data(resp, token);
     } catch (err) {
         log.error(err);
         log.end();
-        return response.failure(res, err.message);
+        return response.failure(resp, err.message);
     }
 };
 
