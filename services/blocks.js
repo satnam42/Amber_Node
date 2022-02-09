@@ -3,9 +3,9 @@
 const block = async (model, context) => {
     const log = context.logger.start(`services:users:block`);
     const user = await db.user.findById(model.byUser)
-    const isBlocked = await db.block({ toUser: model.toUser, byUser: model.byUser })
+    const isBlocked = await db.block.findOne({ toUser: model.toUser, byUser: model.byUser })
 
-    if (!isBlocked) {
+    if (isBlocked) {
         throw new Error('user already blocked')
     }
 
