@@ -2,7 +2,7 @@
 "use strict";
 const service = require("../services/blocks");
 const response = require("../exchange/response");
-
+const mapper = require("../mappers/user");
 
 const block = async (req, res) => {
     const log = req.context.logger.start(`api:blocks:block `);
@@ -39,7 +39,8 @@ const blockList = async (req, res) => {
         const users = await service.blockList(req.params.id, req.context);
         const msg = 'list fetched successfully'
         log.end();
-        return response.success(res, msg, users);
+        // return response.success(res, msg, users);
+        return response.success(res, msg, mapper.toSearchModel(users));
     } catch (err) {
         log.error(err);
         log.end();

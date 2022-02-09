@@ -12,6 +12,7 @@ const block = async (model, context) => {
     const block = await new db.block({
         toUser: model.toUser,
         byUser: model.byUser,
+        to: model.to
     }).save();
 
     let index = 0
@@ -82,9 +83,9 @@ const blockList = async (id, context) => {
     if (!id) {
         throw new Error('user id is required')
     }
-    const block = await db.block.find({ byUser: id }).populate('toUser')
+    const blockUsers = await db.block.find({ byUser: id }).populate('toUser')
     log.end();
-    return block.toUser
+    return blockUsers
 };
 
 exports.block = block;

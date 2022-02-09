@@ -8,6 +8,9 @@ exports.toModel = entity => {
     if (entity.userId) {
         entity = entity.userId
     }
+    if (entity.toUser) {
+        entity = entity.toUser
+    }
 
     const model = {
         id: entity._id,
