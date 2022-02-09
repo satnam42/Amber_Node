@@ -68,7 +68,7 @@ module.exports = [
         }
     },
     {
-        url: "/blockList/{id}",
+        url: "/list/{id}",
         get: {
             summary: "block list",
             description: "block list by user id",
