@@ -43,7 +43,6 @@ const init = async () => {
   });
 
   boot();
-  boot();
 };
 
 init();

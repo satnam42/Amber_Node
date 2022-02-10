@@ -230,8 +230,8 @@ const sockets = async (http, logger) => {
                     console.log("conversation body not recived ");
                 }
                 const consversation = await new db.conversation({
-                    sender: room.conversationFrom,
-                    receiver: room.conversationTo,
+                    user1: room.conversationFrom,
+                    user2: room.conversationTo,
                     lastActive: today,
                     createdOn: today
                 }).save()
