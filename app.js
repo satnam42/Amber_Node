@@ -18,7 +18,14 @@ const boot = async () => {
     log.info(`listening on port: ${port}`);
     log.end();
   });
-
+  // const io = require("socket.io")(server, {
+  //   allowEIO3: true,
+  //   cors: {
+  //     origin: true,
+  //     methods: ['GET', 'POST'],
+  //     credentials: true
+  //   }
+  // });
   // await new db.club({
   //   name: "Amber club"
   // }).save();
@@ -29,6 +36,13 @@ const init = async () => {
   await require("./settings/database").configure(logger);
   await require("./settings/express").configure(app, logger);
   await require("./settings/routes").configure(app, logger);
+  require("./socket/socketEvents").sockets(server, logger);
+
+  app.get('/chat', function (req, res) {
+    res.sendFile(__dirname + '/templates/index.html');
+  });
+
+  boot();
   boot();
 };
 

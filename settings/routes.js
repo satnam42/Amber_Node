@@ -157,7 +157,15 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.club.getMembersByFilter
     );
+    app.get('/api/conversations/getOldCoversations',
+        permit.context.builder,
+        api.conversations.getOldChat
+    );
 
+    app.get('/api/conversations/conversationList/:id',
+        permit.context.builder,
+        api.conversations.getConversationList
+    );
 
     log.end();
 };
