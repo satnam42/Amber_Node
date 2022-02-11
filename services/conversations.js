@@ -31,7 +31,7 @@ const conversationList = async (id, context) => {
 
     let conversation = await db.conversation.aggregate([
         {
-            "$match": { $or: [{ "user1": id }, { "user2": id }] }
+            "$match": { $or: [{ "user1": ObjectId(id) }, { "user2": ObjectId(id) }] }
         },
         // $match: {
         //     $and: [ 
@@ -113,19 +113,19 @@ const conversationList = async (id, context) => {
 
         //getting last message from array list 
 
-        { $addFields: { lastElem: { $last: "$messages.content" } } },
+        // { $addFields: { lastElem: { $last: "$messages.content" } } },
 
         //mapping response
         {
             $project: {
                 "_id": 0,
-                "receiver": "$receiver.name",
+                "receiver": "$receiver.username",
                 "receiverId": "$receiver._id",
-                "sender": "$sender.name",
+                "sender": "$sender.username",
                 "profileImageName": "$sender.profileImageName",
                 "status": "$receiver.status",
                 "convertedId": "$convertedId",
-                "lastMessage": "$lastElem",
+                // "lastMessage": "$lastElem",
                 "conversationId": "$_id"
             }
         }
