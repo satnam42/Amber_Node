@@ -125,7 +125,8 @@ const conversationList = async (id, context) => {
                 "profileImageName": "$sender.profileImageName",
                 "status": "$receiver.status",
                 "convertedId": "$convertedId",
-                "lastMessage": "$lastElem"
+                "lastMessage": "$lastElem",
+                "conversationId": "$_id"
             }
         }
     ])

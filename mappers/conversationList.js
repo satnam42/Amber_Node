@@ -10,7 +10,7 @@ exports.toModel = entity => {
         lastMsg: entity.lastMessage,
         profileImageName: entity.profileImageName ? `${imageUrl}${entity.profileImageName}` : "",
         status: entity.status,
-        convertedId: entity.convertedId,
+        conversationId: entity.conversationId,
     };
     return model;
 };
