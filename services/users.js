@@ -468,20 +468,21 @@ const generateRtcToken = async (modal, context) => {
     // }
     var digits = '0123456789';
     let randomNo = '';
-    for (let i = 0; i < 10; i++) {
-        randomNo += digits[Math.floor(Math.random() * 10)];
-    }
+    // for (let i = 0; i < 10; i++) {
+    //     randomNo += digits[Math.floor(Math.random() * 10)];
+    // }
+    const uid = Math.floor(Math.random() * 100000);
     // const userId = randomNo * Date.now()
     const expirationTimeInSeconds = 3600;
     const currentTimestamp = Math.floor(Date.now() / 1000);
     const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
     const role = modal.isPublisher ? RtcRole.PUBLISHER : RtcRole.SUBSCRIBER;
     const channel = modal.channelId;
-    const token = RtcTokenBuilder.buildTokenWithUid(appID.trim(), appCertificate.trim(), channel, randomNo, role, privilegeExpiredTs);
+    const token = RtcTokenBuilder.buildTokenWithUid(appID.trim(), appCertificate.trim(), channel, uid, role, privilegeExpiredTs);
     log.end
     return {
         token: token,
-        userId: randomNo
+        userId: uid
     }
 }
 
