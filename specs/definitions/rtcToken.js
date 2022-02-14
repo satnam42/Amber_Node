@@ -3,9 +3,9 @@ module.exports = [
     {
         name: "rtcToken",
         properties: {
-            userId: {
-                type: "string"
-            },
+            // userId: {
+            //     type: "string"
+            // },
             channelId: {
                 type: "string"
             },
