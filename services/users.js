@@ -466,12 +466,12 @@ const generateRtcToken = async (modal, context) => {
     if (!modal.userId) {
         throw new Error("user id is required");
     }
-    const expirationTimeInSeconds = 600;
+    const expirationTimeInSeconds = 3600;
     const currentTimestamp = Math.floor(Date.now() / 1000);
     const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
     const role = modal.isPublisher ? RtcRole.PUBLISHER : RtcRole.SUBSCRIBER;
     const channel = modal.channelId;
-    const token = RtcTokenBuilder.buildTokenWithAccount(appID.trim(), appCertificate.trim(), channel, 213213165, role, privilegeExpiredTs);
+    const token = RtcTokenBuilder.buildTokenWithUid(appID.trim(), appCertificate.trim(), channel, modal.userId, role, privilegeExpiredTs);
     log.end
     return token
 }
