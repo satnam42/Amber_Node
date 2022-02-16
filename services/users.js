@@ -91,6 +91,9 @@ const login = async (model, context) => {
         log.end();
         throw new Error("password mismatch");
     }
+    user.deviceToken = model.deviceToken;
+    user.updatedOn = new Date();
+    await user.save();
     user.token = auth.getToken(user.id, false, context);
     log.end();
     return user;

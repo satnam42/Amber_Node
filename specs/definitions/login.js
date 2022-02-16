@@ -7,6 +7,9 @@ module.exports = [
       },
       password: {
         type: "string"
+      },
+      deviceToken: {
+        type: "string"
       }
     }
   }
