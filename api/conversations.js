@@ -17,6 +17,7 @@ const getOldChat = async (req, res) => {
 }
 
 const getConversationList = async (req, res) => {
+
     const log = req.context.logger.start(`api:conversations:getConversationList:${req.params.id}`)
     try {
         const recentConnectedUser = await service.conversationList(req.params.id, req.context)
@@ -29,6 +30,7 @@ const getConversationList = async (req, res) => {
         log.end()
         return response.failure(err, err.message)
     }
+
 }
 
 exports.getOldChat = getOldChat

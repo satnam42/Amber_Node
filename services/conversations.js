@@ -9,9 +9,9 @@ const getOldChat = async (query, context) => {
 
     let skipCount = pageSize * (pageNo - 1)
 
-    const chat = await db.message.find({ conversation: query.conversationId }).sort({ createdOn: -1 }).skip(skipCount).limit(pageSize)
+    const chat = await db.message.find({ conversation: ObjectId(query.conversationId) }).sort({ createdOn: -1 }).skip(skipCount).limit(pageSize)
 
-    chat.count = await db.message.find({ conversation: query.conversationId }).count()
+    chat.count = await db.message.find({ conversation: ObjectId(query.conversationId) }).count()
 
     // let skipCount = parseInt(query.skip_messages);
     // let chat = await db.chats.find({ room: query.room_id }).sort('-createdOn').skip(skipCount).lean()
@@ -76,7 +76,7 @@ const conversationList = async (id, context) => {
                 "from": "users",
                 "localField": "user1",
                 "foreignField": "_id",
-                "as": "receiver"
+                "as": "user1"
             }
         },
         {
@@ -85,18 +85,18 @@ const conversationList = async (id, context) => {
                 "from": "users",
                 "localField": "user2",
                 "foreignField": "_id",
-                "as": "sender"
+                "as": "user2"
             }
         },
         {
             "$unwind": {
-                "path": "$receiver",
+                "path": "$user1",
                 "preserveNullAndEmptyArrays": true
             }
         },
         {
             "$unwind": {
-                "path": "$sender",
+                "path": "$user2",
                 "preserveNullAndEmptyArrays": true
             }
         },
@@ -110,7 +110,10 @@ const conversationList = async (id, context) => {
         },
 
         { $sort: { "lastActive": -1, } },
+        // { $limit: { "messages": 1, } },
 
+
+        //getting last message from array list 
         //getting last message from array list 
 
         // { $addFields: { lastElem: { $last: "$messages.content" } } },
@@ -119,13 +122,17 @@ const conversationList = async (id, context) => {
         {
             $project: {
                 "_id": 0,
-                "receiver": "$receiver.username",
-                "receiverId": "$receiver._id",
-                "sender": "$sender.username",
-                "profileImageName": "$sender.profileImageName",
-                "status": "$receiver.status",
-                "convertedId": "$convertedId",
-                // "lastMessage": "$lastElem",
+                "user1": "$user1.username",
+                "user1Id": "$user1._id",
+                "user1Image": "$user1.profileImageName",
+                "user2": "$user2.username",
+                "user2Id": "$user2._id",
+                "user2Image": "$user2.profileImageName",
+                // "sender": "$sender.username",
+                // "senderId": "$sender._id",
+                // "status": "$receiver.status",
+                // "convertedId": "$convertedId",
+                // "lastMessage": "$messages",
                 "conversationId": "$_id"
             }
         }
