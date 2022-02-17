@@ -1,13 +1,13 @@
 const admin = require("firebase-admin");
 // let  deviceTokens = '3244d7ba6d7f941e'
-const pushNotification = async (deviceToken, title, body, model) => {
+const pushNotification = async (deviceToken, title, message) => {
 
     // const log = logger.start(`services:pushNotification`);
 
     let payload = {
         notification: {
-            title: title || 'hi',
-            body: body || 'demo',
+            title: title,
+            body: message,
             sound: "default"
         }
     };

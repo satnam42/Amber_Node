@@ -6,9 +6,15 @@ const logger = require("@open-age/logger")("server");
 const Http = require("http");
 const port = process.env.PORT || appConfig.port || 3000;
 const app = express();
+const admin = require("firebase-admin");
 var server = Http.createServer(app);
+var serviceAccount = require("./amber-firebase-adminsdk.json");
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 const boot = async () => {
   const log = logger.start("app:boot");
@@ -18,6 +24,7 @@ const boot = async () => {
     log.info(`listening on port: ${port}`);
     log.end();
   });
+
   // const io = require("socket.io")(server, {
   //   allowEIO3: true,
   //   cors: {
