@@ -27,6 +27,7 @@ exports.toModel = entity => {
         location: entity.location,
         status: entity.status,
         isFollowing: entity.isFollowing ? entity.isFollowing : null,
+        isFollower: entity.isFollower ? entity.isFollower : null,
         followingCount: entity.following ? entity.following.length || 0 : 0,
         followerCount: entity.followers ? entity.followers.length || 0 : 0,
         bio: entity.bio,

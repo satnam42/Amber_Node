@@ -8,9 +8,7 @@ module.exports = [
             byUser: {
                 type: "string"
             },
-            to: {
-                type: "string"
-            }
+
         },
     }
 

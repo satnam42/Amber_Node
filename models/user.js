@@ -48,16 +48,16 @@ const user = mongoose.Schema({
         ref: "user",
         required: false,
       },
-      status: {
-        type: String,
-        default: "un-block",
-        enum: ["un-block", "blocked"],
-      },
-      blockId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "block",
-        required: false,
-      },
+      // status: {
+      //   type: String,
+      //   default: "un-block",
+      //   enum: ["un-block", "blocked"],
+      // },
+      // blockId: {
+      //   type: mongoose.Schema.Types.ObjectId,
+      //   ref: "block",
+      //   required: false,
+      // },
     },
   ],
 
@@ -68,22 +68,22 @@ const user = mongoose.Schema({
       ref: "user",
       required: false,
     },
-    status: {
-      type: String,
-      default: "",
-      enum: ["un-block", "blocked"],
-      // type: String,
-      // default: "un-block",
-      // enum: {
-      //   values: ["un-block", "blocked"],
-      //   message: "Please enter block or un-block !",
-      // },
-    },
-    blockId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "block",
-      required: false,
-    },
+    // status: {
+    //   type: String,
+    //   default: "",
+    //   enum: ["un-block", "blocked"],
+    //   // type: String,
+    //   // default: "un-block",
+    //   // enum: {
+    //   //   values: ["un-block", "blocked"],
+    //   //   message: "Please enter block or un-block !",
+    //   // },
+    // },
+    // blockId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "block",
+    //   required: false,
+    // },
 
   },],
 

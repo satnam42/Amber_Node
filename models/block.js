@@ -6,11 +6,7 @@ const block = mongoose.Schema({
         ref: "user",
         required: false,
     },
-    to: {
-        type: String,
-        default: "",
-        enum: ["", "follower", "following"],
-    },
+
     toUser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",

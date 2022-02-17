@@ -54,12 +54,10 @@ const sockets = async (http, logger) => {
             console.log('set-room called', { room })
             //leaving room. 
             socket.leave(socket.room);
-
             try {
                 //getting room data.
                 // eventEmitter.emit('get-room-data', room);
                 let conversation = await getRoomAndSetRoom(room)
-
                 //setting room and join.
                 if (conversation) {
                     socket.room = conversation.id;
