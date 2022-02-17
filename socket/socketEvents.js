@@ -58,9 +58,9 @@ const sockets = async (http, logger) => {
             try {
                 //getting room data.
                 // eventEmitter.emit('get-room-data', room);
-                await getRoomAndSetRomm(room)
+                await getRoomAndSetRoom(room)
                 //setting room and join.
-                setRoom = (roomId) => {
+                setRoom = function (roomId) {
                     socket.room = roomId;
                     console.log("roomId : " + socket.room);
                     socket.join(socket.room);
@@ -148,8 +148,8 @@ const sockets = async (http, logger) => {
 
     //database operations are kept outside of socket.io code.
 
-    getRoomAndSetRomm = async (room) => {
-        console.log("getRoomAndSetRomm:", room)
+    getRoomAndSetRoom = async (room) => {
+        console.log("getRoomAndSetRoom:", room)
         var today = Date.now();
         if (room && room.conversationFrom == "" && room.conversationTo == "") {
             console.log("set-room parameter is required");
