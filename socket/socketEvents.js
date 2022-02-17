@@ -8,7 +8,7 @@ const sockets = async (http, logger) => {
     io = socketio.listen(http);
     var ioChat = io
     var userStack = {};
-    var oldChats, sendUserStack, setRoom;
+    var oldChats, sendUserStack;
     var userSocket = {};
     ioChat.on('connection', async (socket) => {
         console.log("socketio chat connected.");
@@ -58,14 +58,16 @@ const sockets = async (http, logger) => {
             try {
                 //getting room data.
                 // eventEmitter.emit('get-room-data', room);
-                await getRoomAndSetRoom(room)
+                let conversation = await getRoomAndSetRoom(room)
+
                 //setting room and join.
-                setRoom = function (roomId) {
-                    socket.room = roomId;
+                if (conversation) {
+                    socket.room = conversation.id;
                     console.log("roomId : " + socket.room);
                     socket.join(socket.room);
                     ioChat.to(userSocket[socket.userId]).emit('set-room', socket.room);
-                };
+                }
+
             } catch (e) {
                 console.log('set-room Err', e.message)
                 socket.emit('oops',
@@ -87,7 +89,13 @@ const sockets = async (http, logger) => {
         socket.on('chat-msg', async function (data) {
             console.log('chat-msg called', { data })
             try {
-                await saveChat(data)
+                await saveChat({
+                    msgFrom: socket.userId,
+                    msg: data.msg,
+                    msgTo: data.msgTo,
+                    room: socket.room,
+                    date: data.date
+                })
                 const user = await db.user.findById(data.msgTo)
                 if (user && user.deviceToken != "" && user.deviceToken != undefined) {
                     let response = service.pushNotification(user.deviceToken, user.firstName, data.msg)
@@ -101,7 +109,6 @@ const sockets = async (http, logger) => {
                     msg: data.msg,
                     date: msgDate
                 });
-
             } catch (e) {
                 console.log('chat-msg Err', e.message)
                 socket.emit('oops',
@@ -111,7 +118,6 @@ const sockets = async (http, logger) => {
                     });
                 return;
             }
-
 
 
             // for (user in userStack) {
@@ -164,11 +170,13 @@ const sockets = async (http, logger) => {
                 createdOn: today
             }).save()
             console.log("conversation saved ");
-            setRoom(conversation._id)
+            return conversation
+            // setRoom(conversation._id)
         } else {
             conversation.lastActive = today
             await conversation.save()
-            setRoom(conversation._id)
+            return conversation
+            // setRoom(conversation._id)
         }
 
 
@@ -186,7 +194,7 @@ const sockets = async (http, logger) => {
         if (!data.room) {
             throw new Error('room id is Required')
         }
-        if (data.msgTo) {
+        if (!data.msgTo) {
             throw new Error('msgTo  is Required')
         }
         const message = await new db.message({
@@ -249,9 +257,5 @@ const sockets = async (http, logger) => {
     //listening get-room-data event.
 
 };
-
-
-
-
 
 exports.sockets = sockets;
