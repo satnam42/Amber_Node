@@ -14,45 +14,65 @@ const sockets = async (http, logger) => {
         console.log("socketio chat connected.");
         //function to get user name
         socket.on('set-user-data', (userId) => {
-            console.log(userId + "  logged In");
-            //storing variable.
-            socket.userId = userId;
-            userSocket[socket.userId] = socket.id;
-            console.log("userSocket", userSocket)
-            //getting all users list
-            eventEmitter.emit('get-all-users');
-            // sending all users list. and setting if online or offline.
-            sendUserStack = function () {
-                for (i in userSocket) {
-                    for (j in userStack) {
-                        if (j == i) {
-                            userStack[j] = "Online";
+            if (!userId) {
+                console.log('set-user-data is required', userId)
+                // socket.emit('oops', {
+                //     status:"NOK",
+                //     event: 'set-user-data',
+                //     data: 'set-user-data is required'
+                // });
+                socket.emit('oops', {
+                    // status:"NOK",
+                    event: 'set-user-data',
+                    data: 'set-user-data is required'
+                });
+            } else {
+                console.log(userId + "  logged In");
+                //storing variable.
+                socket.userId = userId;
+                userSocket[socket.userId] = socket.id;
+                console.log("userSocket", userSocket)
+                //getting all users list
+                eventEmitter.emit('get-all-users');
+                // sending all users list. and setting if online or offline.
+                sendUserStack = function () {
+                    for (i in userSocket) {
+                        for (j in userStack) {
+                            if (j == i) {
+                                userStack[j] = "Online";
+                            }
                         }
                     }
-                }
-                //for popping connection message.
-                ioChat.emit('onlineStack', userStack);
-            } //end of sendUserStack function.
-
+                    //for popping connection message.
+                    ioChat.emit('onlineStack', userStack);
+                } //end of sendUserStack function.
+            }
         }); //end of set-user-data event.
 
         //setting room.
-        socket.on('set-room', function (room) {
+        socket.on('set-room', async function (room) {
+            console.log('set-room called', { room })
             //leaving room. 
+            socket.leave(socket.room);
+
             try {
-                socket.leave(socket.room);
                 //getting room data.
-                eventEmitter.emit('get-room-data', room);
+                // eventEmitter.emit('get-room-data', room);
+                await getRoomAndSetRomm(room)
                 //setting room and join.
-                setRoom = function (roomId) {
+                setRoom = (roomId) => {
                     socket.room = roomId;
                     console.log("roomId : " + socket.room);
                     socket.join(socket.room);
                     ioChat.to(userSocket[socket.userId]).emit('set-room', socket.room);
                 };
             } catch (e) {
-                socket.emit('oops', e.message);
-                return;
+                console.log('set-room Err', e.message)
+                socket.emit('oops',
+                    {
+                        event: 'set-room',
+                        data: e.message
+                    });
             }
 
 
@@ -65,26 +85,34 @@ const sockets = async (http, logger) => {
 
         //for showing chats.
         socket.on('chat-msg', async function (data) {
-            //emits event to save chat to database.
-            eventEmitter.emit('save-chat', {
-                msgFrom: socket.userId,
-                msgTo: data.msgTo,
-                msg: data.msg,
-                room: socket.room,
-                date: data.date
-            });
-            const user = await db.user.findById(data.msgTo)
-            if (user && user.deviceToken != "" && user.deviceToken != undefined) {
-                let response = service.pushNotification(user.deviceToken, user.firstName, data.msg)
+            console.log('chat-msg called', { data })
+            try {
+                await saveChat(data)
+                const user = await db.user.findById(data.msgTo)
+                if (user && user.deviceToken != "" && user.deviceToken != undefined) {
+                    let response = service.pushNotification(user.deviceToken, user.firstName, data.msg)
+                    console.log('pushNotification called', { response })
+                }
+
+                let msgDate = moment.utc(data.date).format()
+
+                ioChat.to(socket.room).emit('chat-msg', {
+                    msgFrom: socket.userId,
+                    msg: data.msg,
+                    date: msgDate
+                });
+
+            } catch (e) {
+                console.log('chat-msg Err', e.message)
+                socket.emit('oops',
+                    {
+                        event: 'chat-msg',
+                        data: e.message
+                    });
+                return;
             }
 
-            let msgDate = moment.utc(data.date).format()
 
-            ioChat.to(socket.room).emit('chat-msg', {
-                msgFrom: socket.userId,
-                msg: data.msg,
-                date: msgDate
-            });
 
             // for (user in userStack) {
 
@@ -114,32 +142,87 @@ const sockets = async (http, logger) => {
             // ioChat.emit('onlineStack', userStack);
         }); //end of disconnect event.
 
+
     }); //end of io.on(connection).
     //end of socket.io code for chat feature.
 
     //database operations are kept outside of socket.io code.
-    //saving chats to database.
-    eventEmitter.on('save-chat', async (data) => {
-        console.log("save-chat:", data)
-        // var today = Date.now();
-        try {
-            if (data == undefined || data == null || data == "") {
-                console.log("message body not received ");
-            }
-            const message = await new db.message({
-                sender: data.msgFrom,
-                content: data.msg,
-                read: data.read || false,
-                conversation: data.room
-            }).save()
-            if (message) {
-                console.log("message saved .");
-            }
 
-        } catch (error) {
-            console.log("message Error : " + error);
+    getRoomAndSetRomm = async (room) => {
+        console.log("getRoomAndSetRomm:", room)
+        var today = Date.now();
+        if (room && room.conversationFrom == "" && room.conversationTo == "") {
+            console.log("set-room parameter is required");
+            throw new Error('set-room parameter is required')
         }
-    });
+        let conversation = await db.conversation.findOne({ $or: [{ user1: room.conversationFrom, user2: room.conversationTo }, { user1: room.conversationTo, user2: room.conversationFrom }] })
+        if (!conversation) {
+            const conversation = await new db.conversation({
+                user1: room.conversationFrom,
+                user2: room.conversationTo,
+                lastActive: today,
+                createdOn: today
+            }).save()
+            console.log("conversation saved ");
+            setRoom(conversation._id)
+        } else {
+            conversation.lastActive = today
+            await conversation.save()
+            setRoom(conversation._id)
+        }
+
+
+    }
+
+
+    saveChat = async (data) => {
+        console.log("saveChat:", data)
+        if (!data) {
+            throw new Error('message body is Required')
+        }
+        if (!data.msg) {
+            throw new Error('msg is Required')
+        }
+        if (!data.room) {
+            throw new Error('room id is Required')
+        }
+        if (data.msgTo) {
+            throw new Error('msgTo  is Required')
+        }
+        const message = await new db.message({
+            sender: data.msgFrom,
+            receiver: data.msgTo,
+            content: data.msg,
+            read: data.read || true,
+            conversation: data.room
+        }).save()
+        console.log("message saved .");
+        return message
+
+    }
+    //saving chats to database.
+    // eventEmitter.on('save-chat', async (data) => {
+    //     console.log("save-chat:", data)
+    //     // var today = Date.now();
+    //     try {
+    //         if (data == undefined || data == null || data == "") {
+    //             console.log("message body not received ");
+    //         }
+    //         const message = await new db.message({
+    //             sender: data.msgFrom,
+    //             receiver: data.msgTo,
+    //             content: data.msg,
+    //             read: data.read || true,
+    //             conversation: data.room
+    //         }).save()
+    //         if (message) {
+    //             console.log("message saved .");
+    //         }
+
+    //     } catch (error) {
+    //         console.log("message Error : " + error);
+    //     }
+    // });
 
     //end of saving chat.
 
@@ -164,35 +247,7 @@ const sockets = async (http, logger) => {
     }); //end of get-all-users event.
 
     //listening get-room-data event.
-    eventEmitter.on('get-room-data', async (room) => {
-        console.log("get-room-data:", room)
-        try {
-            var today = Date.now();
-            if (room == "" || room == undefined || room == null) {
-                console.log("set-room parameter is required");
-            }
-            var conversation = await db.conversation.findOne({ $or: [{ user1: room.conversationFrom, user2: room.conversationTo }, { user1: room.conversationTo, user2: room.conversationFrom }] })
-            if (conversation == "" || conversation == undefined || conversation == null || conversation == []) {
-                const conversation = await new db.conversation({
-                    user1: room.conversationFrom,
-                    user2: room.conversationTo,
-                    lastActive: today,
-                    createdOn: today
-                }).save()
-                if (conversation) {
-                    console.log("conversation saved ");
-                }
-                setRoom(conversation._id)
-            } else {
-                conversation.lastActive = today
-                await conversation.save()
-                setRoom(conversation._id)
-            }
-        } catch (error) {
-            console.log("Error : " + error);
-        }
-    })//end of get-room-data listener.
-    //end of database operations for chat feature.
+
 };
 
 
