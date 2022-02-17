@@ -9,13 +9,14 @@ const getOldChat = async (query, context) => {
 
     let skipCount = pageSize * (pageNo - 1)
 
-    const chat = await db.message.find({ conversation: ObjectId(query.conversationId) }).sort({ createdOn: -1 }).skip(skipCount).limit(pageSize)
+    const chat = await db.message.find({ conversation: ObjectId(query.conversationId) }).sort({ createdOn: 1 }).skip(skipCount).limit(pageSize)
 
     chat.count = await db.message.find({ conversation: ObjectId(query.conversationId) }).count()
 
     // let skipCount = parseInt(query.skip_messages);
     // let chat = await db.chats.find({ room: query.room_id }).sort('-createdOn').skip(skipCount).lean()
     //     .limit(5)
+
     log.end()
     return chat
 }
