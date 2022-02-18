@@ -3,6 +3,7 @@ const user = require('../models/user');
 const imageUrl = require('config').get('image').url
 
 exports.toModel = entity => {
+
     const model = {
         user1: entity.user1,
         user1Id: entity.user1Id,

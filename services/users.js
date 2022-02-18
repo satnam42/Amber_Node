@@ -443,13 +443,21 @@ const random = async (query, context) => {
     const users = await db.user.aggregate([
         { $match: { gender: query.gender } },
         // { $sample: { size: pageSize } },
-
-
-
         { $limit: pageSize },
         { $skip: skipCount }
     ])
 
+    users.count = await db.user.find().count();
+    log.end()
+    return users
+};
+const getUsers = async (query, context) => {
+    const log = context.logger.start(`services:users:getUsers`);
+    let pageNo = Number(query.pageNo) || 1;
+    let pageSize = Number(query.pageSize) || 10;
+    let skipCount = pageSize * (pageNo - 1);
+    // const userId = context.user.id || context.user._id
+    const users = await db.user.find().skip(skipCount).limit(pageSize)
     users.count = await db.user.find().count();
     log.end()
     return users
@@ -529,6 +537,7 @@ exports.profile = profile;
 exports.uploadProfilePic = uploadProfilePic;
 exports.search = search;
 exports.random = random;
+exports.getUsers = getUsers;
 
 // ============follow==============
 

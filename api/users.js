@@ -110,6 +110,20 @@ const uploadStory = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+const getUsers = async (req, res) => {
+    const log = req.context.logger.start(`api:users:currentUser`);
+    try {
+        const user = await service.getUsers(req.query, req.context);
+        const message = "user  list fetched successfully";
+        log.end();
+        return response.success(res, message, mapper.toModel(user));
+        // return response.success(res, message, user);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
 
 //follow api
 const follow = async (req, res) => {
@@ -249,6 +263,7 @@ exports.update = update;
 exports.profile = profile;
 exports.uploadProfileImage = uploadProfileImage;
 exports.uploadStory = uploadStory;
+exports.getUsers = getUsers;
 exports.follow = follow;
 exports.unfollow = unfollow;
 exports.following = following;

@@ -39,7 +39,7 @@ const user = mongoose.Schema({
   }],
   bio: { type: String, default: "" },
   website: { type: String, default: "" },
-
+  isAdmin: { type: String, default: false },
   following: [
     {
       _id: false,

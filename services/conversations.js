@@ -25,7 +25,6 @@ const conversationList = async (id, context) => {
     const log = context.logger.start('services:conversations:conversationList')
     if (!id) {
         throw Error('id is required')
-
     }
 
     // let conversation = await db.conversation.find({ 'sender': id }).populate('receiver', null, 'user', )

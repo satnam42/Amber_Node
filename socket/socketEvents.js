@@ -159,7 +159,14 @@ const sockets = async (http, logger) => {
             console.log("set-room parameter is required");
             throw new Error('set-room parameter is required')
         }
+        if (room.conversationFrom == room.conversationTo) {
+            console.log("set-room parameter is required");
+            throw new Error('set-room parameter not be same ')
+        }
+
         let conversation = await db.conversation.findOne({ $or: [{ user1: room.conversationFrom, user2: room.conversationTo }, { user1: room.conversationTo, user2: room.conversationFrom }] })
+
+
         if (!conversation) {
             const conversation = await new db.conversation({
                 user1: room.conversationFrom,

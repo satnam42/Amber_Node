@@ -107,6 +107,11 @@ const configure = (app, logger) => {
         api.users.random
     );
 
+    app.get("/api/users/getUsers",
+        permit.context.validateToken,
+        api.users.getUsers
+    );
+
     app.post("/api/users/generateRtcToken",
         permit.context.validateToken,
         permit.context.nocache,
