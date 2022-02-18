@@ -116,7 +116,7 @@ const getUsers = async (req, res) => {
         const user = await service.getUsers(req.query, req.context);
         const message = "user  list fetched successfully";
         log.end();
-        return response.success(res, message, mapper.toModel(user));
+        return response.page(res, user, Number(req.query.pageNo), Number(req.query.pageSize), user.count);
         // return response.success(res, message, user);
     } catch (err) {
         log.error(err);
