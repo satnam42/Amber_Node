@@ -255,6 +255,18 @@ const getRtcToken = async (req, resp) => {
         return response.failure(resp, err.message);
     }
 };
+const callNotifications = async (req, res) => {
+    const log = req.context.logger.start(`api:users:callNotifications`);
+    try {
+        const token = await service.generateRtcToken(req.body, req.context);
+        log.end();
+        return response.data(resp, token);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(resp, err.message);
+    }
+};
 
 exports.create = create;
 exports.login = login;

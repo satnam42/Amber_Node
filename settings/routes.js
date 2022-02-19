@@ -171,7 +171,11 @@ const configure = (app, logger) => {
         permit.context.builder,
         api.conversations.getConversationList
     );
-
+    app.post("/api/notifications/sendCallNotification",
+        permit.context.validateToken,
+        validator.notifications.sendCallNotification,
+        api.notifications.sendCallNotification
+    );
     log.end();
 };
 

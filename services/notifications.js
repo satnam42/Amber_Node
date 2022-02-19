@@ -31,4 +31,40 @@ const pushNotification = async (deviceToken, title, message) => {
 
 }
 
+const sendCallNotification = async (body, context) => {
+    const log = context.logger.start(`services:callNotification`);
+    const user = await db.user.findById(body.receiverId)
+    if (!user) {
+        throw new Error('called  user not found')
+    }
+    if (!user.deviceToken) {
+        throw new Error('called  user  device Token not found')
+    }
+
+    let payload = {
+        notification: {
+            title: body.username,
+            body: body.username
+        },
+        data: {  //you can send only notification or only data(or include both)
+            channelName: body.channelName,
+        }
+
+    };
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+    await admin.messaging().sendToDevice(deviceToken, payload, options)
+    log.end()
+    // .then(response => {
+    //     console.log('message Successfully sent :', response);
+
+    // }).catch(error => {
+    //     console.log('Error sending message:', error);
+    // });
+
+}
+
 exports.pushNotification = pushNotification
+exports.sendCallNotification = sendCallNotification
