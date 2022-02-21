@@ -55,7 +55,7 @@ const sendCallNotification = async (body, context) => {
         priority: "high",
         timeToLive: 60 * 60 * 24
     };
-    await admin.messaging().sendToDevice(deviceToken, payload, options)
+    await admin.messaging().sendToDevice(user.deviceToken, payload, options)
     log.end()
     // .then(response => {
     //     console.log('message Successfully sent :', response);
