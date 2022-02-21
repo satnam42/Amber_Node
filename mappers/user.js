@@ -8,6 +8,7 @@ exports.toModel = entity => {
     if (entity.userId) {
         entity = entity.userId
     }
+
     if (entity.toUser) {
         entity = entity.toUser
     }
@@ -26,8 +27,8 @@ exports.toModel = entity => {
         phoneNo: entity.phoneNo,
         location: entity.location,
         status: entity.status,
-        isFollowing: entity.isFollowing ? entity.isFollowing : null,
-        isFollower: entity.isFollower ? entity.isFollower : null,
+        isFollowing: entity.isFollowing ? entity.isFollowing : false,
+        isFollower: entity.isFollower ? entity.isFollower : false,
         followingCount: entity.following ? entity.following.length || 0 : 0,
         followerCount: entity.followers ? entity.followers.length || 0 : 0,
         bio: entity.bio,

@@ -136,6 +136,9 @@ const memberList = async (name, context) => {
 
 const membersByFilter = async (query, context) => {
     const log = context.logger.start(`services:club:membersByFilter`);
+    if (!query.country) {
+        throw new Error('country is required')
+    }
 
     let filter = {}
     // ===============================================for you=================================================
@@ -146,7 +149,7 @@ const membersByFilter = async (query, context) => {
                 from: "users",
                 localField: "members",
                 pipeline: [
-                    { $match: { gender: context.user.gender == 'male' ? 'female' : 'male' } },],
+                    { $match: { gender: context.user.gender == 'male' ? 'female' : 'male', country: query.country } },],
                 foreignField: "_id",
                 as: "users"
             },
@@ -173,6 +176,8 @@ const membersByFilter = async (query, context) => {
             $lookup: {
                 from: "users",
                 localField: "members",
+                pipeline: [
+                    { $match: { gender: context.user.gender == 'male' ? 'female' : 'male', country: query.country } },],
                 foreignField: "_id",
                 as: "users"
             },

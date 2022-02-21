@@ -78,6 +78,13 @@ module.exports = [{
             {
                 in: "query",
                 type: "string",
+                name: "country",
+                description: "country",
+                required: true
+            },
+            {
+                in: "query",
+                type: "string",
                 name: "name",
                 description: "club name",
                 required: false
@@ -122,6 +129,13 @@ module.exports = [{
                 name: "popular",
                 description: "set it true if you want popular member",
                 required: false
+            },
+            {
+                in: "query",
+                type: "string",
+                name: "country",
+                description: "country",
+                required: true
             },
             {
                 in: "nearByMe",

@@ -342,6 +342,13 @@ module.exports = [{
             },
             {
                 in: "query",
+                type: "string",
+                name: "country",
+                description: "country",
+                required: true
+            },
+            {
+                in: "query",
                 type: "integer",
                 name: "pageNo",
                 description: "pageNo",

@@ -69,7 +69,15 @@ const conversationList = async (id, context) => {
         //         }
         //     }
         // },
-
+        // {
+        //     $group: {
+        //         _id: { _id: "$_id", isFollowing: '$isFollowing' },
+        //         firstName: { $first: '$firstName' },
+        //         lastName: { $first: '$lastName' },
+        //         avtar: { $first: '$avtar' },
+        //         isFollowing: { $last: '$isFollowing' }, //Todo handle true false
+        //     }
+        // }
         {
             "$lookup":
             {
@@ -79,27 +87,28 @@ const conversationList = async (id, context) => {
                 "as": "user1"
             }
         },
-        {
-            "$lookup":
-            {
-                "from": "users",
-                "localField": "user2",
-                "foreignField": "_id",
-                "as": "user2"
-            }
-        },
-        {
-            "$unwind": {
-                "path": "$user1",
-                "preserveNullAndEmptyArrays": true
-            }
-        },
-        {
-            "$unwind": {
-                "path": "$user2",
-                "preserveNullAndEmptyArrays": true
-            }
-        },
+        // {
+        //     "$lookup":
+        //     {
+        //         "from": "users",
+        //         "localField": "user2",
+        //         "foreignField": "_id",
+        //         "as": "user2"
+        //     }
+        // },
+        // {
+        //     "$unwind": {
+        //         "path": "$user1",
+        //         "preserveNullAndEmptyArrays": true
+        //     }
+        // },
+        // {
+        //     "$unwind": {
+        //         "path": "$user2",
+        //         "preserveNullAndEmptyArrays": true
+        //     }
+        // },
+
         {
             "$lookup": {
                 "from": 'messages',
@@ -108,17 +117,28 @@ const conversationList = async (id, context) => {
                 "as": 'messages'
             }
         },
+        {
+            "$lookup":
+            {
+                "from": "users",
+                "localField": "messages.sender",
+                "foreignField": "_id",
+                "as": "user2"
+            }
+        },
+        {
+            "$unwind": {
+                "path": "$user2",
+                "preserveNullAndEmptyArrays": true
+            }
+        },
 
         { $sort: { "lastActive": -1, } },
         // { $limit: { "messages": 1, } },
-
-
         //getting last message from array list 
-        //getting last message from array list 
-
         // { $addFields: { lastElem: { $last: "$messages.content" } } },
-
         //mapping response
+
         {
             $project: {
                 "_id": 0,
