@@ -190,7 +190,7 @@ const followers = async (req, res) => {
 const socialLogin = async (req, res) => {
     const log = req.context.logger.start(`api:users:socialLogin`);
     try {
-        const user = await service.socialLogin(req.params.id, req.context);
+        const user = await service.socialLogin(req.body, req.context);
         log.end();
         return response.authorized(res, message, user, user.token);
     } catch (err) {

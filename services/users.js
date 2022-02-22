@@ -84,7 +84,7 @@ const login = async (model, context) => {
         throw new Error("user not found");
     }
     if (user.status === 'inactive') {
-        throw new Error("user Is inactive please contect with admin");
+        throw new Error("user Is inactive please content with admin");
     }
     const isMatched = encrypt.compareHash(model.password, user.password, context);
     if (!isMatched) {
