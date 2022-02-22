@@ -42,19 +42,20 @@ const sendCallNotification = async (body, context) => {
     }
 
     let payload = {
+        data: {  //you can send only notification or only data(or include both)
+            "channelName": body.channelName.toString(),
+        },
         notification: {
-            title: body.username,
+            title: "call",
             body: body.username
         },
-        data: JSON.stringify({ channelName: body.channelName })
 
     };
     const options = {
         priority: "high",
         timeToLive: 60 * 60 * 24
     };
-    let res = await admin.messaging().sendToDevice(user.deviceToken, payload, options)
-    log.info(res)
+    await admin.messaging().sendToDevice(user.deviceToken, payload, options)
     log.end()
     // .then(response => {
     //     console.log('message Successfully sent :', response);
