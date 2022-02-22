@@ -26,89 +26,11 @@ const conversationList = async (id, context) => {
     if (!id) {
         throw Error('id is required')
     }
-
     // let conversation = await db.conversation.find({ 'sender': id }).populate('receiver', null, 'user', )
-
     let conversation = await db.conversation.aggregate([
         {
             "$match": { $or: [{ "user1": ObjectId(id) }, { "user2": ObjectId(id) }] }
         },
-        // $match: {
-        //     $and: [ 
-        //         {type: {$in: ["TOYS"]}}, 
-        //         {type: {$nin: ["BARBIE"]}}
-        // {
-        //     $addFields: {
-        //         receiverId: { $toObjectId: "$receiver" }
-        //     }
-        // },
-        // {
-        //     $addFields: {
-        //         senderId: { $toObjectId: "$sender" }
-        //     }
-        // },
-        // {
-        //     "$addFields": {
-        //         "date": {
-        //             "$dateFromParts": {
-        //                 "year": { "$year": "$lastActive" },
-        //                 "month": { "$month": "$lastActive" },
-        //                 "day": { "$dayOfMonth": "$lastActive" }
-        //             }
-        //         }
-        //     }
-        // },
-
-        /// convert date to simple fomate 28-10-2000 
-        // {
-        //     "$addFields": {
-        //         "date": {
-        //             "$dateToString": {
-        //                 "format": "%Y-%m-%d", "date": "$lastActive"
-        //             }
-        //         }
-        //     }
-        // },
-        // {
-        //     $group: {
-        //         _id: { _id: "$_id", isFollowing: '$isFollowing' },
-        //         firstName: { $first: '$firstName' },
-        //         lastName: { $first: '$lastName' },
-        //         avtar: { $first: '$avtar' },
-        //         isFollowing: { $last: '$isFollowing' }, //Todo handle true false
-        //     }
-        // }
-        {
-            "$lookup":
-            {
-                "from": "users",
-                "localField": "user1",
-                "foreignField": "_id",
-                "as": "user1"
-            }
-        },
-        // {
-        //     "$lookup":
-        //     {
-        //         "from": "users",
-        //         "localField": "user2",
-        //         "foreignField": "_id",
-        //         "as": "user2"
-        //     }
-        // },
-        // {
-        //     "$unwind": {
-        //         "path": "$user1",
-        //         "preserveNullAndEmptyArrays": true
-        //     }
-        // },
-        // {
-        //     "$unwind": {
-        //         "path": "$user2",
-        //         "preserveNullAndEmptyArrays": true
-        //     }
-        // },
-
         {
             "$lookup": {
                 "from": 'messages',
@@ -118,18 +40,43 @@ const conversationList = async (id, context) => {
             }
         },
         {
+            "$unwind": {
+                "path": "$messages",
+                "preserveNullAndEmptyArrays": true
+            }
+        },
+        {
             "$lookup":
             {
                 "from": "users",
-                "localField": "messages.sender",
-                "foreignField": "_id",
-                "as": "user2"
+                'let': { 'candidateId': "$messages.sender" },
+                pipeline: [
+                    {
+
+                        $match: {
+                            $expr: {
+                                $and: [
+                                    { $eq: ["$_id", "$$candidateId"] },
+                                    { $ne: [ObjectId(id), "$_id"] },
+                                ]
+                            }
+                        }
+                    },
+                ],
+                "as": "users"
             }
         },
         {
             "$unwind": {
-                "path": "$user2",
-                "preserveNullAndEmptyArrays": true
+                "path": "$users",
+            }
+        },
+        {
+            $group: {
+                _id: { _id: "$users._id", },
+                "user": { $first: '$users' },
+                "conversationsId": { $first: '$_id' },
+
             }
         },
 
@@ -142,18 +89,18 @@ const conversationList = async (id, context) => {
         {
             $project: {
                 "_id": 0,
-                "user1": "$user1.username",
-                "user1Id": "$user1._id",
-                "user1Image": "$user1.profileImageName",
-                "user2": "$user2.username",
-                "user2Id": "$user2._id",
-                "user2Image": "$user2.profileImageName",
+                "user1": "$user.firstName",
+                "user1Id": "$user._id",
+                "user1Image": "$user.profileImageName",
+                // "user2": "$user2.username",
+                // "user2Id": "$user2._id",
+                // "user2Image": "$user2.profileImageName",
                 // "sender": "$sender.username",
                 // "senderId": "$sender._id",
                 // "status": "$receiver.status",
                 // "convertedId": "$convertedId",
                 // "lastMessage": "$messages",
-                "conversationId": "$_id"
+                "conversationId": "$conversationsId"
             }
         }
     ])
