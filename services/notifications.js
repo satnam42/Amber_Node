@@ -55,17 +55,37 @@ const sendCallNotification = async (body, context) => {
     //     priority: "high",
     //     timeToLive: 60 * 60 * 24
     // };
+    const registrationToken = user.deviceToken;
 
-    var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)        
-        to: user.deviceToken,
+    // const message = {
+    //     data: {
+    //         score: '850',
+    //         time: '2:45'
+    //     },
+    //     token: registrationToken
+    // };
+    const message = {
+        data: {  //you can send only notification or only data(or include both)
+            "channelName": body.channelName.toString(),
+        },
         notification: {
             title: "call",
             body: body.username
         },
-        data: {  //you can send only notification or only data(or include both)            
-            "channelName": body.channelName.toString(),
-        }
-    }
+        token: registrationToken
+
+    };
+    // var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)        
+    //     notification: {
+    //         title: "call",
+    //         body: body.username
+    //     },
+    //     data: {  //you can send only notification or only data(or include both)            
+    //         "channelName": body.channelName.toString()
+    //     },
+    //     to: user.deviceToken,
+
+    // }
     const res = await admin.messaging().send(message)
     log.info(res)
     log.end()
