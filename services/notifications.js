@@ -67,7 +67,6 @@ const sendCallNotification = async (body, context) => {
         }
     }
     const res = await admin.messaging().send(message)
-    const res = await admin.messaging().send(message)
     log.info(res)
     log.end()
     // .then(response => {
