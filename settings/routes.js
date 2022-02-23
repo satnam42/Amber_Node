@@ -39,6 +39,12 @@ const configure = (app, logger) => {
         validator.users.login,
         api.users.login
     );
+    app.post(
+        "/api/users/socialLogin",
+        permit.context.builder,
+        validator.users.socialLogin,
+        api.users.socialLogin
+    );
 
     app.put(
         "/api/users/resetPassword/:id",

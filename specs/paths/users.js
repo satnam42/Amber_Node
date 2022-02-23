@@ -49,6 +49,31 @@ module.exports = [{
     }
 },
 {
+    url: "/socialLogin",
+    post: {
+        summary: "socialLogin",
+        description: "socialLogin",
+        parameters: [
+            {
+                in: "body",
+                name: "body",
+                description: "Model of social Login",
+                required: true,
+                schema: {
+                    $ref: "#/definitions/socialLogin"
+                }
+            }],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
+{
     url: "/resetPassword/{id}",
     put: {
         summary: "reset Password ",

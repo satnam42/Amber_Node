@@ -7,7 +7,7 @@ const { appID, appCertificate } = require('config').get('agora')
 const ObjectId = require("mongodb").ObjectId
 
 const buildUser = async (model, context) => {
-    const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob } = model;
+    const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob, platform } = model;
     const log = context.logger.start(`services:users:buildUser${model}`);
     const user = await new db.user({
         username: username,
@@ -16,6 +16,8 @@ const buildUser = async (model, context) => {
         email: email,
         gender: gender,
         country: country,
+        platform: platform,
+        socialLoginId: socialLoginId,
         dob: dob,
         phoneNo: phoneNo,
         status: status,
@@ -57,7 +59,6 @@ const setUser = async (model, user, context) => {
     if (model.website !== "string" && model.website !== undefined) {
         user.website = model.website;
     }
-
     log.end();
     await user.save();
     return user;

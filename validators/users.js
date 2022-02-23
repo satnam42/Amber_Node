@@ -27,6 +27,32 @@ const create = (req, res, next) => {
     return next();
 };
 
+const socialLogin = (req, res, next) => {
+    const log = req.context.logger.start("validators:users:socialLogin");
+    if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
+        log.end();
+        return response.failure(res, "body is required");
+    }
+    if (!req.body.socialLoginId) {
+        log.end();
+        return response.failure(res, "socialLoginId is required");
+    }
+    if (!req.body.platform) {
+        log.end();
+        return response.failure(res, "platform is required");
+    }
+    if (!req.body.firstName) {
+        log.end();
+        return response.failure(res, "firstName is required");
+    }
+    if (!req.body.lastName) {
+        log.end();
+        return response.failure(res, "lastName is required");
+    }
+    log.end();
+    return next();
+};
+
 const login = (req, res, next) => {
     const log = req.context.logger.start("validators:users:login");
     if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
@@ -109,3 +135,4 @@ exports.resetPassword = resetPassword;
 exports.login = login;
 exports.follow = follow;
 exports.unfollow = unfollow;
+exports.socialLogin = socialLogin;

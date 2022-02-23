@@ -9,6 +9,7 @@ const user = mongoose.Schema({
   email: { type: String, required: false, trim: true },
   phoneNo: { type: String, required: false, trim: true },
   dob: { type: Date, required: false, trim: true },
+  socialLoginId: { type: String, required: false, },
   gender: {
     type: String,
     required: true,
