@@ -1,7 +1,7 @@
 'use strict'
 const service = require('../services/conversations')
 const response = require('../exchange/response')
-const conversationListMapper = require('../mappers/conversationList')
+const conversationListMapper = require('../mappers/conversations')
 
 const getOldChat = async (req, res) => {
     const log = req.context.logger.start(`api:conversations:getOldChat:${req.params.id}`)

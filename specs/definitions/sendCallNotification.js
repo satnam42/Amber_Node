@@ -5,6 +5,9 @@ module.exports = [
             username: {
                 type: "string"
             },
+            imageUrl: {
+                type: "string"
+            },
             receiverId: {
                 type: "string"
             },

@@ -67,6 +67,8 @@ const sendCallNotification = async (body, context) => {
     const message = {
         data: {  //you can send only notification or only data(or include both)
             "channelName": body.channelName.toString(),
+            "name": body.username,
+            "imageUrl": body.imageUrl,
         },
         notification: {
             title: "call",

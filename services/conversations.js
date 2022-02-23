@@ -52,7 +52,6 @@ const conversationList = async (id, context) => {
                 'let': { 'candidateId': "$messages.sender" },
                 pipeline: [
                     {
-
                         $match: {
                             $expr: {
                                 $and: [
@@ -89,9 +88,9 @@ const conversationList = async (id, context) => {
         {
             $project: {
                 "_id": 0,
-                "user1": "$user.firstName",
-                "user1Id": "$user._id",
-                "user1Image": "$user.profileImageName",
+                "firstName": "$user.firstName",
+                "userId": "$user._id",
+                "image": "$user.profileImageName",
                 // "user2": "$user2.username",
                 // "user2Id": "$user2._id",
                 // "user2Image": "$user2.profileImageName",
