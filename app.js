@@ -15,6 +15,14 @@ app.use(express.json())
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
+// const io = require("socket.io")(server, {
+//   allowEIO3: true,
+//   cors: {
+//     origin: true,
+//     methods: ['GET', 'POST'],
+//     credentials: true
+//   }
+// });
 
 const boot = async () => {
   const log = logger.start("app:boot");
@@ -43,7 +51,10 @@ const init = async () => {
   await require("./settings/database").configure(logger);
   await require("./settings/express").configure(app, logger);
   await require("./settings/routes").configure(app, logger);
+  // await require("./settings/socket").configure(io, logger);
+
   require("./socket/socketEvents").sockets(server, logger);
+
 
   app.get('/chat', function (req, res) {
     res.sendFile(__dirname + '/templates/index.html');

@@ -1,5 +1,5 @@
 module.exports = [{
-    url: '/getOldCoversations',
+    url: '/getOldConversations',
     get: {
         summary: 'get old chat',
         description: 'get old chat',

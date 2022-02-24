@@ -4,18 +4,24 @@ var moment = require('moment');
 var _ = require('lodash');
 var eventEmitter = new events.EventEmitter();
 const service = require('../services/notifications')
+// const connect = async (io, logger) => {
 const sockets = async (http, logger) => {
+    const log = logger.start(`sockets:socketEvents:connect`);
     io = socketio.listen(http);
     var ioChat = io
     var userStack = {};
     var oldChats, sendUserStack;
     var userSocket = {};
     ioChat.on('connection', async (socket) => {
-        console.log("socketio chat connected.");
+        log.info("socketio chat connected.");
+        // let userId = socket.userId
         //function to get user name
+        // socket.emit('set-user-data', (userId) => {
+
+        // })
         socket.on('set-user-data', (userId) => {
             if (!userId) {
-                console.log('set-user-data is required', userId)
+                log.info('userId is required', userId)
                 // socket.emit('oops', {
                 //     status:"NOK",
                 //     event: 'set-user-data',
@@ -27,11 +33,11 @@ const sockets = async (http, logger) => {
                     data: 'set-user-data is required'
                 });
             } else {
-                console.log(userId + "  logged In");
+                log.info(userId + "  logged In");
                 //storing variable.
                 socket.userId = userId;
                 userSocket[socket.userId] = socket.id;
-                console.log("userSocket", userSocket)
+                log.info("userSocket", userSocket)
                 //getting all users list
                 eventEmitter.emit('get-all-users');
                 // sending all users list. and setting if online or offline.
@@ -51,7 +57,7 @@ const sockets = async (http, logger) => {
 
         //setting room.
         socket.on('set-room', async function (room) {
-            console.log('set-room called', { room })
+            log.info('set-room called', { room })
             //leaving room. 
             socket.leave(socket.room);
             try {
@@ -61,13 +67,13 @@ const sockets = async (http, logger) => {
                 //setting room and join.
                 if (conversation) {
                     socket.room = conversation.id;
-                    console.log("roomId : " + socket.room);
+                    log.info("roomId : " + socket.room);
                     socket.join(socket.room);
                     ioChat.to(userSocket[socket.userId]).emit('set-room', socket.room);
                 }
 
             } catch (e) {
-                console.log('set-room Err', e.message)
+                log.info('set-room Err', e.message)
                 socket.emit('oops',
                     {
                         event: 'set-room',
@@ -82,10 +88,19 @@ const sockets = async (http, logger) => {
         socket.on('typing', function () {
             socket.to(socket.room).broadcast.emit('typing', " typing...");
         });
+        socket.on('callEnd', function (data) {
+            socket.to(socket.userId).broadcast.emit('callEnd', "callEnd");
+        });
+
+        ioChat.to(socket.room).emit('chat-msg', {
+            msgFrom: socket.userId,
+            msg: data.msg,
+            date: msgDate
+        });
 
         //for showing chats.
         socket.on('chat-msg', async function (data) {
-            console.log('chat-msg called', { data })
+            log.info('chat-msg called', { data })
             try {
                 await saveChat({
                     msgFrom: socket.userId,
@@ -97,7 +112,7 @@ const sockets = async (http, logger) => {
                 const user = await db.user.findById(data.msgTo)
                 if (user && user.deviceToken != "" && user.deviceToken != undefined) {
                     let response = service.pushNotification(user.deviceToken, user.firstName, data.msg)
-                    console.log('pushNotification called', { response })
+                    log.info('pushNotification called', { response })
                 }
 
                 let msgDate = moment.utc(data.date).format()
@@ -108,7 +123,7 @@ const sockets = async (http, logger) => {
                     date: msgDate
                 });
             } catch (e) {
-                console.log('chat-msg Err', e.message)
+                log.info('chat-msg Err', e.message)
                 socket.emit('oops',
                     {
                         event: 'chat-msg',
@@ -138,9 +153,9 @@ const sockets = async (http, logger) => {
 
         //for popping disconnection message.
         socket.on('disconnect', function () {
-            console.log(socket.userId + "  logged out");
+            log.info(socket.userId + "  logged out");
             socket.broadcast.emit('broadcast', { description: socket.userId + ' Logged out' });
-            console.log("chat disconnected.");
+            log.info("chat disconnected.");
             _.unset(userSocket, socket.userId);
             // userStack[socket.userId] = "Offline";
             // ioChat.emit('onlineStack', userStack);
@@ -153,14 +168,14 @@ const sockets = async (http, logger) => {
     //database operations are kept outside of socket.io code.
 
     getRoomAndSetRoom = async (room) => {
-        console.log("getRoomAndSetRoom:", room)
+        log.info("getRoomAndSetRoom:", room)
         var today = Date.now();
         if (room && room.conversationFrom == "" && room.conversationTo == "") {
-            console.log("set-room parameter is required");
+            log.info("set-room parameter is required");
             throw new Error('set-room parameter is required')
         }
         if (room.conversationFrom == room.conversationTo) {
-            console.log("set-room parameter is required");
+            log.info("set-room parameter is required");
             throw new Error('set-room parameter not be same ')
         }
 
@@ -174,7 +189,7 @@ const sockets = async (http, logger) => {
                 lastActive: today,
                 createdOn: today
             }).save()
-            console.log("conversation saved ");
+            log.info("conversation saved ");
             return conversation
             // setRoom(conversation._id)
         } else {
@@ -189,7 +204,7 @@ const sockets = async (http, logger) => {
 
 
     saveChat = async (data) => {
-        console.log("saveChat:", data)
+        log.info("saveChat:", data)
         if (!data) {
             throw new Error('message body is Required')
         }
@@ -209,17 +224,17 @@ const sockets = async (http, logger) => {
             read: data.read || true,
             conversation: data.room
         }).save()
-        console.log("message saved .");
+        log.info("message saved .");
         return message
 
     }
     //saving chats to database.
     // eventEmitter.on('save-chat', async (data) => {
-    //     console.log("save-chat:", data)
+    //    log.info("save-chat:", data)
     //     // var today = Date.now();
     //     try {
     //         if (data == undefined || data == null || data == "") {
-    //             console.log("message body not received ");
+    //            log.info("message body not received ");
     //         }
     //         const message = await new db.message({
     //             sender: data.msgFrom,
@@ -229,11 +244,11 @@ const sockets = async (http, logger) => {
     //             conversation: data.room
     //         }).save()
     //         if (message) {
-    //             console.log("message saved .");
+    //            log.info("message saved .");
     //         }
 
     //     } catch (error) {
-    //         console.log("message Error : " + error);
+    //        log.info("message Error : " + error);
     //     }
     // });
 
@@ -246,7 +261,7 @@ const sockets = async (http, logger) => {
             .select('name')
             .exec(function (err, result) {
                 if (err) {
-                    console.log("Error : " + err);
+                    log.info("Error : " + err);
                 } else {
                     userStack = {}
                     //console.log(result);
@@ -263,4 +278,5 @@ const sockets = async (http, logger) => {
 
 };
 
+// exports.connect = connect;
 exports.sockets = sockets;

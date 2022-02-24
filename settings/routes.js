@@ -39,6 +39,7 @@ const configure = (app, logger) => {
         validator.users.login,
         api.users.login
     );
+
     app.post(
         "/api/users/socialLogin",
         permit.context.builder,
@@ -64,16 +65,19 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.profile
     );
+
     app.put(
         "/api/users/profileImageUpload/:id",
         permit.context.builder,
         api.users.uploadProfileImage
     );
+
     app.put(
         "/api/users/removeProfilePic/:id",
         permit.context.validateToken,
         api.users.removeProfilePic
     );
+
     app.put(
         "/api/users/uploadStory/:id",
         permit.context.validateToken,
@@ -84,7 +88,6 @@ const configure = (app, logger) => {
     //     permit.context.builder,
     //     api.users.removeStory
     // );
-
 
     app.post("/api/users/follow",
         permit.context.validateToken,
@@ -168,7 +171,7 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.club.getMembersByFilter
     );
-    app.get('/api/conversations/getOldCoversations',
+    app.get('/api/conversations/getOldConversations',
         permit.context.builder,
         api.conversations.getOldChat
     );
