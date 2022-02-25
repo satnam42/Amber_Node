@@ -7,7 +7,7 @@ const { appID, appCertificate } = require('config').get('agora')
 const ObjectId = require("mongodb").ObjectId
 
 const buildUser = async (model, context) => {
-    const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob, platform } = model;
+    const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob, platform, socialLoginId } = model;
     const log = context.logger.start(`services:users:buildUser${model}`);
     const user = await new db.user({
         username: username,
@@ -451,13 +451,13 @@ const random = async (query, context) => {
     let pageNo = Number(query.pageNo) || 1;
     let pageSize = Number(query.pageSize) || 10;
     let skipCount = pageSize * (pageNo - 1);
-    if (!query.country) {
-        throw new Error('country is required')
-    }
+    // if (!query.country) {
+    //     throw new Error('country is required')
+    // }
     // const userId = context.user.id || context.user._id
 
     const users = await db.user.aggregate([
-        { $match: { gender: query.gender, country: query.country } },
+        { $match: { gender: query.gender } },
         // { $sample: { size: pageSize } },
         { $limit: pageSize },
         { $skip: skipCount }

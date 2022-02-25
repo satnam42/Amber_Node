@@ -26,7 +26,6 @@ const conversationList = async (id, context) => {
     if (!id) {
         throw Error('id is required')
     }
-    // let conversation = await db.conversation.find({ 'sender': id }).populate('receiver', null, 'user', )
     let conversation = await db.conversation.aggregate([
         {
             "$match": { $or: [{ "user1": ObjectId(id) }, { "user2": ObjectId(id) }] }
@@ -63,10 +62,7 @@ const conversationList = async (id, context) => {
                                     },
                                     { $ne: [ObjectId(id), "$_id"] },
                                 ]
-                                // $and: [
-                                //     { $eq: ["$$receiverId", "$_id"] },
-                                //     { $ne: [ObjectId(id), "$_id"] },
-                                // ]
+
                             }
                         }
                     },
@@ -101,14 +97,6 @@ const conversationList = async (id, context) => {
                 "firstName": "$user.firstName",
                 "userId": "$user._id",
                 "image": "$user.profileImageName",
-                // "user2": "$user2.username",
-                // "user2Id": "$user2._id",
-                // "user2Image": "$user2.profileImageName",
-                // "sender": "$sender.username",
-                // "senderId": "$sender._id",
-                // "status": "$receiver.status",
-                // "convertedId": "$convertedId",
-                // "lastMessage": "$messages",
                 "conversationId": "$conversationsId"
             }
         }

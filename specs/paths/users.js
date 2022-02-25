@@ -370,7 +370,7 @@ module.exports = [{
                 type: "string",
                 name: "country",
                 description: "country",
-                required: true
+                required: false
             },
             {
                 in: "query",
