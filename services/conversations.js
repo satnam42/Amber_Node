@@ -49,15 +49,24 @@ const conversationList = async (id, context) => {
             "$lookup":
             {
                 "from": "users",
-                'let': { 'candidateId': "$messages.sender" },
+                'let': { 'receiverId': "$messages.receiver", 'senderId': "$messages.sender" },
                 pipeline: [
                     {
                         $match: {
                             $expr: {
                                 $and: [
-                                    { $eq: ["$_id", "$$candidateId"] },
+                                    {
+                                        $or: [
+                                            { $eq: ["$$receiverId", "$_id"] },
+                                            { $eq: ["$$senderId", "$_id"] },
+                                        ]
+                                    },
                                     { $ne: [ObjectId(id), "$_id"] },
                                 ]
+                                // $and: [
+                                //     { $eq: ["$$receiverId", "$_id"] },
+                                //     { $ne: [ObjectId(id), "$_id"] },
+                                // ]
                             }
                         }
                     },
