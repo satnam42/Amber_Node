@@ -88,15 +88,15 @@ const sockets = async (http, logger) => {
         socket.on('typing', function () {
             socket.to(socket.room).broadcast.emit('typing', " typing...");
         });
-        socket.on('callEnd', function (data) {
+        socket.on('callEnd', function () {
             socket.to(socket.userId).broadcast.emit('callEnd', "callEnd");
         });
 
-        ioChat.to(socket.room).emit('chat-msg', {
-            msgFrom: socket.userId,
-            msg: data.msg,
-            date: msgDate
-        });
+        // ioChat.to(socket.room).emit('chat-msg', {
+        //     msgFrom: socket.userId,
+        //     msg: data.msg,
+        //     date: msgDate
+        // });
 
         //for showing chats.
         socket.on('chat-msg', async function (data) {

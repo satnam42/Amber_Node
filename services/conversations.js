@@ -68,6 +68,7 @@ const conversationList = async (id, context) => {
         {
             "$unwind": {
                 "path": "$users",
+                // "preserveNullAndEmptyArrays": true
             }
         },
         {
