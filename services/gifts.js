@@ -1,21 +1,12 @@
 const ObjectId = require("mongodb").ObjectId
 
 const buildGift = async (model, context) => {
-    const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob, platform, socialLoginId } = model;
+    const { name, coin, status } = model;
     const log = context.logger.start(`services:users:buildGift${model}`);
     const gift = await new db.gift({
-        username: username,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        gender: gender,
-        country: country,
-        platform: platform,
-        socialLoginId: socialLoginId,
-        dob: dob,
-        phoneNo: phoneNo,
+        name: name,
+        coin: coin,
         status: status,
-        password: password
     }).save();
     log.end();
     return gift;
@@ -23,15 +14,11 @@ const buildGift = async (model, context) => {
 
 const setGift = async (model, gift, context) => {
     const log = context.logger.start("services:users:setGift");
-    if (model.username !== "string" && model.username !== undefined) {
-        gift.username = model.username;
+    if (model.coin !== "string" && model.coin !== undefined) {
+        gift.coin = model.coin;
     }
-    if (model.firstName !== "string" && model.firstName !== undefined) {
-        gift.firstName = model.firstName;
-    }
-    if (model.lastName !== "string" && model.lastName !== undefined) {
-        gift.lastName = model.lastName;
-
+    if (model.name !== "string" && model.name !== undefined) {
+        gift.name = model.name;
     }
     log.end();
     await gift.save();
