@@ -17,7 +17,6 @@ const sockets = async (http, logger) => {
         // let userId = socket.userId
         //function to get user name
         // socket.emit('set-user-data', (userId) => {
-
         // })
         socket.on('set-user-data', (userId) => {
             if (!userId) {
@@ -71,7 +70,6 @@ const sockets = async (http, logger) => {
                     socket.join(socket.room);
                     ioChat.to(userSocket[socket.userId]).emit('set-room', socket.room);
                 }
-
             } catch (e) {
                 log.info('set-room Err', e.message)
                 socket.emit('oops',
@@ -88,16 +86,15 @@ const sockets = async (http, logger) => {
         socket.on('typing', function () {
             socket.to(socket.room).broadcast.emit('typing', " typing...");
         });
-        socket.on('callEnd', function () {
-            socket.to(socket.userId).broadcast.emit('callEnd', "callEnd");
-        });
+        // socket.on('callEnd', function () {
+        //     socket.to(socket.userId).broadcast.emit('callEnd', "callEnd");
+        // });
 
         // ioChat.to(socket.room).emit('chat-msg', {
         //     msgFrom: socket.userId,
         //     msg: data.msg,
         //     date: msgDate
         // });
-
         //for showing chats.
         socket.on('chat-msg', async function (data) {
             log.info('chat-msg called', { data })
@@ -114,9 +111,7 @@ const sockets = async (http, logger) => {
                     let response = service.pushNotification(user.deviceToken, user.firstName, data.msg)
                     log.info('pushNotification called', { response })
                 }
-
                 let msgDate = moment.utc(data.date).format()
-
                 ioChat.to(socket.room).emit('chat-msg', {
                     msgFrom: socket.userId,
                     msg: data.msg,
@@ -228,6 +223,8 @@ const sockets = async (http, logger) => {
         return message
 
     }
+
+
     //saving chats to database.
     // eventEmitter.on('save-chat', async (data) => {
     //    log.info("save-chat:", data)
@@ -236,6 +233,7 @@ const sockets = async (http, logger) => {
     //         if (data == undefined || data == null || data == "") {
     //            log.info("message body not received ");
     //         }
+
     //         const message = await new db.message({
     //             sender: data.msgFrom,
     //             receiver: data.msgTo,
@@ -243,6 +241,7 @@ const sockets = async (http, logger) => {
     //             read: data.read || true,
     //             conversation: data.room
     //         }).save()
+
     //         if (message) {
     //            log.info("message saved .");
     //         }
