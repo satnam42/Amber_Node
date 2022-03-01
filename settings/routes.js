@@ -175,7 +175,6 @@ const configure = (app, logger) => {
         permit.context.builder,
         api.conversations.getOldChat
     );
-
     app.get('/api/conversations/conversationList/:id',
         permit.context.builder,
         api.conversations.getConversationList
@@ -184,6 +183,21 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         validator.notifications.sendCallNotification,
         api.notifications.sendCallNotification
+    );
+
+    app.post("/api/gifts/add",
+        permit.context.validateToken,
+        api.gifts.add
+    );
+
+    app.get("/api/gifts/list",
+        permit.context.validateToken,
+        api.gifts.getGifts
+    );
+
+    app.put('/api/gifts/update/:id',
+        permit.context.validateToken,
+        api.gifts.update
     );
     log.end();
 };

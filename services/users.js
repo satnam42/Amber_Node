@@ -532,6 +532,7 @@ const generateRtcToken = async (modal, context) => {
     // for (let i = 0; i < 10; i++) {
     //     randomNo += digits[Math.floor(Math.random() * 10)];
     // }
+    // const randoms = Math.random().toString(32).substring(2, 9);
     const uid = Math.floor(Math.random() * 100000);
     // const userId = randomNo * Date.now()
     const expirationTimeInSeconds = 3600;

@@ -1,12 +1,12 @@
 const ObjectId = require("mongodb").ObjectId
 
 const buildGift = async (model, context) => {
-    const { name, coin, status } = model;
+    const { title, coin, description } = model;
     const log = context.logger.start(`services:users:buildGift${model}`);
     const gift = await new db.gift({
-        name: name,
+        title: title,
         coin: coin,
-        status: status,
+        description: description,
     }).save();
     log.end();
     return gift;
@@ -17,8 +17,11 @@ const setGift = async (model, gift, context) => {
     if (model.coin !== "string" && model.coin !== undefined) {
         gift.coin = model.coin;
     }
-    if (model.name !== "string" && model.name !== undefined) {
-        gift.name = model.name;
+    if (model.title !== "string" && model.title !== undefined) {
+        gift.title = model.title;
+    }
+    if (model.description !== "string" && model.description !== undefined) {
+        gift.description = model.description;
     }
     log.end();
     await gift.save();
@@ -27,11 +30,10 @@ const setGift = async (model, gift, context) => {
 
 const create = async (model, context) => {
     const log = context.logger.start("services:users:create");
-    let gift = await db.gift.findOne({ username: model.username });
+    let gift = await db.gift.findOne({ title: model.title });
     if (gift) {
-        throw new Error(`${model.username} already taken choose another!`);
+        throw new Error(`${model.title} already exits choose another!`);
     } else {
-        model.password = encrypt.getHash(model.password, context);
         gift = buildGift(model, context);
         log.end();
         return gift;

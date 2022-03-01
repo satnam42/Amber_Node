@@ -2,8 +2,8 @@
 const service = require("../services/gifts");
 const response = require("../exchange/response");
 
-const create = async (req, res) => {
-    const log = req.context.logger.start(`api:gifts:create`);
+const add = async (req, res) => {
+    const log = req.context.logger.start(`api:gifts:add`);
     try {
         const gift = await service.create(req.body, req.context);
         const message = "Gift added Successfully";
@@ -50,6 +50,6 @@ const getGifts = async (req, res) => {
 
 
 
-exports.create = create;
+exports.add = add;
 exports.update = update;
 exports.getGifts = getGifts;
