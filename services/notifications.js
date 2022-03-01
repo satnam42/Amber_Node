@@ -5,6 +5,12 @@ const pushNotification = async (deviceToken, title, message) => {
     // const log = logger.start(`services:pushNotification`);
 
     let payload = {
+        data: {  //you can send only notification or only data(or include both)
+            type: "messaging",
+            "channelName": "",
+            "name": "",
+            "imageUrl": "",
+        },
         notification: {
             title: title,
             body: message,
@@ -64,8 +70,10 @@ const sendCallNotification = async (body, context) => {
     //     },
     //     token: registrationToken
     // };
+
     const message = {
         data: {  //you can send only notification or only data(or include both)
+            type: "callReceive",
             "channelName": body.channelName.toString(),
             "name": body.username,
             "imageUrl": body.imageUrl,

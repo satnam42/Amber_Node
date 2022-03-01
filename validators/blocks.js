@@ -20,10 +20,6 @@ const block = (req, res, next) => {
         return response.failure(res, "byUser id is required");
     }
 
-    if (!req.body.to) {
-        log.end();
-        return response.failure(res, "to is required ");
-    }
 
     log.end();
     return next();
