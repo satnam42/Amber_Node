@@ -2,7 +2,7 @@ const ObjectId = require("mongodb").ObjectId
 
 const buildGift = async (model, context) => {
     const { title, coin, description } = model;
-    const log = context.logger.start(`services:users:buildGift${model}`);
+    const log = context.logger.start(`services:gifts:buildGift${model}`);
     const gift = await new db.gift({
         title: title,
         coin: coin,
@@ -13,7 +13,7 @@ const buildGift = async (model, context) => {
 };
 
 const setGift = async (model, gift, context) => {
-    const log = context.logger.start("services:users:setGift");
+    const log = context.logger.start("services:gifts:setGift");
     if (model.coin !== "string" && model.coin !== undefined) {
         gift.coin = model.coin;
     }
@@ -29,7 +29,7 @@ const setGift = async (model, gift, context) => {
 };
 
 const create = async (model, context) => {
-    const log = context.logger.start("services:users:create");
+    const log = context.logger.start("services:gifts:create");
     let gift = await db.gift.findOne({ title: model.title });
     if (gift) {
         throw new Error(`${model.title} already exits choose another!`);
@@ -40,9 +40,8 @@ const create = async (model, context) => {
     }
 };
 
-
 const update = async (id, model, context) => {
-    const log = context.logger.start(`services: users: update`);
+    const log = context.logger.start(`services: gifts: update`);
     let entity = await db.gift.findById(id)
     if (!entity) {
         log.end();
@@ -53,21 +52,34 @@ const update = async (id, model, context) => {
     return gift
 };
 
+const send = async (model, context) => {
+    const log = context.logger.start(`services: gifts: send`);
+    let gift = await db.gift.findById(model.giftId)
+    if (!gift) {
+        log.end();
+        throw new Error("invalid gift id");
+    }
+    const gift = await setGift(model, entity, context);
+    log.end();
+    return gift
+};
+
 const getGifts = async (query, context) => {
-    const log = context.logger.start(`services:users:getGifts`);
+    const log = context.logger.start(`services:gifts:getGifts`);
     let pageNo = Number(query.pageNo) || 1;
     let pageSize = Number(query.pageSize) || 10;
     let skipCount = pageSize * (pageNo - 1);
     // const userId = context.gift.id || context.gift._id
-    const users = await db.gift.find().skip(skipCount).limit(pageSize)
-    users.count = await db.gift.find().count();
+    const gifts = await db.gift.find().skip(skipCount).limit(pageSize)
+    gifts.count = await db.gift.find().count();
     log.end()
-    return users
+    return gifts
 };
 
 
 exports.create = create;
 exports.update = update;
 exports.getGifts = getGifts;
+exports.send = send;
 
 

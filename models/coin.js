@@ -26,12 +26,17 @@ const coin = mongoose.Schema({
             coin: { type: Number, default: 0 },
             createdAt: { type: Date, default: Date.now() },
         }],
-    giftCoins: [
+    giftedCoins: [
         {
             _id: false,
             gift: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "gift",
+                required: true,
+            },
+            fromUser: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "user",
                 required: true,
             },
             coin: { type: Number, default: 0 },

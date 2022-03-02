@@ -31,6 +31,19 @@ const update = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+const send = async (req, res) => {
+    const log = req.context.logger.start(`api:gifts:send`);
+    try {
+        const gift = await service.send(req.body, req.context);
+        log.end();
+        return response.data(res, mapper.toModel(gift));
+        // return response.data(res, gift);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
 
 const getGifts = async (req, res) => {
     const log = req.context.logger.start(`api:gifts:currentUser`);
@@ -49,7 +62,7 @@ const getGifts = async (req, res) => {
 
 
 
-
 exports.add = add;
 exports.update = update;
 exports.getGifts = getGifts;
+exports.send = send;

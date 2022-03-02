@@ -7,8 +7,12 @@ const gift = mongoose.Schema({
         default: "",
     },
     coin: {
-        type: Date,
-        default: Number, default: 0
+        type: Number,
+        default: 0,
+    },
+    icon: {
+        type: String,
+        default: ""
     },
     description: { type: String, default: "" }
 }, { timestamps: true });
