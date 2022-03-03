@@ -34,7 +34,7 @@ const connect = async (io, logger) => {
         //     } else {
         log.info(userId + "  logged In");
         //storing variable.
-        socket.userId = userId;
+        // socket.userId = userId;
         userSocket[socket.userId] = socket.id;
         log.info("userSocket", userSocket)
         //getting all users list
