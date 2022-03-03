@@ -4,55 +4,55 @@ var moment = require('moment');
 var _ = require('lodash');
 var eventEmitter = new events.EventEmitter();
 const service = require('../services/notifications')
-// const connect = async (io, logger) => {
-const sockets = async (http, logger) => {
+const connect = async (io, logger) => {
+    // const sockets = async (http, logger) => {
     const log = logger.start(`sockets:socketEvents:connect`);
-    io = socketio.listen(http);
+    // io = socketio.listen(http);
     var ioChat = io
     var userStack = {};
     var oldChats, sendUserStack;
     var userSocket = {};
     ioChat.on('connection', async (socket) => {
         log.info("socketio chat connected.");
-        // let userId = socket.userId
+        let userId = socket.userId
         //function to get user name
         // socket.emit('set-user-data', (userId) => {
         // })
-        socket.on('set-user-data', (userId) => {
-            if (!userId) {
-                log.info('userId is required', userId)
-                // socket.emit('oops', {
-                //     status:"NOK",
-                //     event: 'set-user-data',
-                //     data: 'set-user-data is required'
-                // });
-                socket.emit('oops', {
-                    // status:"NOK",
-                    event: 'set-user-data',
-                    data: 'set-user-data is required'
-                });
-            } else {
-                log.info(userId + "  logged In");
-                //storing variable.
-                socket.userId = userId;
-                userSocket[socket.userId] = socket.id;
-                log.info("userSocket", userSocket)
-                //getting all users list
-                eventEmitter.emit('get-all-users');
-                // sending all users list. and setting if online or offline.
-                sendUserStack = function () {
-                    for (i in userSocket) {
-                        for (j in userStack) {
-                            if (j == i) {
-                                userStack[j] = "Online";
-                            }
-                        }
+        // socket.on('set-user-data', (userId) => {
+        //     if (!userId) {
+        //         log.info('userId is required', userId)
+        //         // socket.emit('oops', {
+        //         //     status:"NOK",
+        //         //     event: 'set-user-data',
+        //         //     data: 'set-user-data is required'
+        //         // });
+        //         socket.emit('oops', {
+        //             // status:"NOK",
+        //             event: 'set-user-data',
+        //             data: 'set-user-data is required'
+        //         });
+        //     } else {
+        log.info(userId + "  logged In");
+        //storing variable.
+        socket.userId = userId;
+        userSocket[socket.userId] = socket.id;
+        log.info("userSocket", userSocket)
+        //getting all users list
+        eventEmitter.emit('get-all-users');
+        // sending all users list. and setting if online or offline.
+        sendUserStack = function () {
+            for (i in userSocket) {
+                for (j in userStack) {
+                    if (j == i) {
+                        userStack[j] = "Online";
                     }
-                    //for popping connection message.
-                    ioChat.emit('onlineStack', userStack);
-                } //end of sendUserStack function.
+                }
             }
-        }); //end of set-user-data event.
+            //for popping connection message.
+            ioChat.emit('onlineStack', userStack);
+        } //end of sendUserStack function.
+        // }
+        // }); //end of set-user-data event.
 
         //setting room.
         socket.on('set-room', async function (room) {
@@ -86,10 +86,6 @@ const sockets = async (http, logger) => {
         socket.on('typing', function () {
             socket.to(socket.room).broadcast.emit('typing', " typing...");
         });
-        // socket.on('callEnd', function () {
-        //     socket.to(socket.userId).broadcast.emit('callEnd', "callEnd");
-        // });
-
         // ioChat.to(socket.room).emit('chat-msg', {
         //     msgFrom: socket.userId,
         //     msg: data.msg,
@@ -145,6 +141,69 @@ const sockets = async (http, logger) => {
             // ioChat.emit('onlineStack', userStack);
 
         });
+
+        // =====================================call events start====================================
+        socket.on('set-cannel', async function (cannelName) {
+            log.info('join-cannel', { cannelName })
+
+            if (!cannelName || cannelName == "" || cannelName == undefined) {
+                socket.emit('oops',
+                    {
+                        event: 'set-cannel',
+                        data: "cannelName is required"
+                    });
+            } else {
+                //leaving room. 
+                socket.leave(socket.room);
+                socket.room = cannelName
+                socket.join(socket.room);
+            }
+
+            // ioChat.to(userSocket[socket.userId]).emit('set-room', socket.room);
+            //     }
+            //     } catch (e) {
+            //     log.info('set-room Err', e.message)
+            //     
+            // }
+
+
+        }); //end of set-cannel event.
+
+        socket.on('call-end', async function (data) {
+            log.info('call-end called', { data })
+            try {
+                ioChat.to(socket.room).emit('call-end', {});
+                socket.leave(socket.room);
+            } catch (e) {
+                log.info('call-end Err', e.message)
+                socket.emit('oops',
+                    {
+                        event: 'chat-msg',
+                        data: e.message
+                    });
+                return;
+            }
+
+
+            // for (user in userStack) {
+
+            //     if (user == socket.userId) {
+            //         delete userStack[user]
+            //     }
+
+            // }
+
+            // let addUser = socket.userId
+
+            // const updateStack = { [addUser]: 'Online', ...userStack }
+
+            // userStack = updateStack;
+
+            // ioChat.emit('onlineStack', userStack);
+
+        });
+
+        // =====================================call events end====================================
 
         //for popping disconnection message.
         socket.on('disconnect', function () {
@@ -277,5 +336,5 @@ const sockets = async (http, logger) => {
 
 };
 
-// exports.connect = connect;
-exports.sockets = sockets;
+exports.connect = connect;
+// exports.sockets = sockets;

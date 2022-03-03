@@ -15,16 +15,17 @@ app.use(express.json())
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
-// const io = require("socket.io")(server, {
-//   allowEIO3: true,
-//   cors: {
-//     origin: true,
-//     methods: ['GET', 'POST'],
-//     credentials: true
-//   }
-// });
+const io = require("socket.io")(server, {
+  allowEIO3: true,
+  cors: {
+    origin: true,
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+});
 
 const boot = async () => {
+
   const log = logger.start("app:boot");
   log.info(`environment:  ${process.env.NODE_ENV}`);
   log.info("starting server");
@@ -51,9 +52,9 @@ const init = async () => {
   await require("./settings/database").configure(logger);
   await require("./settings/express").configure(app, logger);
   await require("./settings/routes").configure(app, logger);
-  // await require("./settings/socket").configure(io, logger);
+  await require("./settings/socket").configure(io, logger);
 
-  require("./socket/socketEvents").sockets(server, logger);
+  // require("./socket/socketEvents").sockets(server, logger);
 
 
   app.get('/chat', function (req, res) {

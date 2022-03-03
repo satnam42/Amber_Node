@@ -354,6 +354,12 @@
                 socket.on('connect', function () {
                     console.log("set - user - data")
                     socket.emit('set-user-data', username);
+                    socket.emit('callEnd', 'end');
+                    socket.on('callEnd', function (data) {
+                        console.log('data', data)
+
+                    });
+
                 }); //end of connect event.
 
                 //receiving onlineStack.
@@ -551,6 +557,8 @@
 
                 //sending message.
                 $('form').submit(function () {
+
+
 
                     socket.emit('chat-msg', {
                         msg: $('#myMsg').val(),

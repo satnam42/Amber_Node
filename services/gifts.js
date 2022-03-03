@@ -59,7 +59,7 @@ const send = async (model, context) => {
         log.end();
         throw new Error("invalid gift id");
     }
-    const gift = await setGift(model, entity, context);
+    // const gift = await setGift(model, entity, context);
     log.end();
     return gift
 };

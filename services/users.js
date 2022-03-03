@@ -5,6 +5,7 @@ const fs = require("fs");
 const { RtcTokenBuilder, RtcRole } = require('agora-access-token');
 const { appID, appCertificate } = require('config').get('agora')
 const ObjectId = require("mongodb").ObjectId
+const utility = require("../utility/index")
 
 const buildUser = async (model, context) => {
     const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob, platform, socialLoginId } = model;
@@ -66,6 +67,7 @@ const setUser = async (model, user, context) => {
 
 const create = async (model, context) => {
     const log = context.logger.start("services:users:create");
+    await utility.verifyFCMToken(model.deviceToken)
     let user = await db.user.findOne({ username: model.username });
     if (user) {
         throw new Error(`${model.username} already taken choose another!`);
@@ -547,6 +549,16 @@ const generateRtcToken = async (modal, context) => {
         userId: uid
     }
 }
+const getCountries = async (query, context) => {
+    const log = context.logger.start(`services:users:getCountries`);
+    // let pageNo = Number(query.pageNo) || 1;
+    // let pageSize = Number(query.pageSize) || 10;
+    // let skipCount = pageSize * (pageNo - 1);
+    // const userId = context.user.id || context.user._id
+    const list = await utility.countries()
+    log.end()
+    return list
+};
 
 exports.create = create;
 exports.resetPassword = resetPassword;
@@ -557,6 +569,7 @@ exports.uploadProfilePic = uploadProfilePic;
 exports.search = search;
 exports.random = random;
 exports.getUsers = getUsers;
+exports.getCountries = getCountries;
 
 // ============follow==============
 

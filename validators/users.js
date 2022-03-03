@@ -23,6 +23,10 @@ const create = (req, res, next) => {
         log.end();
         return response.failure(res, "username is required");
     }
+    if (!req.body.deviceToken) {
+        log.end();
+        return response.failure(res, "deviceToken is required");
+    }
     log.end();
     return next();
 };
@@ -89,7 +93,6 @@ const resetPassword = (req, res, next) => {
     log.end();
     return next();
 };
-
 
 const follow = (req, res, next) => {
     const log = req.context.logger.start("validators:users:follow");

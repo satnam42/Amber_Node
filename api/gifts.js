@@ -16,8 +16,6 @@ const add = async (req, res) => {
     }
 };
 
-
-
 const update = async (req, res) => {
     const log = req.context.logger.start(`api:gifts:update`);
     try {

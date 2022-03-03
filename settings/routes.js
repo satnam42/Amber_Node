@@ -121,6 +121,11 @@ const configure = (app, logger) => {
         api.users.getUsers
     );
 
+    app.get("/api/users/countries",
+        permit.context.builder,
+        api.users.getCountries
+    );
+
     app.post("/api/users/generateRtcToken",
         permit.context.validateToken,
         permit.context.nocache,

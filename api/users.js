@@ -17,7 +17,6 @@ const create = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
-
 //login api
 
 const login = async (req, res) => {
@@ -54,7 +53,6 @@ const profile = async (req, res) => {
 };
 
 // reset password
-
 const resetPassword = async (req, res) => {
     const log = req.context.logger.start("api:users:resetPassword");
     try {
@@ -69,7 +67,6 @@ const resetPassword = async (req, res) => {
 };
 
 //update user
-
 const update = async (req, res) => {
     const log = req.context.logger.start(`api:users:update`);
     try {
@@ -83,6 +80,7 @@ const update = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 
 const uploadProfileImage = async (req, res) => {
     const log = req.context.logger.start(`api:users:uploadProfileImage`);
@@ -109,6 +107,7 @@ const uploadStory = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const getUsers = async (req, res) => {
     const log = req.context.logger.start(`api:users:currentUser`);
     try {
@@ -255,6 +254,19 @@ const getRtcToken = async (req, resp) => {
     }
 };
 
+const getCountries = async (req, res) => {
+    const log = req.context.logger.start(`api:users:getCountries`);
+    try {
+        const token = await service.getCountries(req.body, req.context);
+        log.end();
+        return response.data(res, token);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
 
 exports.create = create;
 exports.login = login;
@@ -264,6 +276,7 @@ exports.profile = profile;
 exports.uploadProfileImage = uploadProfileImage;
 exports.uploadStory = uploadStory;
 exports.getUsers = getUsers;
+exports.getCountries = getCountries;
 exports.follow = follow;
 exports.unfollow = unfollow;
 exports.following = following;
