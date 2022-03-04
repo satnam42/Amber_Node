@@ -27,8 +27,7 @@ const configure = (app, logger) => {
     });
 
     //user api's routes //
-    app.post("/api/users/create",
-        permit.context.builder,
+    app.post("/api/users/create", permit.context.builder,
         validator.users.create,
         api.users.create
     );
@@ -203,6 +202,12 @@ const configure = (app, logger) => {
     app.put('/api/gifts/update/:id',
         permit.context.validateToken,
         api.gifts.update
+    );
+
+    app.put(
+        "/api/gifts/uploadIcon/:id",
+        permit.context.validateToken,
+        api.gifts.uploadIcon
     );
     log.end();
 };

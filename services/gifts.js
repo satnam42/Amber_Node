@@ -76,10 +76,41 @@ const getGifts = async (query, context) => {
     return gifts
 };
 
+const uploadIcon = async (id, files, context) => {
+    const log = context.logger.start(`services:gifts:uploadIcon`);
+    let fileName = files[0].filename.replace(/ /g, '')
+    let file = files[0]
+    if (!id) {
+        throw new Error("gift id is required");
+    }
+    let gift = await db.gift.findById(id)
+    if (!gift) {
+        log.end();
+        throw new Error("gift not found");
+    }
+    if (file == undefined || file.size == undefined || file.size <= 0) throw new Error("image is required");
+    if (gift.icon != "") {
+        const path = file.destination + '/' + gift.icon
+        try {
+            fs.unlinkSync(path);
+            console.log(`image successfully removed from ${path}`);
+        } catch (error) {
+            console.error('there was an error to remove image:', error.message);
+        }
+    }
+    // user.images.push({ name: fileName })
+    gift.icon = fileName
+    await gift.save()
+    log.end();
+    return 'icon uploaded successfully'
+
+}
+
 
 exports.create = create;
 exports.update = update;
 exports.getGifts = getGifts;
 exports.send = send;
+exports.uploadIcon = uploadIcon;
 
 
