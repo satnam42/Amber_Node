@@ -17,8 +17,8 @@ const configure = async (io, logger) => {
             }
             const user = await db.user.findById(details._id)
             socket.userId = user.id;
-            socketEvents.connect(io, logger)
-            next();
+            // await socketEvents.connect(io, logger)
+            return next();
         } catch (err) {
             log.error(err)
             log.end()

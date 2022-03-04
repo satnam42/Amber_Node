@@ -3,6 +3,7 @@
 const express = require("express");
 const appConfig = require("config").get("app");
 const logger = require("@open-age/logger")("server");
+const auth = require("./permit/auth");
 const Http = require("http");
 const port = process.env.PORT || appConfig.port || 3000;
 const app = express();
@@ -15,14 +16,6 @@ app.use(express.json())
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
-const io = require("socket.io")(server, {
-  allowEIO3: true,
-  cors: {
-    origin: true,
-    methods: ['GET', 'POST'],
-    credentials: true
-  }
-});
 
 const boot = async () => {
 
@@ -33,18 +26,42 @@ const boot = async () => {
     log.info(`listening on port: ${port}`);
     log.end();
   });
+  const io = require("socket.io")(server, {
+    allowEIO3: true,
+    cors: {
+      origin: true,
+      methods: ['GET', 'POST'],
+      credentials: true
+    }
+  });
 
-  // const io = require("socket.io")(server, {
-  //   allowEIO3: true,
-  //   cors: {
-  //     origin: true,
-  //     methods: ['GET', 'POST'],
-  //     credentials: true
-  //   }
-  // });
-  // await new db.club({
-  //   name: "Amber club"
-  // }).save();
+  io.use(async (socket, next) => {
+    try {
+      const token = socket.handshake.query.token;
+      const details = auth.extractToken(token, { logger });
+      if (details.name === "TokenExpiredError") {
+        next(new Error('token expired'));
+        // throw new Error("token expired");
+      }
+
+      if (details.name === "JsonWebTokenError") {
+        next(new Error('token is invalid'));
+        // throw new Error("token is invalid");
+      }
+      // const user = await db.user.findById(details._id)
+      // socket.userId = user.id;
+
+      next();
+    } catch (err) {
+      next(new Error(err.message));
+      // log.error(err)
+      // log.end()
+      // throw new Error(err.message)
+    }
+
+  });
+
+  await require("./socket/socketEvents").connect(io, logger);
 
 };
 
@@ -52,11 +69,6 @@ const init = async () => {
   await require("./settings/database").configure(logger);
   await require("./settings/express").configure(app, logger);
   await require("./settings/routes").configure(app, logger);
-  await require("./settings/socket").configure(io, logger);
-
-  // require("./socket/socketEvents").sockets(server, logger);
-
-
   app.get('/chat', function (req, res) {
     res.sendFile(__dirname + '/templates/index.html');
   });

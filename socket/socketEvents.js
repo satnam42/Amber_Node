@@ -15,6 +15,12 @@ const connect = async (io, logger) => {
     ioChat.on('connection', async (socket) => {
         log.info("socketio chat connected.");
         let userId = socket.userId
+        if (socket.userId == undefined || socket.userId == "") {
+            socket.emit('oops', {
+                event: 'token is not valid',
+                data: 'token is not valid'
+            });
+        }
         //function to get user name
         // socket.emit('set-user-data', (userId) => {
         // })
@@ -32,6 +38,14 @@ const connect = async (io, logger) => {
         //             data: 'set-user-data is required'
         //         });
         //     } else {
+        // socket.on('connect_failed', function () {
+        //     console.log("Sorry, there seems to be an issue with the connection!");
+        // })
+
+        // socket.on("connect_error", (err) => {
+        //     console.log(err.message); // prints the message associated with the error
+        // });
+        // }); /
         log.info(userId + "  logged In");
         //storing variable.
         // socket.userId = userId;
