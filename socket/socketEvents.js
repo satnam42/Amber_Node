@@ -157,13 +157,13 @@ const connect = async (io, logger) => {
         });
 
         // =====================================call events start====================================
-        socket.on('set-cannel', async function (cannelName) {
+        socket.on('set-channel', async function (cannelName) {
             log.info('join-cannel', { cannelName })
 
             if (!cannelName || cannelName == "" || cannelName == undefined) {
                 socket.emit('oops',
                     {
-                        event: 'set-cannel',
+                        event: 'set-channel',
                         data: "cannelName is required"
                     });
             } else {
