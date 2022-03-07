@@ -198,7 +198,6 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.gifts.getGifts
     );
-
     app.put('/api/gifts/update/:id',
         permit.context.validateToken,
         api.gifts.update

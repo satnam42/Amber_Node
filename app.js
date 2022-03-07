@@ -48,8 +48,8 @@ const boot = async () => {
         next(new Error('token is invalid'));
         // throw new Error("token is invalid");
       }
-      // const user = await db.user.findById(details._id)
-      // socket.userId = user.id;
+      const user = await db.user.findById(details._id)
+      socket.userId = user.id;
 
       next();
     } catch (err) {
