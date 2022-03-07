@@ -1,3 +1,5 @@
+"use strict";
+const service = require("../services/users");
 const admin = require("firebase-admin");
 // let  deviceTokens = '3244d7ba6d7f941e'
 const pushNotification = async (deviceToken, title, message) => {
@@ -39,6 +41,10 @@ const pushNotification = async (deviceToken, title, message) => {
 
 const sendCallNotification = async (body, context) => {
     const log = context.logger.start(`services:callNotification`);
+    let modal = {}
+    modal.channelId = body.channelName
+    modal.isPublisher = false
+    let rtcRes = await service.generateRtcToken(modal, context)
     const user = await db.user.findById(body.receiverId)
     if (!user) {
         throw new Error('called  user not found')
@@ -77,6 +83,7 @@ const sendCallNotification = async (body, context) => {
             "channelName": body.channelName.toString(),
             "name": body.username,
             "imageUrl": body.imageUrl,
+            "rtc": rtcRes
         },
         notification: {
             title: "call",

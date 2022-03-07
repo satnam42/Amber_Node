@@ -192,11 +192,12 @@ const connect = async (io, logger) => {
                 log.info('call-end Err', e.message)
                 socket.emit('oops',
                     {
-                        event: 'chat-msg',
+                        event: 'call-end',
                         data: e.message
                     });
                 return;
             }
+
 
 
             // for (user in userStack) {
@@ -217,8 +218,25 @@ const connect = async (io, logger) => {
 
         });
 
-        // =====================================call events end====================================
+        // =====================================call events end====================================.
 
+        // =====================================call receive start====================================
+        socket.on('call-receive', async function (data) {
+            log.info('call-receive called', { data })
+            try {
+                ioChat.to(socket.room).emit('call-receive', {});
+                socket.leave(socket.room);
+            } catch (e) {
+                log.info('call-receive Err', e.message)
+                socket.emit('oops',
+                    {
+                        event: 'call-end',
+                        data: e.message
+                    });
+                return;
+            }
+        })
+        // =====================================call receive start====================================
         //for popping disconnection message.
         socket.on('disconnect', function () {
             log.info(socket.userId + "  logged out");
