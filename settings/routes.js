@@ -188,6 +188,10 @@ const configure = (app, logger) => {
         validator.notifications.sendCallNotification,
         api.notifications.sendCallNotification
     );
+    app.post("/api/notifications/random",
+        permit.context.validateToken,
+        api.notifications.random
+    );
 
     app.post("/api/gifts/add",
         permit.context.validateToken,
