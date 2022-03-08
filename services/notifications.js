@@ -83,7 +83,9 @@ const sendCallNotification = async (body, context) => {
             "channelName": body.channelName.toString(),
             "name": body.username,
             "imageUrl": body.imageUrl,
-            "rtc": rtcRes
+            token: rtcRes.token,
+            userId: rtcRes.userId.toString()
+
         },
         notification: {
             title: "call",
