@@ -8,7 +8,7 @@ const ObjectId = require("mongodb").ObjectId
 const utility = require("../utility/index")
 
 const buildUser = async (model, context) => {
-    const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob, platform, socialLoginId } = model;
+    const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob, platform, socialLoginId,deviceToken } = model;
     const log = context.logger.start(`services:users:buildUser${model}`);
     const user = await new db.user({
         username: username,
@@ -22,6 +22,7 @@ const buildUser = async (model, context) => {
         dob: dob,
         phoneNo: phoneNo,
         status: status,
+        deviceToken: deviceToken,
         password: password
     }).save();
     log.end();
