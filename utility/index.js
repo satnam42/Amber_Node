@@ -1218,14 +1218,14 @@ const countries = () => {
 }
 
 const verifyFCMToken = async (fcmToken) => {
-    return admin.messaging().send({
-        token: fcmToken
-    }, true).then(result => {
-        return true
-    }).catch(err => {
-        console.log('verifyFCMToken', err)
-        return false
-    })
+    await admin.messaging().send({ token: fcmToken }, true)
+
+    // .then(result => {
+    //     return true
+    // }).catch(err => {
+    //     console.log('verifyFCMToken', err)
+    //     return false
+    // })
 
 }
 
