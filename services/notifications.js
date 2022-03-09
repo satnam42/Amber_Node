@@ -97,6 +97,7 @@ const sendCallNotification = async (body, context) => {
     const message = {
         data: {  //you can send only notification or only data(or include both)
             type: "callReceive",
+            callType: 'simple',
             "channelName": body.channelName.toString(),
             "name": body.username,
             "imageUrl": body.imageUrl,
@@ -164,8 +165,6 @@ const random = async (modal, context) => {
         throw new Error('something went wrong')
     }
 
-
-
     let receiver = {}
 
     receiver.deviceToken = randomUser[0].deviceToken
@@ -184,6 +183,7 @@ const random = async (modal, context) => {
     const message = {
         data: {  //you can send only notification or only data(or include both)
             type: "callReceive",
+            callType: 'random',
             "channelName": receiver.channelId.toString(),
             "name": context.user.username,
             // "imageUrl": caller.imageUrl,
