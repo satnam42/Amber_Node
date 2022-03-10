@@ -588,5 +588,38 @@ module.exports = [{
         }
     }
 },
+{
+    url: "/logout",
+    post: {
+        summary: "logout",
+        description: "logout",
+        parameters: [
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            // {
+            //     in: "body",
+            //     name: "body",
+            //     description: "Model of user logout",
+            //     required: true,
+            //     schema: {
+            //         $ref: "#/definitions/login"
+            //     }
+            // }
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
 
 ];

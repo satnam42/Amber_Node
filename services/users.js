@@ -557,6 +557,15 @@ const getCountries = async (query, context) => {
     return list
 };
 
+const logout = async (context) => {
+    const log = context.logger.start(`services:users:logout`);
+    const user = await db.user.findById(context.user.id)
+    user.deviceToken = ""
+    await user.save()
+    log.end()
+    return "logout successfully"
+};
+
 exports.create = create;
 exports.resetPassword = resetPassword;
 exports.update = update;
@@ -581,4 +590,5 @@ exports.socialLogin = socialLogin
 exports.removeProfilePic = removeProfilePic
 exports.generateRtcToken = generateRtcToken
 exports.uploadStory = uploadStory
+exports.logout = logout
 

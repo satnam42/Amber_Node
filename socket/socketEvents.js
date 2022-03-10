@@ -310,6 +310,22 @@ const connect = async (io, logger) => {
             read: data.read || true,
             conversation: data.room
         }).save()
+
+        if (data.gift !== "" || data.gift != undefined) {
+            const message = await new db.coin({
+                giftedCoins: [{
+                    gift: giftId,
+                    fromUser: data.msgFrom,
+                    coin: data.giftedCoin
+                }],
+                receiver: data.msgTo,
+                content: data.msg,
+                read: data.read || true,
+                conversation: data.room
+            }).save()
+
+        }
+
         log.info("message saved .");
         return message
 

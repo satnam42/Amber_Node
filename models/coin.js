@@ -2,6 +2,11 @@
 const mongoose = require("mongoose");
 
 const coin = mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+        required: true
+    },
     totalCoin: { type: Number, default: 0 },
     activeCoin: { type: Number, default: 0 },
     earnedCoins: [
@@ -43,6 +48,6 @@ const coin = mongoose.Schema({
             createdAt: { type: Date, default: Date.now() },
         }],
 }, { timestamps: true });
-
+//todo need to build pre funcation to setup total cooin  and active coin
 mongoose.model("coin", coin);
 module.exports = coin;

@@ -21,6 +21,7 @@ const getToken = (id, isExpired, context) => {
     log.end();
     return token;
 };
+
 const getOtpToken = (otp, id, isExpired, context) => {
     const log = context.logger.start(`permit:auth:getToken:${id}`);
 
@@ -37,6 +38,7 @@ const getOtpToken = (otp, id, isExpired, context) => {
     log.end();
     return token;
 };
+
 const extractToken = (token, context) => {
     const log = context.logger.start(`permit:auth:requiresToken:${token}`);
     try {

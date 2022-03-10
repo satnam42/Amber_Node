@@ -131,6 +131,11 @@ const configure = (app, logger) => {
         api.users.getRtcToken
     );
 
+    app.post("/api/users/logout",
+        permit.context.validateToken,
+        api.users.logout
+    );
+
     app.post("/api/blocks/block",
         permit.context.validateToken,
         validator.blocks.block,

@@ -35,7 +35,12 @@ const sendCallNotification = async (body, context) => {
     let modal = {}
     modal.channelId = body.channelName
     modal.isPublisher = false
+    if (body.receiverId == context.user.id) {
+        throw new Error('you cannot call to  yourself')
+    }
+
     let rtcRes = await service.generateRtcToken(modal, context)
+
     const user = await db.user.findById(body.receiverId)
     if (!user) {
         throw new Error('called  user not found')

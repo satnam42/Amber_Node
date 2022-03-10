@@ -266,6 +266,18 @@ const getCountries = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+const logout = async (req, res) => {
+    const log = req.context.logger.start(`api:users:logout`);
+    try {
+        const message = await service.logout(req.context);
+        log.end();
+        return response.data(res, message);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
 
 
 exports.create = create;
@@ -286,4 +298,5 @@ exports.random = random;
 exports.myStatistics = myStatistics;
 exports.removeProfilePic = removeProfilePic;
 exports.getRtcToken = getRtcToken;
+exports.logout = logout;
 
