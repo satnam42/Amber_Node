@@ -99,6 +99,8 @@ const login = async (model, context) => {
     user.updatedOn = new Date();
     await user.save();
     user.token = auth.getToken(user.id, false, context);
+
+
     log.end();
     return user;
 };
@@ -546,6 +548,7 @@ const generateRtcToken = async (modal, context) => {
         userId: uid
     }
 }
+
 const getCountries = async (query, context) => {
     const log = context.logger.start(`services:users:getCountries`);
     // let pageNo = Number(query.pageNo) || 1;
@@ -557,6 +560,7 @@ const getCountries = async (query, context) => {
     return list
 };
 
+
 const logout = async (context) => {
     const log = context.logger.start(`services:users:logout`);
     const user = await db.user.findById(context.user.id)
@@ -565,6 +569,7 @@ const logout = async (context) => {
     log.end()
     return "logout successfully"
 };
+
 
 exports.create = create;
 exports.resetPassword = resetPassword;

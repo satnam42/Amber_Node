@@ -5,7 +5,7 @@ const coin = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
-        required: true
+        // required: true
     },
     totalCoin: { type: Number, default: 0 },
     activeCoin: { type: Number, default: 0 },
@@ -15,7 +15,6 @@ const coin = mongoose.Schema({
             fromUser: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "user",
-                required: true,
             },
             coin: { type: Number, default: 0 },
             createdAt: { type: Date, default: Date.now() },
@@ -26,7 +25,6 @@ const coin = mongoose.Schema({
             onUser: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "user",
-                required: true,
             },
             coin: { type: Number, default: 0 },
             createdAt: { type: Date, default: Date.now() },
@@ -49,5 +47,14 @@ const coin = mongoose.Schema({
         }],
 }, { timestamps: true });
 //todo need to build pre funcation to setup total cooin  and active coin
+// coin.pre('save', () => console.log('Hello from pre save'));
+// coin.post('save', function (error, doc, next) {
+//     if (error.name === 'MongoServerError' && error.code === 11000) {
+//         next(new Error('There was a duplicate key error'));
+//     } else {
+//         next();
+//     }
+// });
 mongoose.model("coin", coin);
+
 module.exports = coin;

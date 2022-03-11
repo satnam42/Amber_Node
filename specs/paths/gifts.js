@@ -9,7 +9,7 @@ module.exports = [
                     in: "header",
                     name: "x-access-token",
                     description: "token to access api",
-                    required: true,
+                    required: false,
                     type: "string"
                 },
                 {
@@ -19,6 +19,40 @@ module.exports = [
                     required: true,
                     schema: {
                         $ref: "#/definitions/giftCreate"
+                    }
+                }
+
+            ],
+            responses: {
+                default: {
+                    description: "Unexpected error",
+                    schema: {
+                        $ref: "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
+    {
+        url: "/send",
+        post: {
+            summary: "send gift",
+            description: "send gift",
+            parameters: [
+                {
+                    in: "header",
+                    name: "x-access-token",
+                    description: "token to access api",
+                    required: false,
+                    type: "string"
+                },
+                {
+                    in: "body",
+                    name: "body",
+                    description: "model of send gift                                                                                  ",
+                    required: true,
+                    schema: {
+                        $ref: "#/definitions/sendGift"
                     }
                 }
 

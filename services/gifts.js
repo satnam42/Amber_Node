@@ -8,6 +8,7 @@ const buildGift = async (model, context) => {
         coin: coin,
         description: description,
     }).save();
+
     log.end();
     return gift;
 };
@@ -35,6 +36,15 @@ const create = async (model, context) => {
         throw new Error(`${model.title} already exits choose another!`);
     } else {
         gift = buildGift(model, context);
+        const message = await new db.coin({
+            totalCoin: 1000
+            // user: user.id,
+            // giftedCoins: [{
+            //     gift: giftId,
+            //     fromUser: data.msgFrom,
+            //     coin: data.giftedCoin
+            // }],
+        }).save()
         log.end();
         return gift;
     }
@@ -53,16 +63,62 @@ const update = async (id, model, context) => {
 };
 
 const send = async (model, context) => {
+
     const log = context.logger.start(`services: gifts: send`);
+
     let gift = await db.gift.findById(model.giftId)
+
     if (!gift) {
-        log.end();
-        throw new Error("invalid gift id");
+        throw new Error('provider gift not found')
     }
-    // const gift = await setGift(model, entity, context);
-    log.end();
-    return gift
-};
+
+    // checking user have coin to gift to  user
+    let coin = await db.coin.findOne({ user: model.senderId })
+
+    if (coin && coin.activeCoin >= gift.coin) {
+        let coin = db.coin.findOne({ user: model.receiverId })
+        // if  user have coin update it 
+        if (coin) {
+            coin.totalCoin += gift.coin
+            coin.activeCoin += gift.coin
+            coin.giftedCoins.push({
+                gift: gift.id,
+                fromUser: model.senderId,
+                coin: gift.coin
+            })
+
+        }
+        else {
+            // if  user have  no coin then create it 
+            const coin = await new db.coin({
+                user: model.receiverId,
+                totalCoin: gift.coin,
+                activeCoin: gift.coin,
+                giftedCoins: [
+                    {
+                        gift: gift.id,
+                        fromUser: model.senderId,
+                        coin: gift.coin
+                    }],
+            }).save()
+        }
+
+        await coin.save()
+
+    } else {
+        throw new Error("you don't have enough coin to send this gift")
+    }
+
+    coin.activeCoin -= gift.coin
+
+    coin.spendCoins.push({
+        onUser: model.receiverId,
+        coin: gift.coin
+    })
+    await coin.save()
+}
+
+// const gift = await setGift(model, entity, context);
 
 const getGifts = async (query, context) => {
     const log = context.logger.start(`services:gifts:getGifts`);

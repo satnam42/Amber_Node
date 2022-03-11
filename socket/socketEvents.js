@@ -312,17 +312,9 @@ const connect = async (io, logger) => {
         }).save()
 
         if (data.gift !== "" || data.gift != undefined) {
-            const message = await new db.coin({
-                giftedCoins: [{
-                    gift: giftId,
-                    fromUser: data.msgFrom,
-                    coin: data.giftedCoin
-                }],
-                receiver: data.msgTo,
-                content: data.msg,
-                read: data.read || true,
-                conversation: data.room
-            }).save()
+
+            //=================== sender coin detail =====================
+            let coin = await db.coin.findOne({ user: data.msgFrom })
 
         }
 

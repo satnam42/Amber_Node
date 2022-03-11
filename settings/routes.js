@@ -27,7 +27,8 @@ const configure = (app, logger) => {
     });
 
     //user api's routes //
-    app.post("/api/users/create", permit.context.builder,
+    app.post("/api/users/create",
+        permit.context.builder,
         validator.users.create,
         api.users.create
     );
@@ -199,8 +200,12 @@ const configure = (app, logger) => {
     );
 
     app.post("/api/gifts/add",
-        permit.context.validateToken,
+        permit.context.builder,
         api.gifts.add
+    );
+    app.post("/api/gifts/send",
+        permit.context.validateToken,
+        api.gifts.send
     );
 
     app.get("/api/gifts/list",
