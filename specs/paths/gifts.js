@@ -168,4 +168,35 @@ module.exports = [
             }
         }
     },
+    {
+        url: "/myGifts/{id}",
+        get: {
+            summary: "myGifts",
+            description: "my Gifts user by id ",
+            parameters: [{
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "path",
+                type: "string",
+                name: "id",
+                description: "user id",
+                required: true
+            },
+
+            ],
+            responses: {
+                default: {
+                    description: "Unexpected error",
+                    schema: {
+                        $ref: "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
 ];

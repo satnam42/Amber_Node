@@ -336,7 +336,6 @@ const uploadStory = async (id, files, context) => {
     return 'video uploaded successfully'
 
 }
-
 const follow = async (model, context) => {
     const log = context.logger.start("services:users:follow");
     // ===========following logic ===============
@@ -371,7 +370,6 @@ const follow = async (model, context) => {
     log.end()
     return "follow successfully"
 };
-
 const unfollow = async (model, context) => {
     const log = context.logger.start("services:users:unFollow");
     // ===========unfollower logic end ===============
@@ -563,6 +561,7 @@ const getCountries = async (query, context) => {
     log.end()
     return list
 };
+
 
 const logout = async (context) => {
     const log = context.logger.start(`services:users:logout`);

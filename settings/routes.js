@@ -216,6 +216,10 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.gifts.update
     );
+    app.get('/api/gifts/myGifts/:id',
+        permit.context.validateToken,
+        api.gifts.myGifts
+    );
 
     app.put(
         "/api/gifts/uploadIcon/:id",

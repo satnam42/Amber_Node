@@ -161,6 +161,16 @@ const uploadIcon = async (id, files, context) => {
     return 'icon uploaded successfully'
 
 }
+const myGifts = async (id, model, context) => {
+    const log = context.logger.start(`services: gifts: myGifts`);
+    if (!id) {
+        throw new Error('user id is Required')
+    }
+    let myGifts = await db.coin.findOne({ user: id }).populate("giftedCoins.gift").populate("giftedCoins.fromUser")
+    log.end();
+    return myGifts
+};
+
 
 
 exports.create = create;
@@ -168,5 +178,6 @@ exports.update = update;
 exports.getGifts = getGifts;
 exports.send = send;
 exports.uploadIcon = uploadIcon;
+exports.myGifts = myGifts;
 
 
