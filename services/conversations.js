@@ -96,7 +96,7 @@ const conversationList = async (id, context) => {
                 "_id": 0,
                 "firstName": "$user.firstName",
                 "userId": "$user._id",
-                "image": "$user.profileImageName",
+                "image": "$user.avatar",
                 "conversationId": "$conversationsId"
             }
         }

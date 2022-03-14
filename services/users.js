@@ -275,6 +275,7 @@ const search = async (name, context) => {
     const users = await db.user.find({ name: { "$regex": '.*' + name + '.*', "$options": 'i' } }).limit(5);
     return users
 };
+
 const uploadProfilePic = async (id, files, context) => {
     const log = context.logger.start(`services:users:uploadProfilePic`);
     let fileName = files[0].filename.replace(/ /g, '')
@@ -304,6 +305,7 @@ const uploadProfilePic = async (id, files, context) => {
     return 'image uploaded successfully'
 
 }
+
 const uploadStory = async (id, files, context) => {
     const log = context.logger.start(`services:users:uploadStory`);
     let fileName = files[0].filename.replace(/ /g, '')
@@ -334,6 +336,7 @@ const uploadStory = async (id, files, context) => {
     return 'video uploaded successfully'
 
 }
+
 const follow = async (model, context) => {
     const log = context.logger.start("services:users:follow");
     // ===========following logic ===============
@@ -368,6 +371,7 @@ const follow = async (model, context) => {
     log.end()
     return "follow successfully"
 };
+
 const unfollow = async (model, context) => {
     const log = context.logger.start("services:users:unFollow");
     // ===========unfollower logic end ===============
@@ -559,7 +563,6 @@ const getCountries = async (query, context) => {
     log.end()
     return list
 };
-
 
 const logout = async (context) => {
     const log = context.logger.start(`services:users:logout`);
