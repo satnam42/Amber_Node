@@ -56,80 +56,81 @@ const memberList = async (name, context) => {
     if (!name) {
         throw new Error('club name is required')
     }
+
     // const club = await db.club.find(query).populate('members')
-    const club = await db.club.aggregate([
-        { $match: { name: name } },
-        {
-            $lookup: {
-                from: "users",
-                localField: "members",
-                // pipeline: [
-                //     { $match: { gender: context.user.gender == 'male' ? 'female' : 'male' } },],
-                foreignField: "_id",
-                as: "users"
-            },
-        },
-        { $unwind: "$users" },
-        {
-            $project: {
-                _id: 0,
-                "_id": "$users._id",
-                "firstName": "$users.firstName",
-                "lastName": "$users.lastName",
-                "avatar": "$users.avatar",
-                "following": {
-                    $filter: {
-                        input: "$users.following",
-                        as: "following",
-                        cond: { $eq: ["$$following.userId", ObjectId(context.user.id)] }
-                    }
-                    // $cond: {
-                    //     if: { $isArray: "$users.following" }, then: "$users.following", else: []
-                    // }
-                }
+    // const club = await db.club.aggregate([
+    //     { $match: { name: name } },
+    //     {
+    //         $lookup: {
+    //             from: "users",
+    //             localField: "members",
+    //             // pipeline: [
+    //             //     { $match: { gender: context.user.gender == 'male' ? 'female' : 'male' } },],
+    //             foreignField: "_id",
+    //             as: "users"
+    //         },
+    //     },
+    //     { $unwind: "$users" },
+    //     {
+    //         $project: {
+    //             _id: 0,
+    //             "_id": "$users._id",
+    //             "firstName": "$users.firstName",
+    //             "lastName": "$users.lastName",
+    //             "avatar": "$users.avatar",
+    //             "following": {
+    //                 $filter: {
+    //                     input: "$users.following",
+    //                     as: "following",
+    //                     cond: { $eq: ["$$following.userId", ObjectId(context.user.id)] }
+    //                 }
+    //                 // $cond: {
+    //                 //     if: { $isArray: "$users.following" }, then: "$users.following", else: []
+    //                 // }
+    //             }
 
-            }
-        },
-        {
-            $unwind: {
-                path: '$following',
-                preserveNullAndEmptyArrays: true
-            },
-        },
-        {
-            $addFields: {
-                "isFollowing":
-                {
-                    $cond: {
-                        if: {
-                            $eq: ["$following.userId", ObjectId(context.user.id)]
-                        }, then: true, else: false
-                        // $cond: {
-                        //     if: {
-                        //         "following": {
-                        //             $filter: {
-                        //                 input: "$following",
-                        //                 as: "following",
-                        //                 cond: { $eq: ["$$following.userId", ObjectId(context.user.id)] }
-                        //             }
-                        //         }
-                        //     }, then: true, else: false
-                        // }
-                    }
-                }
-            }
-        },
-        // {
-        //     $group: {
-        //         _id: { _id: "$_id", isFollowing: '$isFollowing' },
-        //         firstName: { $first: '$firstName' },
-        //         lastName: { $first: '$lastName' },
-        //         avtar: { $first: '$avtar' },
-        //         isFollowing: { $last: '$isFollowing' }, //Todo handle true false
-        //     }
-        // }
+    //         }
+    //     },
+    //     {
+    //         $unwind: {
+    //             path: '$following',
+    //             preserveNullAndEmptyArrays: true
+    //         },
+    //     },
+    //     {
+    //         $addFields: {
+    //             "isFollowing":
+    //             {
+    //                 $cond: {
+    //                     if: {
+    //                         $eq: ["$following.userId", ObjectId(context.user.id)]
+    //                     }, then: true, else: false
+    //                     // $cond: {
+    //                     //     if: {
+    //                     //         "following": {
+    //                     //             $filter: {
+    //                     //                 input: "$following",
+    //                     //                 as: "following",
+    //                     //                 cond: { $eq: ["$$following.userId", ObjectId(context.user.id)] }
+    //                     //             }
+    //                     //         }
+    //                     //     }, then: true, else: false
+    //                     // }
+    //                 }
+    //             }
+    //         }
+    //     },
+    //     // {
+    //     //     $group: {
+    //     //         _id: { _id: "$_id", isFollowing: '$isFollowing' },
+    //     //         firstName: { $first: '$firstName' },
+    //     //         lastName: { $first: '$lastName' },
+    //     //         avtar: { $first: '$avtar' },
+    //     //         isFollowing: { $last: '$isFollowing' }, //Todo handle true false
+    //     //     }
+    //     // }
 
-    ])
+    // ])
     log.end();
     return club
 };
@@ -143,11 +144,11 @@ const membersByFilter = async (query, context) => {
     let filter = {}
     // ===============================================for you=================================================
 
-    if (query.gander.trim() !== "" && query.gander == undefined) {
+    if (query.gender.trim() !== "" && query.gender == undefined) {
         filter = {
             $lookup: {
                 from: "users",
-                localField: "members",
+                // localField: "members",
                 pipeline: [
                     { $match: { gender: context.user.gender == 'male' ? 'female' : 'male', country: query.country } },],
                 foreignField: "_id",
@@ -175,7 +176,7 @@ const membersByFilter = async (query, context) => {
         filter = {
             $lookup: {
                 from: "users",
-                localField: "members",
+                // localField: "members",
                 pipeline: [
                     { $match: { gender: context.user.gender == 'male' ? 'female' : 'male', country: query.country } },],
                 foreignField: "_id",

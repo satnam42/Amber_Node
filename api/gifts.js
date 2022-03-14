@@ -1,6 +1,7 @@
 "use strict";
 const service = require("../services/gifts");
 const response = require("../exchange/response");
+const mapper = require("../mappers/gift");
 
 const add = async (req, res) => {
     const log = req.context.logger.start(`api:gifts:add`);
@@ -29,6 +30,21 @@ const update = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
+const myGifts = async (req, res) => {
+    const log = req.context.logger.start(`api:gifts:myGift`);
+    try {
+        const myGifts = await service.myGift(req.params.id, req.context);
+        log.end();
+        return response.data(res, mapper.toModel(myGifts));
+        // return response.data(res, gift);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
 const send = async (req, res) => {
     const log = req.context.logger.start(`api:gifts:send`);
     try {
@@ -46,10 +62,10 @@ const send = async (req, res) => {
 const getGifts = async (req, res) => {
     const log = req.context.logger.start(`api:gifts:currentUser`);
     try {
-        const gift = await service.getGifts(req.query, req.context);
+        const gifts = await service.getGifts(req.query, req.context);
         const message = "gift  list fetched successfully";
         log.end();
-        return response.page(res, gift, Number(req.query.pageNo), Number(req.query.pageSize), gift.count);
+        return response.page(res, mapper.toSearchModel(gifts), Number(req.query.pageNo), Number(req.query.pageSize), gifts.count);
         // return response.success(res, message, gift);
     } catch (err) {
         log.error(err);
@@ -57,6 +73,8 @@ const getGifts = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
+
 const uploadIcon = async (req, res) => {
     const log = req.context.logger.start(`api:gifts:uploadIcon`);
     try {
@@ -77,3 +95,4 @@ exports.update = update;
 exports.getGifts = getGifts;
 exports.send = send;
 exports.uploadIcon = uploadIcon;
+exports.myGifts = myGifts;
