@@ -57,7 +57,9 @@ const update = async (id, model, context) => {
         log.end();
         throw new Error("invalid gift");
     }
+    console.log('model ==>>>>', id, model);
     const gift = await setGift(model, entity, context);
+    console.log('updated data', gift);
     log.end();
     return gift
 };
