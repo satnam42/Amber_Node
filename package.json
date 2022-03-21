@@ -33,6 +33,6 @@
     "param-case": "^3.0.4",
     "promise": "^8.1.0",
     "socket.io": "^2.2.0",
-    "stripe": "^8.184.0"
+    "stripe": "^8.210.0"
   }
 }

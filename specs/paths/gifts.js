@@ -199,4 +199,38 @@ module.exports = [
             }
         }
     },
+    {
+        url: "/buy",
+        post: {
+            summary: "buy gift",
+            description: "buy gift",
+            parameters: [
+                {
+                    in: "header",
+                    name: "x-access-token",
+                    description: "token to access api",
+                    required: false,
+                    type: "string"
+                },
+                {
+                    in: "body",
+                    name: "body",
+                    description: "model of buyGift",
+                    required: false,
+                    schema: {
+                        $ref: "#/definitions/buyGift"
+                    }
+                }
+
+            ],
+            responses: {
+                default: {
+                    description: "Unexpected error",
+                    schema: {
+                        $ref: "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
 ];

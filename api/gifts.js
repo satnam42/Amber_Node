@@ -87,6 +87,18 @@ const uploadIcon = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+const buy = async (req, res) => {
+    const log = req.context.logger.start(`api:gifts:buy`);
+    try {
+        const buy = await service.buy(req.body, req.context);
+        log.end();
+        return response.data(res, buy);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
 
 
 
@@ -96,3 +108,4 @@ exports.getGifts = getGifts;
 exports.send = send;
 exports.uploadIcon = uploadIcon;
 exports.myGifts = myGifts;
+exports.buy = buy;

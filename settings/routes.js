@@ -159,41 +159,50 @@ const configure = (app, logger) => {
         validator.history.create,
         api.history.create
     );
+
     app.get("/api/history/getByUserId/:id",
         permit.context.validateToken,
         api.history.getByUserId
     );
+
     app.post("/api/club/join",
         permit.context.validateToken,
         validator.club.joinOrLeave,
         api.club.join
     );
+
     app.post("/api/club/leave",
         permit.context.validateToken,
         validator.club.joinOrLeave,
         api.club.leave
     );
+
     app.get("/api/club/membersByClubName/:name",
         permit.context.validateToken,
         api.club.getMembersByClubName
     );
+
     app.get("/api/club/membersByFilter",
         permit.context.validateToken,
         api.club.getMembersByFilter
     );
+
     app.get('/api/conversations/getOldConversations',
         permit.context.builder,
         api.conversations.getOldChat
     );
+
     app.get('/api/conversations/conversationList/:id',
         permit.context.builder,
         api.conversations.getConversationList
     );
+
     app.post("/api/notifications/sendCallNotification",
         permit.context.validateToken,
         validator.notifications.sendCallNotification,
         api.notifications.sendCallNotification
     );
+
     app.post("/api/notifications/random",
         permit.context.validateToken,
         api.notifications.random
@@ -203,7 +212,12 @@ const configure = (app, logger) => {
         permit.context.builder,
         api.gifts.add
     );
+
     app.post("/api/gifts/send",
+        permit.context.validateToken,
+        api.gifts.send
+    );
+    app.post("/api/gifts/buy",
         permit.context.validateToken,
         api.gifts.send
     );

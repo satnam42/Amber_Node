@@ -1,5 +1,5 @@
 const ObjectId = require("mongodb").ObjectId
-
+const stripe = require('stripe')('sk_test_51KfdqKSIbgCXqMm2fnVDKcAd1LV0rVXZ9QiRvd0bm5JQYIeQXbF26NgYQA7RqiuSF3hUotbvt4FNPlsuI6OQgrPz00bCL9VA9k');
 const buildGift = async (model, context) => {
     const { title, coin, description } = model;
     const log = context.logger.start(`services:gifts:buildGift${model}`);
@@ -36,15 +36,15 @@ const create = async (model, context) => {
         throw new Error(`${model.title} already exits choose another!`);
     } else {
         gift = buildGift(model, context);
-        const message = await new db.coin({
-            totalCoin: 1000
-            // user: user.id,
-            // giftedCoins: [{
-            //     gift: giftId,
-            //     fromUser: data.msgFrom,
-            //     coin: data.giftedCoin
-            // }],
-        }).save()
+        // const message = await new db.coin({
+        //     totalCoin: 1000
+        // user: user.id,
+        // giftedCoins: [{
+        //     gift: giftId,
+        //     fromUser: data.msgFrom,
+        //     coin: data.giftedCoin
+        // }],
+        // }).save()
         log.end();
         return gift;
     }
@@ -163,6 +163,7 @@ const uploadIcon = async (id, files, context) => {
     return 'icon uploaded successfully'
 
 }
+
 const myGifts = async (id, model, context) => {
     const log = context.logger.start(`services: gifts: myGifts`);
     if (!id) {
@@ -173,6 +174,75 @@ const myGifts = async (id, model, context) => {
     return myGifts
 };
 
+const buy = async (model, context) => {
+    const log = context.logger.start(`services: gifts: buy`);
+    if (!model.userId) {
+        throw new Error('user id is Required')
+    }
+    if (!model.giftId) {
+        throw new Error('gift id is Required')
+    }
+    if (!model.paymentMethod) {
+        throw new Error('paymentMethod  is Required')
+    }
+    let gift = await db.gift.findById(modal.giftId)
+
+    // const customer = await stripe.customers.create();
+    // const ephemeralKey = await stripe.ephemeralKeys.create(
+    //     { customer: customer.id },
+    //     { apiVersion: '2020-08-27' }
+    // );
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: gift.coin,
+        currency: 'eur',
+        // customer: customer.id,
+        payment_method_types: [model.paymentMethod],
+    });
+
+    let coin = db.coin.findOne({ user: model.userId })
+    // if  user have coin update it 
+    if (coin) {
+        if (paymentIntent.status == 'succeeded') {
+            coin.totalCoin += gift.coin
+            coin.activeCoin += gift.coin
+        }
+        coin.purchasedCoins.push({
+            gift: gift.id,
+            coin: gift.coin,
+            transactionId: paymentIntent.id,
+            status: paymentIntent.status
+        })
+    }
+    else {
+        // if  user have  no coin then create it 
+        const coin = await new db.coin({
+            user: model.userId,
+            totalCoin: gift.coin,
+            activeCoin: gift.coin,
+            purchasedCoins: [
+                {
+                    gift: gift.id,
+                    coin: gift.coin,
+                    transactionId: paymentIntent.id,
+                    status: paymentIntent.status
+                }],
+        }).save()
+    }
+
+    await coin.save()
+
+    // res.json({
+    //     paymentIntent: paymentIntent.client_secret,
+    //     // ephemeralKey: ephemeralKey.secret,
+    //     // customer: customer.id,
+    //     publishableKey: 'pk_test_51KfdqKSIbgCXqMm2l4HOZyIyz3yWHaK8e2JqB3E8CeVv3N1YuJt8ZTYdabyBQHBjLqv2RcmrMDnT9n7TMPlkjFdW00oKuTOzgC'
+    // });
+
+
+    log.end();
+    return paymentIntent
+};
+
 
 
 exports.create = create;
@@ -181,5 +251,6 @@ exports.getGifts = getGifts;
 exports.send = send;
 exports.uploadIcon = uploadIcon;
 exports.myGifts = myGifts;
+exports.buy = buy;
 
 

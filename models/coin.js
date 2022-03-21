@@ -16,6 +16,12 @@ const coin = mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "user",
             },
+            type: {
+                type: String,
+                default: "gifted",
+                enum: ["call", "gifted"],
+            },
+            durations: { type: String, },
             coin: { type: Number, default: 0 },
             createdAt: { type: Date, default: Date.now() },
         }],
@@ -29,7 +35,7 @@ const coin = mongoose.Schema({
             coin: { type: Number, default: 0 },
             createdAt: { type: Date, default: Date.now() },
         }],
-    giftedCoins: [
+    purchasedCoins: [
         {
             _id: false,
             gift: {
@@ -37,11 +43,8 @@ const coin = mongoose.Schema({
                 ref: "gift",
                 required: true,
             },
-            fromUser: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "user",
-                required: true,
-            },
+            transactionId: { type: String, },
+            status: { type: String, },
             coin: { type: Number, default: 0 },
             createdAt: { type: Date, default: Date.now() },
         }],
