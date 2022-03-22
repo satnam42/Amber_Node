@@ -219,7 +219,7 @@ const configure = (app, logger) => {
     );
     app.post("/api/gifts/buy",
         permit.context.validateToken,
-        api.gifts.send
+        api.gifts.buy
     );
 
     app.get("/api/gifts/list",
