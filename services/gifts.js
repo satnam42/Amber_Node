@@ -201,7 +201,7 @@ const buy = async (model, context) => {
 
     let coin = db.coin.findOne({ user: model.userId })
     // if  user have coin update it 
-    if (coin != undefined) {
+    if (coin != undefined && coin != null) {
         if (paymentIntent.status == 'succeeded') {
             coin.totalCoin += gift.coin
             coin.activeCoin += gift.coin
@@ -223,6 +223,7 @@ const buy = async (model, context) => {
                 status: paymentIntent.status
             }]
         }
+        await coin.save()
 
     }
     else {
@@ -241,7 +242,6 @@ const buy = async (model, context) => {
         }).save()
     }
 
-    await coin.save()
 
     // res.json({
     //     paymentIntent: paymentIntent.client_secret,
