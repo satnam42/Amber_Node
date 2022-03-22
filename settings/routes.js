@@ -136,6 +136,10 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.logout
     );
+    app.get("/api/users/membersByFilter",
+        permit.context.validateToken,
+        api.users.usersByFilter
+    );
 
     app.post("/api/blocks/block",
         permit.context.validateToken,
@@ -182,10 +186,10 @@ const configure = (app, logger) => {
         api.club.getMembersByClubName
     );
 
-    app.get("/api/club/membersByFilter",
-        permit.context.validateToken,
-        api.club.getMembersByFilter
-    );
+    // app.get("/api/club/membersByFilter",
+    //     permit.context.validateToken,
+    //     api.club.getMembersByFilter
+    // );
 
     app.get('/api/conversations/getOldConversations',
         permit.context.builder,

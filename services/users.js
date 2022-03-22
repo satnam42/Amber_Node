@@ -572,6 +572,69 @@ const logout = async (context) => {
     return "logout successfully"
 };
 
+const usersByFilter = async (query, context) => {
+    const log = context.logger.start(`services:users:userByFilter`);
+    let pageNo = Number(query.pageNo) || 1;
+    let pageSize = Number(query.pageSize) || 10;
+    let skipCount = pageSize * (pageNo - 1);
+    if (!query.country) {
+        throw new Error('country is required')
+    }
+
+    let filter = {}
+    // ===============================================for you=================================================
+
+    if (query.gender.trim() !== "" && query.gender == undefined) {
+        filter = [{
+            $match: { gender: context.user.gender == 'male' ? 'female' : 'male', country: query.country },
+        },
+        { $limit: pageSize },
+        { $skip: skipCount }]
+    }
+
+    // ================================================= nearBy==================================================
+
+    else if (query.lat & query.long) {
+        filter = [{
+            "location": {
+                $near: {
+                    $geometry:
+                        { type: "Point", coordinates: [query.lat, query.long] }, $maxDistance: 10000 // 10 kilometer
+                }
+            }
+
+        },
+        { $limit: pageSize },
+        { $skip: skipCount }]
+    }
+
+    // ========================================== popular ========================================================
+
+    else if (query.popular) {
+        filter = [
+            { $match: { gender: context.user.gender == 'male' ? 'female' : 'male', country: query.country } },
+            {
+                $project: {
+                    name: "$firstName",
+                    username: "$username",
+                    avatar: "$avatar",
+                    followers: { $cond: { if: { $isArray: "$followers" }, then: { $size: "$followers" }, else: 0 } }
+                }
+            },
+            { $sort: { followers: -1 } },
+            { $limit: pageSize },
+            { $skip: skipCount }
+        ]
+    }
+    else {
+        throw new Error('At least one filter is required')
+    }
+    const users = await db.user.aggregate(filter)
+    log.end()
+    return users
+
+};
+
 
 exports.create = create;
 exports.resetPassword = resetPassword;
@@ -598,4 +661,5 @@ exports.removeProfilePic = removeProfilePic
 exports.generateRtcToken = generateRtcToken
 exports.uploadStory = uploadStory
 exports.logout = logout
+exports.usersByFilter = usersByFilter
 

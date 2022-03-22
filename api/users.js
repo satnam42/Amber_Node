@@ -279,7 +279,19 @@ const logout = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+const usersByFilter = async (req, res) => {
+    const log = req.context.logger.start(`api:users:random:${req.query}`);
+    try {
+        const users = await service.usersByFilter(req.query, req.context);
+        log.end();
+        return response.page(res, mapper.toSearchModel(users), Number(req.query.pageNo) || 1, Number(req.query.pageSize) || 10, users.length);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
 
+};
 
 exports.create = create;
 exports.login = login;
@@ -300,4 +312,5 @@ exports.myStatistics = myStatistics;
 exports.removeProfilePic = removeProfilePic;
 exports.getRtcToken = getRtcToken;
 exports.logout = logout;
+exports.usersByFilter = usersByFilter;
 

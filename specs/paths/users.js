@@ -621,5 +621,76 @@ module.exports = [{
         }
     }
 },
+{
+    url: "/usersByFilter",
+    get: {
+        summary: "list  according to filter",
+        description: " list  according to filter",
+        parameters: [
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "query",
+                type: "string",
+                name: "popular",
+                description: "set it true if you want popular member",
+                required: false
+            },
+            {
+                in: "query",
+                type: "string",
+                name: "country",
+                description: "country",
+                required: true
+            },
+            {
+                in: "nearByMe",
+                type: "string",
+                name: "lat,long",
+                description: "enter lat long comma separator like(1321313,2131331) ",
+                required: false
+            },
+            {
+                in: "query",
+                type: "integer",
+                name: "pageNo",
+                description: "pageNo",
+                required: true
+            },
+            {
+                in: "query",
+                type: "integer",
+                name: "pageSize",
+                description: "pageSize",
+                required: true
+            },
+
+
+            // {
+            //     in: "body",
+            //     name: "body",
+            //     description: "leave club model",
+            //     required: true,
+            //     schema: {
+            //         $ref: "#/definitions/joinOrLeave"
+            //     }
+            // }
+
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    },
+},
 
 ];

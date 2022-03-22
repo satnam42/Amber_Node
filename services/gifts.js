@@ -104,15 +104,11 @@ const send = async (model, context) => {
                     }],
             }).save()
         }
-
         await coin.save()
-
     } else {
         throw new Error("you don't have enough coin to send this gift")
     }
-
     coin.activeCoin -= gift.coin
-
     coin.spendCoins.push({
         onUser: model.receiverId,
         coin: gift.coin
@@ -187,13 +183,39 @@ const buy = async (model, context) => {
     }
     let gift = await db.gift.findById(model.giftId)
 
-    const customer = await stripe.customers.create();
+    let user = await db.user.findById(model.userId)
+
+    const customer = await stripe.customers.create({
+        name: user.firstName || "",
+        address: {
+            line1: '510 Townsend St',
+            postal_code: '98140',
+            city: 'San Francisco',
+            state: 'CA',
+            country: 'US',
+        }
+    });
+
+
     const ephemeralKey = await stripe.ephemeralKeys.create(
         { customer: customer.id },
         { apiVersion: '2020-08-27' }
     );
     const paymentIntent = await stripe.paymentIntents.create({
+
         amount: gift.coin,
+        description: 'social services',
+        // temp adding  address to handle indian rule
+        shipping: {
+            name: 'Jenny Rosen',
+            address: {
+                line1: '510 Townsend St',
+                postal_code: '98140',
+                city: 'San Francisco',
+                state: 'CA',
+                country: 'US',
+            },
+        },
         currency: 'inr',
         customer: customer.id,
         payment_method_types: [model.paymentMethod],
@@ -213,7 +235,6 @@ const buy = async (model, context) => {
                 transactionId: paymentIntent.id,
                 status: paymentIntent.status
             })
-
         }
         else {
             coin.purchasedCoins = [{
