@@ -201,17 +201,29 @@ const buy = async (model, context) => {
 
     let coin = db.coin.findOne({ user: model.userId })
     // if  user have coin update it 
-    if (coin) {
+    if (coin != undefined) {
         if (paymentIntent.status == 'succeeded') {
             coin.totalCoin += gift.coin
             coin.activeCoin += gift.coin
         }
-        coin.purchasedCoins.push({
-            gift: gift.id,
-            coin: gift.coin,
-            transactionId: paymentIntent.id,
-            status: paymentIntent.status
-        })
+        if (coin.purchasedCoins && coin.purchasedCoins.length > 0) {
+            coin.purchasedCoins.push({
+                gift: gift.id,
+                coin: gift.coin,
+                transactionId: paymentIntent.id,
+                status: paymentIntent.status
+            })
+
+        }
+        else {
+            coin.purchasedCoins = [{
+                gift: gift.id,
+                coin: gift.coin,
+                transactionId: paymentIntent.id,
+                status: paymentIntent.status
+            }]
+        }
+
     }
     else {
         // if  user have  no coin then create it 
