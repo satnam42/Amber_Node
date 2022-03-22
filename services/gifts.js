@@ -199,7 +199,7 @@ const buy = async (model, context) => {
         payment_method_types: [model.paymentMethod],
     });
 
-    let coin = db.coin.findOne({ user: model.userId })
+    let coin = await db.coin.findOne({ user: model.userId })
     // if  user have coin update it 
     if (coin != undefined && coin != null) {
         if (paymentIntent.status == 'succeeded') {
