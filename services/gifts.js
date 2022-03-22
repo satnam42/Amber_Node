@@ -185,7 +185,7 @@ const buy = async (model, context) => {
     if (!model.paymentMethod) {
         throw new Error('paymentMethod  is Required')
     }
-    let gift = await db.gift.findById(modal.giftId)
+    let gift = await db.gift.findById(model.giftId)
 
     // const customer = await stripe.customers.create();
     // const ephemeralKey = await stripe.ephemeralKeys.create(
