@@ -187,15 +187,15 @@ const buy = async (model, context) => {
     }
     let gift = await db.gift.findById(model.giftId)
 
-    // const customer = await stripe.customers.create();
-    // const ephemeralKey = await stripe.ephemeralKeys.create(
-    //     { customer: customer.id },
-    //     { apiVersion: '2020-08-27' }
-    // );
+    const customer = await stripe.customers.create();
+    const ephemeralKey = await stripe.ephemeralKeys.create(
+        { customer: customer.id },
+        { apiVersion: '2020-08-27' }
+    );
     const paymentIntent = await stripe.paymentIntents.create({
         amount: gift.coin,
         currency: 'eur',
-        // customer: customer.id,
+        customer: customer.id,
         payment_method_types: [model.paymentMethod],
     });
 
@@ -251,8 +251,16 @@ const buy = async (model, context) => {
     // });
 
 
+
+
     log.end();
-    return paymentIntent
+    return {
+        paymentIntent: paymentIntent.client_secret,
+        status: paymentIntent.status,
+        ephemeralKey: ephemeralKey.secret,
+        customer: customer.id,
+        publishableKey: 'sk_test_51KfdqKSIbgCXqMm2fnVDKcAd1LV0rVXZ9QiRvd0bm5JQYIeQXbF26NgYQA7RqiuSF3hUotbvt4FNPlsuI6OQgrPz00bCL9VA9k'
+    }
 };
 
 
