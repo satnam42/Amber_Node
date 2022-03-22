@@ -194,7 +194,7 @@ const buy = async (model, context) => {
     );
     const paymentIntent = await stripe.paymentIntents.create({
         amount: gift.coin,
-        currency: 'eur',
+        currency: 'inr',
         customer: customer.id,
         payment_method_types: [model.paymentMethod],
     });
