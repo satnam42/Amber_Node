@@ -175,18 +175,16 @@ const buy = async (model, context) => {
     if (!model.userId) {
         throw new Error('user id is Required')
     }
-    if (!model.giftId) {
-        throw new Error('gift id is Required')
-    }
+
     if (!model.paymentMethod) {
         throw new Error('paymentMethod  is Required')
     }
-    let gift = await db.gift.findById(model.giftId)
 
     let user = await db.user.findById(model.userId)
 
     const customer = await stripe.customers.create({
         name: user.firstName || "",
+        // temp adding  address to handle indian rule
         address: {
             line1: '510 Townsend St',
             postal_code: '98140',
@@ -221,13 +219,34 @@ const buy = async (model, context) => {
         payment_method_types: [model.paymentMethod],
     });
 
+    log.end();
+    return {
+        paymentIntent: paymentIntent.client_secret,
+        status: paymentIntent.status,
+        ephemeralKey: ephemeralKey.secret,
+        customer: customer.id,
+        publishableKey: 'sk_test_51KfdqKSIbgCXqMm2fnVDKcAd1LV0rVXZ9QiRvd0bm5JQYIeQXbF26NgYQA7RqiuSF3hUotbvt4FNPlsuI6OQgrPz00bCL9VA9k'
+    }
+};
+
+const credit = async (model, context) => {
+    const log = context.logger.start(`services: gifts: credit`);
+    if (!model.userId) {
+        throw new Error('user id is Required')
+    }
+    if (!model.giftId) {
+        throw new Error('gift id is Required')
+    }
+
+    let gift = await db.gift.findById(model.giftId)
+
+    let user = await db.user.findById(model.userId)
+
     let coin = await db.coin.findOne({ user: model.userId })
     // if  user have coin update it 
     if (coin != undefined && coin != null) {
-        if (paymentIntent.status == 'succeeded') {
-            coin.totalCoin += gift.coin
-            coin.activeCoin += gift.coin
-        }
+        coin.totalCoin += gift.coin
+        coin.activeCoin += gift.coin
         if (coin.purchasedCoins && coin.purchasedCoins.length > 0) {
             coin.purchasedCoins.push({
                 gift: gift.id,
@@ -249,7 +268,7 @@ const buy = async (model, context) => {
     }
     else {
         // if  user have  no coin then create it 
-        const coin = await new db.coin({
+        coin = await new db.coin({
             user: model.userId,
             totalCoin: gift.coin,
             activeCoin: gift.coin,
@@ -263,28 +282,10 @@ const buy = async (model, context) => {
         }).save()
     }
 
-
-    // res.json({
-    //     paymentIntent: paymentIntent.client_secret,
-    //     // ephemeralKey: ephemeralKey.secret,
-    //     // customer: customer.id,
-    //     publishableKey: 'pk_test_51KfdqKSIbgCXqMm2l4HOZyIyz3yWHaK8e2JqB3E8CeVv3N1YuJt8ZTYdabyBQHBjLqv2RcmrMDnT9n7TMPlkjFdW00oKuTOzgC'
-    // });
-
-
-
-
     log.end();
-    return {
-        paymentIntent: paymentIntent.client_secret,
-        status: paymentIntent.status,
-        ephemeralKey: ephemeralKey.secret,
-        customer: customer.id,
-        publishableKey: 'sk_test_51KfdqKSIbgCXqMm2fnVDKcAd1LV0rVXZ9QiRvd0bm5JQYIeQXbF26NgYQA7RqiuSF3hUotbvt4FNPlsuI6OQgrPz00bCL9VA9k'
-    }
+    return coin
+
 };
-
-
 
 exports.create = create;
 exports.update = update;
@@ -293,5 +294,6 @@ exports.send = send;
 exports.uploadIcon = uploadIcon;
 exports.myGifts = myGifts;
 exports.buy = buy;
+exports.credit = credit;
 
 

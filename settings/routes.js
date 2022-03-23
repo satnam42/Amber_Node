@@ -225,6 +225,10 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.gifts.buy
     );
+    app.post("/api/gifts/credit",
+        permit.context.validateToken,
+        api.gifts.credit
+    );
 
     app.get("/api/gifts/list",
         permit.context.validateToken,
