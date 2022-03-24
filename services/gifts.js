@@ -1,6 +1,6 @@
 const ObjectId = require("mongodb").ObjectId
 const stripe = require('stripe')('sk_test_51KfdqKSIbgCXqMm2fnVDKcAd1LV0rVXZ9QiRvd0bm5JQYIeQXbF26NgYQA7RqiuSF3hUotbvt4FNPlsuI6OQgrPz00bCL9VA9k');
-const endpointSecret = 'we_1KglDKSIbgCXqMm2IRfFzW9p';
+const endpointSecret = 'whsec_qZYloeQTjG5bOmE1iE31H76UD6Ll7vQY';
 const buildGift = async (model, context) => {
     const { title, coin, description } = model;
     const log = context.logger.start(`services:gifts:buildGift${model}`);
@@ -231,14 +231,15 @@ const buy = async (model, context) => {
 };
 
 const credit = async (request, response) => {
-
+    console.log("rawBody ====", request.rawBody)
+    console.log("simpleBody ====", request.body)
     // const log = context.logger.start(`services: gifts: credit`);
     const sig = request.headers['stripe-signature'];
     // const endpointSecret = "whsec_d9785fcbaf2797046baeab30303f15e3d31ee870d100cac908e27f9849583d49";
     let event;
 
     // req.rawBody = buf.toString();
-    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(request.rawBody, sig, endpointSecret);
     // if (!model.userId) {
     //     throw new Error('user id is Required')
     // }

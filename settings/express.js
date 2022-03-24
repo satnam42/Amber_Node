@@ -24,7 +24,7 @@ var storage = multer.diskStorage({
 
 const configure = async (app, logger) => {
   const log = logger.start("settings:express:configure");
-
+  // app.use('/api/gifts/credit', express.raw({ type: "*/*" }));
   app.use(express.json({
     // verify: function (req, res, buf) {
     //   var url = req.originalUrl;
