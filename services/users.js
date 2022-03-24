@@ -584,7 +584,7 @@ const usersByFilter = async (query, context) => {
     let filter = {}
     // ===============================================for you=================================================
 
-    if (query.gender.trim() !== "" && query.gender == undefined) {
+    if (query.gender !== "" && query.gender == undefined) {
         filter = [{
             $match: { gender: context.user.gender == 'male' ? 'female' : 'male', country: query.country },
         },
