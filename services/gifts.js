@@ -202,7 +202,7 @@ const buy = async (model, context) => {
     );
     const paymentIntent = await stripe.paymentIntents.create({
 
-        amount: gift.coin,
+        amount: 100,
         description: 'social services',
         // temp adding  address to handle indian rule
         shipping: {
@@ -232,7 +232,7 @@ const buy = async (model, context) => {
 
 const credit = async (request, response) => {
 
-    const log = context.logger.start(`services: gifts: credit`);
+    // const log = context.logger.start(`services: gifts: credit`);
     const sig = request.headers['stripe-signature'];
     const endpointSecret = "whsec_d9785fcbaf2797046baeab30303f15e3d31ee870d100cac908e27f9849583d49";
     let event;
@@ -304,7 +304,7 @@ const credit = async (request, response) => {
             // Unexpected event type
             console.log(`Unhandled event type ${event.type}.`);
     }
-    log.end();
+    // log.end();
     return response
 
 };
