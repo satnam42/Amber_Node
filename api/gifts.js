@@ -102,7 +102,7 @@ const buy = async (req, res) => {
 const credit = async (req, res) => {
     const log = req.context.logger.start(`api:gifts:credit`);
     try {
-        const buy = await service.credit(req.body, req.context);
+        const buy = await service.credit(req, res);
         log.end();
         return response.data(res, buy);
     } catch (err) {

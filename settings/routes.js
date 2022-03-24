@@ -227,7 +227,7 @@ const configure = (app, logger) => {
         api.gifts.buy
     );
     app.post("/api/gifts/credit",
-        permit.context.validateToken,
+        permit.context.builder,
         api.gifts.credit
     );
 

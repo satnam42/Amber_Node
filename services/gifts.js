@@ -1,5 +1,6 @@
 const ObjectId = require("mongodb").ObjectId
 const stripe = require('stripe')('sk_test_51KfdqKSIbgCXqMm2fnVDKcAd1LV0rVXZ9QiRvd0bm5JQYIeQXbF26NgYQA7RqiuSF3hUotbvt4FNPlsuI6OQgrPz00bCL9VA9k');
+const endpointSecret = 'we_1KglDKSIbgCXqMm2IRfFzW9p';
 const buildGift = async (model, context) => {
     const { title, coin, description } = model;
     const log = context.logger.start(`services:gifts:buildGift${model}`);
@@ -229,61 +230,82 @@ const buy = async (model, context) => {
     }
 };
 
-const credit = async (model, context) => {
+const credit = async (request, response) => {
+
     const log = context.logger.start(`services: gifts: credit`);
-    if (!model.userId) {
-        throw new Error('user id is Required')
+    const sig = request.headers['stripe-signature'];
+    const endpointSecret = "whsec_d9785fcbaf2797046baeab30303f15e3d31ee870d100cac908e27f9849583d49";
+    let event;
+    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    // if (!model.userId) {
+    //     throw new Error('user id is Required')
+    // }
+    // if (!model.giftId) {
+    //     throw new Error('gift id is Required')
+    // }
+
+    // let gift = await db.gift.findById(model.giftId)
+
+    // let user = await db.user.findById(model.userId)
+
+    // let coin = await db.coin.findOne({ user: model.userId })
+    // // if  user have coin update it 
+    // if (coin != undefined && coin != null) {
+    //     coin.totalCoin += gift.coin
+    //     coin.activeCoin += gift.coin
+    //     if (coin.purchasedCoins && coin.purchasedCoins.length > 0) {
+    //         coin.purchasedCoins.push({
+    //             gift: gift.id,
+    //             coin: gift.coin,
+    //             transactionId: paymentIntent.id,
+    //             status: paymentIntent.status
+    //         })
+    //     }
+    //     else {
+    //         coin.purchasedCoins = [{
+    //             gift: gift.id,
+    //             coin: gift.coin,
+    //             transactionId: paymentIntent.id,
+    //             status: paymentIntent.status
+    //         }]
+    //     }
+    //     await coin.save()
+
+    // }
+    // else {
+    //     // if  user have  no coin then create it 
+    //     coin = await new db.coin({
+    //         user: model.userId,
+    //         totalCoin: gift.coin,
+    //         activeCoin: gift.coin,
+    //         purchasedCoins: [
+    //             {
+    //                 gift: gift.id,
+    //                 coin: gift.coin,
+    //                 transactionId: paymentIntent.id,
+    //                 status: paymentIntent.status
+    //             }],
+    //     }).save()
+    // }
+    // Handle the event
+    switch (event.type) {
+        case 'payment_intent.succeeded':
+            const paymentIntent = event.data.object;
+            console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
+            // Then define and call a method to handle the successful payment intent.
+            // handlePaymentIntentSucceeded(paymentIntent);
+            break;
+        case 'payment_method.attached':
+            const paymentMethod = event.data.object;
+            // Then define and call a method to handle the successful attachment of a PaymentMethod.
+            // handlePaymentMethodAttached(paymentMethod);
+            break;
+        default:
+            // Unexpected event type
+            console.log(`Unhandled event type ${event.type}.`);
     }
-    if (!model.giftId) {
-        throw new Error('gift id is Required')
-    }
-
-    let gift = await db.gift.findById(model.giftId)
-
-    let user = await db.user.findById(model.userId)
-
-    let coin = await db.coin.findOne({ user: model.userId })
-    // if  user have coin update it 
-    if (coin != undefined && coin != null) {
-        coin.totalCoin += gift.coin
-        coin.activeCoin += gift.coin
-        if (coin.purchasedCoins && coin.purchasedCoins.length > 0) {
-            coin.purchasedCoins.push({
-                gift: gift.id,
-                coin: gift.coin,
-                transactionId: paymentIntent.id,
-                status: paymentIntent.status
-            })
-        }
-        else {
-            coin.purchasedCoins = [{
-                gift: gift.id,
-                coin: gift.coin,
-                transactionId: paymentIntent.id,
-                status: paymentIntent.status
-            }]
-        }
-        await coin.save()
-
-    }
-    else {
-        // if  user have  no coin then create it 
-        coin = await new db.coin({
-            user: model.userId,
-            totalCoin: gift.coin,
-            activeCoin: gift.coin,
-            purchasedCoins: [
-                {
-                    gift: gift.id,
-                    coin: gift.coin,
-                    transactionId: paymentIntent.id,
-                    status: paymentIntent.status
-                }],
-        }).save()
-    }
-
     log.end();
-    return coin
+    return response
 
 };
 
