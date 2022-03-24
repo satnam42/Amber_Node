@@ -234,8 +234,10 @@ const credit = async (request, response) => {
 
     // const log = context.logger.start(`services: gifts: credit`);
     const sig = request.headers['stripe-signature'];
-    const endpointSecret = "whsec_d9785fcbaf2797046baeab30303f15e3d31ee870d100cac908e27f9849583d49";
+    // const endpointSecret = "whsec_d9785fcbaf2797046baeab30303f15e3d31ee870d100cac908e27f9849583d49";
     let event;
+
+    // req.rawBody = buf.toString();
     event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
     // if (!model.userId) {
     //     throw new Error('user id is Required')
