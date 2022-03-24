@@ -136,7 +136,7 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.logout
     );
-    app.get("/api/users/membersByFilter",
+    app.get("/api/users/usersByFilter",
         permit.context.validateToken,
         api.users.usersByFilter
     );
@@ -221,6 +221,7 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.gifts.send
     );
+
     app.post("/api/gifts/buy",
         permit.context.validateToken,
         api.gifts.buy
