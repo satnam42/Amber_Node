@@ -3,6 +3,7 @@ const path = require("path");
 const cors = require("cors");
 const express = require("express");
 var multer = require('multer');
+// const bodyParser = require('body-parser')
 
 // image uplaod location //
 var storage = multer.diskStorage({
@@ -37,7 +38,7 @@ const configure = async (app, logger) => {
 
 
   }));
-  app.use('/api/gifts/credit', express.raw({ type: "*/*" }));
+  // app.use('/api/gifts/credit', bodyParser.raw({ type: 'application/json' }));
   app.use(cors());
   app.use(multer({ storage: storage, limits: { fileSize: 1024 * 1024 * 50 } }).any());
 

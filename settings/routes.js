@@ -5,7 +5,7 @@ const api = require("../api");
 const specs = require("../specs");
 const permit = require("../permit")
 const validator = require("../validators");
-
+const express = require('express');
 const configure = (app, logger) => {
     const log = logger.start("settings:routes:configure");
     app.get("/specs", function (req, res) {
@@ -227,6 +227,7 @@ const configure = (app, logger) => {
         api.gifts.buy
     );
     app.post("/api/gifts/credit",
+        express.raw({ type: 'application/json' }),
         permit.context.builder,
         api.gifts.credit
     );

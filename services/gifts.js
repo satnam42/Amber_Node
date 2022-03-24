@@ -239,7 +239,7 @@ const credit = async (request, response) => {
     let event;
 
     // req.rawBody = buf.toString();
-    event = stripe.webhooks.constructEvent(request.rawBody, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
     // if (!model.userId) {
     //     throw new Error('user id is Required')
     // }
