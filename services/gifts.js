@@ -230,16 +230,12 @@ const buy = async (model, context) => {
     }
 };
 
-const credit = async (request, response) => {
-    console.log("rawBody ====", request.rawBody)
-    console.log("simpleBody ====", request.body)
+const credit = async (modal, context) => {
+    const log = context.logger.start(`services: gifts: credit ${modal}`);
     const {
         type,
         data: { object },
-    } = request.body;
-
-    console.log(object);
-    console.log(type);
+    } = modal;
 
     // const log = context.logger.start(`services: gifts: credit`);
     // const sig = request.headers['stripe-signature'];
@@ -301,13 +297,13 @@ const credit = async (request, response) => {
     // Handle the event
     switch (type) {
         case 'payment_intent.succeeded':
-            const paymentIntent = data.object;
+            const paymentIntent = object;
             console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
             // Then define and call a method to handle the successful payment intent.
             // handlePaymentIntentSucceeded(paymentIntent);
             break;
         case 'payment_method.attached':
-            const paymentMethod = data.object;
+            const paymentMethod = object;
             // Then define and call a method to handle the successful attachment of a PaymentMethod.
             // handlePaymentMethodAttached(paymentMethod);
             break;
@@ -315,8 +311,8 @@ const credit = async (request, response) => {
             // Unexpected event type
             console.log(`Unhandled event type ${type}.`);
     }
-    // log.end();
-    return response
+    log.end();
+    return object
 
 };
 
