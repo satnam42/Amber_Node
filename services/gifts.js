@@ -176,12 +176,22 @@ const buy = async (model, context) => {
     if (!model.userId) {
         throw new Error('user id is Required')
     }
-
+    if (!model.giftId) {
+        throw new Error('giftId id is Required')
+    }
     if (!model.paymentMethod) {
         throw new Error('paymentMethod  is Required')
     }
 
-    let user = await db.user.findById(model.userId)
+    const user = await db.user.findById(model.userId)
+    if (!user) {
+        throw new Error('user not found')
+    }
+
+    const gift = await db.gift.findById(model.giftId)
+    if (!gift) {
+        throw new Error('this id not associate any gift')
+    }
 
     const customer = await stripe.customers.create({
         name: user.firstName || "",
@@ -202,7 +212,7 @@ const buy = async (model, context) => {
     );
     const paymentIntent = await stripe.paymentIntents.create({
 
-        amount: 100,
+        amount: gift.coin,
         description: 'social services',
         // temp adding  address to handle indian rule
         shipping: {
@@ -220,6 +230,16 @@ const buy = async (model, context) => {
         payment_method_types: [model.paymentMethod],
     });
 
+    const payment = await new db.payment({
+        user: user.id,
+        gift: gift.id,
+        pi: paymentIntent.id,
+        status: paymentIntent.status,
+        customerId: customer.id,
+        amount: gift.coin
+    }).save()
+
+
     log.end();
     return {
         paymentIntent: paymentIntent.client_secret,
@@ -230,82 +250,88 @@ const buy = async (model, context) => {
     }
 };
 
+const handlePaymentMethod = async (model, context) => {
+    const log = context.logger.start(`services: gifts: handlePaymentMethod ${modal}`);
+    let payment = await db.payment.findOne({ pi: model.id })
+    if (model.status == 'succeeded') {
+        let coin = await db.coin.findOne({ user: payment.userId })
+        let gift = await db.gift.findOne({ user: payment.giftId })
+        // if  user have coin update it 
+        if (coin != undefined && coin != null) {
+            coin.totalCoin += gift.coin
+            coin.activeCoin += gift.coin
+            if (coin.purchasedCoins && coin.purchasedCoins.length > 0) {
+                coin.purchasedCoins.push({
+                    gift: gift.id,
+                    coin: gift.coin,
+                })
+            }
+            else {
+                coin.purchasedCoins = [{
+                    gift: gift.id,
+                    coin: gift.coin,
+                    transactionId: paymentIntent.id,
+                    status: paymentIntent.status
+                }]
+            }
+            await coin.save()
+
+        }
+        else {
+            // if  user have  no coin then create it 
+            coin = await new db.coin({
+                user: model.userId,
+                totalCoin: gift.coin,
+                activeCoin: gift.coin,
+                purchasedCoins: [
+                    {
+                        gift: gift.id,
+                        coin: gift.coin,
+                        transactionId: paymentIntent.id,
+                        status: paymentIntent.status
+                    }],
+            }).save()
+        }
+        payment.status = model.status
+        payment.receiptNumber = model.receipt_number
+        payment.receiptUrl = model.receipt_url
+        await payment.save()
+    } else {
+        payment.status = model.status
+    }
+}
+
+
 const credit = async (modal, context) => {
     const log = context.logger.start(`services: gifts: credit ${modal}`);
-    const {
-        type,
-        data: { object },
-    } = modal;
-
-    // const log = context.logger.start(`services: gifts: credit`);
+    const { type, data: { object } } = modal;
     // const sig = request.headers['stripe-signature'];
-    // const endpointSecret = "whsec_d9785fcbaf2797046baeab30303f15e3d31ee870d100cac908e27f9849583d49";
     // let event;
-
-    // req.rawBody = buf.toString();
     // event = stripe.webhooks.constructEvent(request.body, endpointSecret);
-    // if (!model.userId) {
-    //     throw new Error('user id is Required')
-    // }
-    // if (!model.giftId) {
-    //     throw new Error('gift id is Required')
-    // }
 
-    // let gift = await db.gift.findById(model.giftId)
-
-    // let user = await db.user.findById(model.userId)
-
-    // let coin = await db.coin.findOne({ user: model.userId })
-    // // if  user have coin update it 
-    // if (coin != undefined && coin != null) {
-    //     coin.totalCoin += gift.coin
-    //     coin.activeCoin += gift.coin
-    //     if (coin.purchasedCoins && coin.purchasedCoins.length > 0) {
-    //         coin.purchasedCoins.push({
-    //             gift: gift.id,
-    //             coin: gift.coin,
-    //             transactionId: paymentIntent.id,
-    //             status: paymentIntent.status
-    //         })
-    //     }
-    //     else {
-    //         coin.purchasedCoins = [{
-    //             gift: gift.id,
-    //             coin: gift.coin,
-    //             transactionId: paymentIntent.id,
-    //             status: paymentIntent.status
-    //         }]
-    //     }
-    //     await coin.save()
-
-    // }
-    // else {
-    //     // if  user have  no coin then create it 
-    //     coin = await new db.coin({
-    //         user: model.userId,
-    //         totalCoin: gift.coin,
-    //         activeCoin: gift.coin,
-    //         purchasedCoins: [
-    //             {
-    //                 gift: gift.id,
-    //                 coin: gift.coin,
-    //                 transactionId: paymentIntent.id,
-    //                 status: paymentIntent.status
-    //             }],
-    //     }).save()
-    // }
     // Handle the event
     switch (type) {
         case 'payment_intent.succeeded':
-            const paymentIntent = object;
             console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
-            // Then define and call a method to handle the successful payment intent.
-            // handlePaymentIntentSucceeded(paymentIntent);
+            handlePaymentMethod(object, context);
             break;
-        case 'payment_method.attached':
-            const paymentMethod = object;
-            // Then define and call a method to handle the successful attachment of a PaymentMethod.
-            // handlePaymentMethodAttached(paymentMethod);
+        case 'payment_intent.amount_capturable_updated':
+            handlePaymentMethod(object, context);
+            break;
+        case 'payment_intent.canceled':
+            handlePaymentMethod(object, context);
+            break;
+        case 'payment_intent.created':
+            handlePaymentMethod(object, context);
+            break;
+        case 'payment_intent.payment_failed':
+            handlePaymentMethod(object, context);
+            break;
+        case 'payment_intent.processing':
+            handlePaymentMethod(object, context);
+            break;
+        case 'payment_intent.requires_action':
+            handlePaymentMethod(object, context);
             break;
         default:
             // Unexpected event type

@@ -9,6 +9,7 @@ const coin = mongoose.Schema({
     },
     totalCoin: { type: Number, default: 0 },
     activeCoin: { type: Number, default: 0 },
+
     earnedCoins: [
         {
             _id: false,
@@ -25,6 +26,7 @@ const coin = mongoose.Schema({
             coin: { type: Number, default: 0 },
             createdAt: { type: Date, default: Date.now() },
         }],
+
     spendCoins: [
         {
             _id: false,
@@ -35,6 +37,7 @@ const coin = mongoose.Schema({
             coin: { type: Number, default: 0 },
             createdAt: { type: Date, default: Date.now() },
         }],
+
     purchasedCoins: [
         {
             _id: false,
@@ -43,11 +46,10 @@ const coin = mongoose.Schema({
                 ref: "gift",
                 required: true,
             },
-            transactionId: { type: String, },
-            status: { type: String, },
             coin: { type: Number, default: 0 },
             createdAt: { type: Date, default: Date.now() },
         }],
+
 }, { timestamps: true });
 //todo need to build pre funcation to setup total cooin  and active coin
 // coin.pre('save', () => console.log('Hello from pre save'));
