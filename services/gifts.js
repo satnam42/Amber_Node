@@ -239,7 +239,6 @@ const buy = async (model, context) => {
         amount: gift.coin
     }).save()
 
-
     log.end();
     return {
         paymentIntent: paymentIntent.client_secret,
@@ -251,7 +250,7 @@ const buy = async (model, context) => {
 };
 
 const handlePaymentMethod = async (model, context) => {
-    const log = context.logger.start(`services: gifts: handlePaymentMethod ${modal}`);
+    const log = context.logger.start(`services: gifts: handlePaymentMethod ${{ model }}`);
     let payment = await db.payment.findOne({ pi: model.id })
     if (model.status == 'succeeded') {
         let coin = await db.coin.findOne({ user: payment.userId })

@@ -26,7 +26,6 @@ const coin = mongoose.Schema({
             coin: { type: Number, default: 0 },
             createdAt: { type: Date, default: Date.now() },
         }],
-
     spendCoins: [
         {
             _id: false,
