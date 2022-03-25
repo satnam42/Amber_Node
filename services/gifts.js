@@ -233,13 +233,21 @@ const buy = async (model, context) => {
 const credit = async (request, response) => {
     console.log("rawBody ====", request.rawBody)
     console.log("simpleBody ====", request.body)
+    const {
+        type,
+        data: { object },
+    } = request.body;
+
+    console.log(object);
+    console.log(type);
+
     // const log = context.logger.start(`services: gifts: credit`);
     // const sig = request.headers['stripe-signature'];
     // const endpointSecret = "whsec_d9785fcbaf2797046baeab30303f15e3d31ee870d100cac908e27f9849583d49";
-    let event;
+    // let event;
 
     // req.rawBody = buf.toString();
-    event = stripe.webhooks.constructEvent(request.body, endpointSecret);
+    // event = stripe.webhooks.constructEvent(request.body, endpointSecret);
     // if (!model.userId) {
     //     throw new Error('user id is Required')
     // }
@@ -291,21 +299,21 @@ const credit = async (request, response) => {
     //     }).save()
     // }
     // Handle the event
-    switch (event.type) {
+    switch (type) {
         case 'payment_intent.succeeded':
-            const paymentIntent = event.data.object;
+            const paymentIntent = data.object;
             console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
             // Then define and call a method to handle the successful payment intent.
             // handlePaymentIntentSucceeded(paymentIntent);
             break;
         case 'payment_method.attached':
-            const paymentMethod = event.data.object;
+            const paymentMethod = data.object;
             // Then define and call a method to handle the successful attachment of a PaymentMethod.
             // handlePaymentMethodAttached(paymentMethod);
             break;
         default:
             // Unexpected event type
-            console.log(`Unhandled event type ${event.type}.`);
+            console.log(`Unhandled event type ${type}.`);
     }
     // log.end();
     return response

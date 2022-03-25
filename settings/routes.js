@@ -227,7 +227,7 @@ const configure = (app, logger) => {
         api.gifts.buy
     );
     app.post("/api/gifts/credit",
-        express.raw({ type: 'application/json' }),
+        express.raw({ type: '*/*' }),
         permit.context.builder,
         api.gifts.credit
     );
