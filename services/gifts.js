@@ -205,7 +205,6 @@ const buy = async (model, context) => {
         }
     });
 
-
     const ephemeralKey = await stripe.ephemeralKeys.create(
         { customer: customer.id },
         { apiVersion: '2020-08-27' }
@@ -252,6 +251,7 @@ const buy = async (model, context) => {
 const handlePaymentMethod = async (model, context) => {
     const log = context.logger.start(`services: gifts: handlePaymentMethod ${{ model }}`);
     let payment = await db.payment.findOne({ pi: model.id })
+    log.info('model.status', model.status)
     if (model.status == 'succeeded') {
         let coin = await db.coin.findOne({ user: payment.userId })
         let gift = await db.gift.findOne({ user: payment.giftId })
@@ -269,8 +269,6 @@ const handlePaymentMethod = async (model, context) => {
                 coin.purchasedCoins = [{
                     gift: gift.id,
                     coin: gift.coin,
-                    transactionId: paymentIntent.id,
-                    status: paymentIntent.status
                 }]
             }
             await coin.save()
@@ -297,13 +295,15 @@ const handlePaymentMethod = async (model, context) => {
         await payment.save()
     } else {
         payment.status = model.status
+        await payment.save()
     }
+    return
 }
 
 
-const credit = async (modal, context) => {
-    const log = context.logger.start(`services: gifts: credit ${modal}`);
-    const { type, data: { object } } = modal;
+const credit = async (model, context) => {
+    const log = context.logger.start(`services: gifts: credit ${model}`);
+    const { type, data: { object } } = model;
     // const sig = request.headers['stripe-signature'];
     // let event;
     // event = stripe.webhooks.constructEvent(request.body, endpointSecret);
