@@ -251,7 +251,7 @@ const buy = async (model, context) => {
 const handlePaymentMethod = async (model, context) => {
     const log = context.logger.start(`services: gifts: handlePaymentMethod ${{ model }}`);
     let payment = await db.payment.findOne({ pi: model.id })
-    log.info('model.status', model.status)
+
     if (model.status == 'succeeded') {
         let coin = await db.coin.findOne({ user: payment.userId })
         let gift = await db.gift.findOne({ user: payment.giftId })
@@ -284,8 +284,6 @@ const handlePaymentMethod = async (model, context) => {
                     {
                         gift: gift.id,
                         coin: gift.coin,
-                        transactionId: paymentIntent.id,
-                        status: paymentIntent.status
                     }],
             }).save()
         }
@@ -294,7 +292,8 @@ const handlePaymentMethod = async (model, context) => {
         payment.receiptUrl = model.receipt_url
         await payment.save()
     } else {
-        payment.status = model.status
+        log.info('model.status', model.status)
+        payment.status = model.status || ''
         await payment.save()
     }
     return
