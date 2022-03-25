@@ -6,7 +6,7 @@ module.exports = [
                 type: "string"
             },
             giftId: {
-                type: "number"
+                type: "string"
             },
             paymentMethod: {
                 type: "string"

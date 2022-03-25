@@ -82,8 +82,12 @@ const send = async (model, context) => {
         let coin = db.coin.findOne({ user: model.receiverId })
         // if  user have coin update it 
         if (coin) {
-            coin.totalCoin += gift.coin
-            coin.activeCoin += gift.coin
+            let totalCoin = coin.totalCoin
+            let activeCoin = coin.activeCoin
+            totalCoin += gift.coin
+            activeCoin += gift.coin
+            coin.totalCoin = totalCoin
+            coin.activeCoin = activeCoin
             coin.giftedCoins.push({
                 gift: gift.id,
                 fromUser: model.senderId,
@@ -109,7 +113,9 @@ const send = async (model, context) => {
     } else {
         throw new Error("you don't have enough coin to send this gift")
     }
-    coin.activeCoin -= gift.coin
+    let activeCoin = coin.activeCoin
+    activeCoin -= gift.coin
+    coin.activeCoin = activeCoin
     coin.spendCoins.push({
         onUser: model.receiverId,
         coin: gift.coin
@@ -257,8 +263,12 @@ const handlePaymentMethod = async (model, context) => {
         let gift = await db.gift.findOne({ user: payment.giftId })
         // if  user have coin update it 
         if (coin != undefined && coin != null) {
-            coin.totalCoin += gift.coin
-            coin.activeCoin += gift.coin
+            let totalCoin = coin.totalCoin
+            let activeCoin = coin.activeCoin
+            totalCoin += gift.coin
+            activeCoin += gift.coin
+            coin.totalCoin = totalCoin
+            coin.activeCoin += activeCoin
             if (coin.purchasedCoins && coin.purchasedCoins.length > 0) {
                 coin.purchasedCoins.push({
                     gift: gift.id,
