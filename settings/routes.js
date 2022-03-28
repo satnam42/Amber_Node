@@ -245,11 +245,23 @@ const configure = (app, logger) => {
         api.gifts.myGifts
     );
 
-    app.put(
-        "/api/gifts/uploadIcon/:id",
-        permit.context.validateToken,
-        api.gifts.uploadIcon
+
+    app.post("/api/coins/add",
+        permit.context.builder,
+        api.coins.add
     );
+
+    app.post("/api/coins/buy",
+        permit.context.validateToken,
+        api.coins.buy
+    );
+
+    app.get("/api/coins/list",
+        permit.context.validateToken,
+        api.coins.getCoinList
+    );
+
+
     log.end();
 };
 

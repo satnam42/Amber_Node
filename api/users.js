@@ -17,8 +17,8 @@ const create = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
-//login api
 
+//login api
 const login = async (req, res) => {
     const log = req.context.logger.start("api:users:login");
     try {
@@ -33,7 +33,6 @@ const login = async (req, res) => {
         log.end();
         return response.failure(res, err.message);
     }
-
 };
 
 // profile user
@@ -225,8 +224,8 @@ const myStatistics = async (req, res) => {
         return response.failure(res, err.message);
     }
 
-}
-    ;
+};
+
 const removeProfilePic = async (req, res) => {
     const log = req.context.logger.start(`api:users:removeProfilePic`);
     try {
@@ -279,6 +278,7 @@ const logout = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const usersByFilter = async (req, res) => {
     const log = req.context.logger.start(`api:users:random:${req.query}`);
     try {

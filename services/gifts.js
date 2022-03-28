@@ -79,7 +79,7 @@ const send = async (model, context) => {
     let coin = await db.coin.findOne({ user: model.senderId })
 
     if (coin && coin.activeCoin >= gift.coin) {
-        let coin = db.coin.findOne({ user: model.receiverId })
+        let coin = db.coinHistory.findOne({ user: model.receiverId })
         // if  user have coin update it 
         if (coin) {
             let totalCoin = coin.totalCoin
@@ -97,7 +97,7 @@ const send = async (model, context) => {
         }
         else {
             // if  user have  no coin then create it 
-            const coin = await new db.coin({
+            const coin = await new db.coinHistory({
                 user: model.receiverId,
                 totalCoin: gift.coin,
                 activeCoin: gift.coin,
@@ -172,7 +172,7 @@ const myGifts = async (id, model, context) => {
     if (!id) {
         throw new Error('user id is Required')
     }
-    let myGifts = await db.coin.findOne({ user: id }).populate("giftedCoins.gift").populate("giftedCoins.fromUser")
+    let myGifts = await db.coinHistory.findOne({ user: id }).populate("giftedCoins.gift").populate("giftedCoins.fromUser")
     log.end();
     return myGifts
 };
@@ -259,7 +259,7 @@ const handlePaymentMethod = async (model, context) => {
     let payment = await db.payment.findOne({ pi: model.id })
 
     if (model.status == 'succeeded') {
-        let coin = await db.coin.findOne({ user: payment.userId })
+        let coin = await db.coinHistory.findOne({ user: payment.userId })
         let gift = await db.gift.findOne({ user: payment.giftId })
         // if  user have coin update it 
         if (coin != undefined && coin != null) {
@@ -286,7 +286,7 @@ const handlePaymentMethod = async (model, context) => {
         }
         else {
             // if  user have  no coin then create it 
-            coin = await new db.coin({
+            coin = await new db.coinHistory({
                 user: model.userId,
                 totalCoin: gift.coin,
                 activeCoin: gift.coin,
