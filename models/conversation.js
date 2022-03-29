@@ -7,6 +7,7 @@ const conversation = mongoose.Schema({
     lastActive: { type: Date, default: Date.now },
     createdOn: { type: Date, default: Date.now }
 }, { timestamps: true });
+
 mongoose.model("conversation", conversation);
 module.exports = conversation;
 

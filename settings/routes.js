@@ -83,6 +83,7 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.uploadStory
     );
+
     // app.put(
     //     "/api/users/removeStory/:id",
     //     permit.context.builder,
@@ -248,6 +249,7 @@ const configure = (app, logger) => {
 
     app.post("/api/coins/add",
         permit.context.builder,
+        validator.coins.create,
         api.coins.add
     );
 
@@ -259,6 +261,12 @@ const configure = (app, logger) => {
     app.get("/api/coins/list",
         permit.context.validateToken,
         api.coins.getCoinList
+    );
+
+    app.post("/api/coins/checkPaymentStatus",
+        express.raw({ type: '*/*' }),
+        permit.context.builder,
+        api.coins.checkPaymentStatus
     );
 
 

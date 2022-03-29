@@ -4,6 +4,7 @@ var moment = require('moment');
 var _ = require('lodash');
 var eventEmitter = new events.EventEmitter();
 const service = require('../services/notifications')
+
 const connect = async (io, logger) => {
     // const sockets = async (http, logger) => {
     const log = logger.start(`sockets:socketEvents:connect`);
@@ -12,6 +13,7 @@ const connect = async (io, logger) => {
     var userStack = {};
     var oldChats, sendUserStack;
     var userSocket = {};
+
     ioChat.on('connection', async (socket) => {
         log.info("socketio chat connected.");
         let userId = socket.userId
@@ -21,6 +23,7 @@ const connect = async (io, logger) => {
                 data: 'token is not valid'
             });
         }
+
         //function to get user name
         // socket.emit('set-user-data', (userId) => {
         // })
@@ -46,6 +49,7 @@ const connect = async (io, logger) => {
         //     console.log(err.message); // prints the message associated with the error
         // });
         // }); /
+
         log.info(userId + "  logged In");
         //storing variable.
         // socket.userId = userId;
@@ -100,12 +104,14 @@ const connect = async (io, logger) => {
         socket.on('typing', function () {
             socket.to(socket.room).broadcast.emit('typing', " typing...");
         });
+
         // ioChat.to(socket.room).emit('chat-msg', {
         //     msgFrom: socket.userId,
         //     msg: data.msg,
         //     date: msgDate
         // });
         //for showing chats.
+
         socket.on('chat-msg', async function (data) {
             log.info('chat-msg called', { data })
             try {
@@ -218,9 +224,11 @@ const connect = async (io, logger) => {
 
         });
 
-        // =====================================call events end====================================.
+        // =====================================call events end====================================//
 
-        // =====================================call receive start====================================
+
+        // =====================================call receive start====================================//
+
         socket.on('call-receive', async function (data) {
             log.info('call-receive called', { data })
             try {
@@ -236,7 +244,9 @@ const connect = async (io, logger) => {
                 return;
             }
         })
-        // =====================================call receive start====================================
+
+        // =====================================call receive start====================================//
+
         //for popping disconnection message.
         socket.on('disconnect', function () {
             log.info(socket.userId + "  logged out");
@@ -246,8 +256,6 @@ const connect = async (io, logger) => {
             // userStack[socket.userId] = "Offline";
             // ioChat.emit('onlineStack', userStack);
         }); //end of disconnect event.
-
-
     }); //end of io.on(connection).
     //end of socket.io code for chat feature.
 

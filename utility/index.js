@@ -1228,6 +1228,20 @@ const verifyFCMToken = async (fcmToken) => {
     // })
 
 }
+const isPositiveInteger = (num) => {
+    if (typeof num == 'string') {
+        return false;
+    }
+
+    // const num = Number(str);
+
+    if (Number.isInteger(num) && num > 0) {
+        return true;
+    }
+
+    return false;
+}
+
 
 // export const isFieldEmpty = text => {
 //     console.log('text', text);
@@ -1278,3 +1292,4 @@ const verifyFCMToken = async (fcmToken) => {
 
 exports.countries = countries
 exports.verifyFCMToken = verifyFCMToken
+exports.isPositiveInteger = isPositiveInteger

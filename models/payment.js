@@ -7,9 +7,9 @@ const payment = mongoose.Schema({
         ref: "user",
         required: true
     },
-    gift: {
+    coin: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "gift",
+        ref: "coin",
     },
     pi: { type: String, default: "", },
     amount: {
@@ -32,8 +32,6 @@ const payment = mongoose.Schema({
         type: String,
         default: "",
     },
-
-
 }, { timestamps: true });
 
 mongoose.model("payment", payment);
