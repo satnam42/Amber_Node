@@ -1,6 +1,6 @@
 const ObjectId = require("mongodb").ObjectId
 const stripe = require('stripe')('sk_test_51KfdqKSIbgCXqMm2fnVDKcAd1LV0rVXZ9QiRvd0bm5JQYIeQXbF26NgYQA7RqiuSF3hUotbvt4FNPlsuI6OQgrPz00bCL9VA9k');
-const endpointSecret = 'whsec_qZYloeQTjG5bOmE1iE31H76UD6Ll7vQY';
+const endpointSecret = 'whsec_Q2i0yFexQBvHn5QSLsldY4ZFMRBY2MYK';
 
 const buildCoin = async (model, context) => {
     const { coins, price, status, isFree, category } = model;
