@@ -82,7 +82,7 @@ const buy = async (model, context) => {
         { apiVersion: '2020-08-27' }
     );
     const paymentIntent = await stripe.paymentIntents.create({
-        amount: coin.coin,
+        amount: coin.coins,
         description: 'social services',
         // temp adding  address to handle indian rule
         shipping: {
