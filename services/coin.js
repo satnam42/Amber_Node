@@ -60,7 +60,7 @@ const buy = async (model, context) => {
         throw new Error('user not found')
     }
 
-    const coin = await db.coin.findById(model.CoinId)
+    const coin = await db.coin.findById(model.coinId)
     if (!coin) {
         throw new Error('this id not associate any coin')
     }

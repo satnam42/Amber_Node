@@ -5,6 +5,9 @@ module.exports = [
             userId: {
                 type: "string"
             },
+            coinId: {
+                type: "string"
+            },
             paymentMethod: {
                 type: "string"
             }
