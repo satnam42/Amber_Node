@@ -184,7 +184,7 @@ const checkPaymentStatus = async (model, context) => {
     // Handle the event
     switch (type) {
         case 'payment_intent.succeeded':
-            console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
+            // console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
             handlePaymentMethod(object, context);
             break;
         case 'payment_intent.amount_capturable_updated':
