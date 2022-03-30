@@ -8,9 +8,7 @@ module.exports = [
             giftId: {
                 type: "string"
             },
-            paymentMethod: {
-                type: "string"
-            }
+
         }
     }
 ]

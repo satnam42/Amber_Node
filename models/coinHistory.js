@@ -5,17 +5,20 @@ const coinHistory = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
-        // required: true
+        required: true
     },
     totalCoin: { type: Number, default: 0 },
     activeCoin: { type: Number, default: 0 },
-
     earnedCoins: [
         {
             _id: false,
             fromUser: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "user",
+            },
+            gift: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "gift",
             },
             type: {
                 type: String,
@@ -25,7 +28,8 @@ const coinHistory = mongoose.Schema({
             durations: { type: String, },
             coins: { type: Number, default: 0 },
             createdAt: { type: Date, default: Date.now() },
-        }],
+        }
+    ],
 
     spendCoins: [
         {
@@ -34,14 +38,19 @@ const coinHistory = mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "user",
             },
+            gift: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "gift",
+            },
             type: {
                 type: String,
-                default: "gifted",
-                enum: ["call", "gifted"],
+                default: "",
+                enum: ["", "call", "gifted"],
             },
             coins: { type: Number, default: 0 },
             createdAt: { type: Date, default: Date.now() },
-        }],
+        }
+    ],
 
     purchasedCoins: [
         {

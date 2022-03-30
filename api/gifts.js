@@ -87,6 +87,7 @@ const uploadIcon = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const buy = async (req, res) => {
     const log = req.context.logger.start(`api:gifts:buy`);
     try {
@@ -99,6 +100,7 @@ const buy = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const credit = async (req, res) => {
     const log = req.context.logger.start(`api:gifts:credit`);
     try {

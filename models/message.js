@@ -5,6 +5,7 @@ const message = mongoose.Schema({
     receiver: { type: mongoose.Schema.ObjectId, ref: 'user' },
     content: { type: String, default: "" },
     read: { type: Boolean, default: false },
+    gift: { type: mongoose.Schema.ObjectId, ref: 'user' },
     conversation: { type: mongoose.Schema.ObjectId, ref: 'conversation' },
     attachment: { type: String, default: "" },
 }, { timestamps: true });

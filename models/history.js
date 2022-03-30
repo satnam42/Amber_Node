@@ -2,7 +2,12 @@
 const mongoose = require("mongoose");
 const history = mongoose.Schema({
 
-    byUser: {
+    fromUser: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+        required: false,
+    },
+    toUser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
         required: false,
@@ -11,10 +16,14 @@ const history = mongoose.Schema({
     type: {
         type: String,
         default: "",
-        enum: ["", "video", "voice"],
+        enum: ["", "video", "gift"],
+    },
+    duration: {
+        type: String,
+        default: "",
     },
 
-    duration: {
+    coin: {
         type: String,
         default: "",
     },
@@ -24,11 +33,7 @@ const history = mongoose.Schema({
         default: Date.now
     },
 
-    toUser: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
-        required: false,
-    },
+
 
 }, { timestamps: true });
 

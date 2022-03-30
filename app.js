@@ -26,7 +26,7 @@ const boot = async () => {
     log.info(`listening on port: ${port}`);
     log.end();
   });
-  const io = require("socket.io")(server, {
+  const io = await require("socket.io")(server, {
     allowEIO3: true,
     cors: {
       origin: true,

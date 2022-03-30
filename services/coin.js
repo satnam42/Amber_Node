@@ -132,7 +132,7 @@ const handlePaymentMethod = async (model, context) => {
             totalCoin += coin.coins
             activeCoin += coin.coins
             coinHistory.totalCoin = totalCoin
-            coinHistory.activeCoin += activeCoin
+            coinHistory.activeCoin = activeCoin
             if (coinHistory.purchasedCoins && coinHistory.purchasedCoins.length > 0) {
                 coinHistory.purchasedCoins.push({
                     coinId: coin.id,
