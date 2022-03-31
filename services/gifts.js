@@ -80,13 +80,22 @@ const send = async (model, context) => {
             activeCoin += gift.coin
             coinHistory.totalCoin = totalCoin
             coinHistory.activeCoin = activeCoin
+            if (coinHistory.earnedCoins.length && coinHistory.earnedCoins.length > 0) {
+                coinHistory.earnedCoins.push({
+                    type: 'gifted',
+                    gift: gift._id,
+                    fromUser: model.senderId,
+                    coins: gift.coin
+                })
+            } else {
+                coinHistory.earnedCoins = [{
+                    type: 'gifted',
+                    gift: gift._id,
+                    fromUser: model.senderId,
+                    coins: gift.coin
+                }]
+            }
 
-            coinHistory.earnedCoins.push({
-                type: 'gifted',
-                gift: gift.id,
-                fromUser: model.senderId,
-                coins: gift.coin
-            })
 
         }
         else {
@@ -98,7 +107,7 @@ const send = async (model, context) => {
                 earnedCoins: [
                     {
                         type: 'gifted',
-                        gift: gift.id,
+                        gift: gift._id,
                         fromUser: model.senderId,
                         coins: gift.coin
                     }],
@@ -117,7 +126,7 @@ const send = async (model, context) => {
     coinHistory.spendCoins.push({
         onUser: model.receiverId,
         type: 'gifted',
-        gift: gift.id,
+        gift: gift._id,
         coins: gift.coin
     })
     await coinHistory.save()
