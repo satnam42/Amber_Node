@@ -33,8 +33,6 @@ const getCoinList = async (req, res) => {
     }
 };
 
-
-
 const buy = async (req, res) => {
     const log = req.context.logger.start(`api:coins:buy`);
     try {
@@ -47,6 +45,7 @@ const buy = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const checkPaymentStatus = async (req, res) => {
     const log = req.context.logger.start(`api:coins:checkPaymentStatus`);
     try {
@@ -59,6 +58,7 @@ const checkPaymentStatus = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const myCoins = async (req, res) => {
     const log = req.context.logger.start(`api:coins:checkPaymentStatus`);
     try {
@@ -71,8 +71,6 @@ const myCoins = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
-
-
 
 exports.add = add;
 exports.getCoinList = getCoinList;

@@ -151,7 +151,7 @@ const handlePaymentMethod = async (model, context) => {
         else {
             // if  user have  no coin then create it 
             coinHistory = await new db.coinHistory({
-                user: model.userId,
+                user: payment.user,
                 totalCoin: coin.coins,
                 activeCoin: coin.coins,
                 purchasedCoins: [
@@ -173,7 +173,6 @@ const handlePaymentMethod = async (model, context) => {
     }
     return
 }
-
 
 const checkPaymentStatus = async (model, context) => {
     const log = context.logger.start(`services: coins: credit ${model}`);
@@ -213,12 +212,13 @@ const checkPaymentStatus = async (model, context) => {
     return object
 
 };
+
 const myCoins = async (id, context) => {
     const log = context.logger.start(`services: coins: myCoins`);
     if (!id) {
         throw new Error('user id is Required')
     }
-    let coins = await db.coinHistory.findOne({ user: id })
+    let coins = await db.coinHistory.findOne({ user: ObjectId(id) })
     // .populate("giftedCoins.gift").populate("giftedCoins.fromUser")
     log.end();
     return coins
