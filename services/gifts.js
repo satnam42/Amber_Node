@@ -80,7 +80,7 @@ const send = async (model, context) => {
             activeCoin += gift.coin
             coinHistory.totalCoin = totalCoin
             coinHistory.activeCoin = activeCoin
-            if (coinHistory.earnedCoins.length && coinHistory.earnedCoins.length > 0) {
+            if (coinHistory.earnedCoins.length != undefined && coinHistory.earnedCoins.length > 0) {
                 coinHistory.earnedCoins.push({
                     type: 'gifted',
                     gift: gift._id,
