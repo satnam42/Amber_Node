@@ -213,10 +213,21 @@ const checkPaymentStatus = async (model, context) => {
     return object
 
 };
+const myCoins = async (id, context) => {
+    const log = context.logger.start(`services: coins: myCoins`);
+    if (!id) {
+        throw new Error('user id is Required')
+    }
+    let coins = await db.coinHistory.findOne({ user: id })
+    // .populate("giftedCoins.gift").populate("giftedCoins.fromUser")
+    log.end();
+    return coins
+};
 
 exports.create = create;
 exports.getCoinList = getCoinList;
 exports.buy = buy;
 exports.checkPaymentStatus = checkPaymentStatus;
+exports.myCoins = myCoins;
 
 

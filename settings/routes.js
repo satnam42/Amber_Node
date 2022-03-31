@@ -262,6 +262,11 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.coins.getCoinList
     );
+    app.get('/api/coins/myCoins/:id',
+        permit.context.validateToken,
+        api.coins.myCoins
+    );
+
 
     app.post("/api/coins/checkPaymentStatus",
         express.raw({ type: '*/*' }),

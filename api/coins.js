@@ -59,9 +59,23 @@ const checkPaymentStatus = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+const myCoins = async (req, res) => {
+    const log = req.context.logger.start(`api:coins:checkPaymentStatus`);
+    try {
+        const buy = await service.myCoins(req.params.id, req.context);
+        log.end();
+        return response.data(res, buy);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
 
 
 exports.add = add;
 exports.getCoinList = getCoinList;
 exports.buy = buy;
 exports.checkPaymentStatus = checkPaymentStatus;
+exports.myCoins = myCoins;
