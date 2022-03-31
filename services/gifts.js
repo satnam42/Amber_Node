@@ -71,7 +71,7 @@ const send = async (model, context) => {
     // ==============manipulating  receiver coin==================
     if (coinHistory && coinHistory.activeCoin >= gift.coin) {
         // receiver coin history
-        const coinHistory = db.coinHistory.findOne({ user: model.receiverId })
+        const coinHistory = await db.coinHistory.findOne({ user: model.receiverId })
         // if  user have coin update it 
         if (coinHistory) {
             let totalCoin = coinHistory.totalCoin
@@ -80,22 +80,14 @@ const send = async (model, context) => {
             activeCoin += gift.coin
             coinHistory.totalCoin = totalCoin
             coinHistory.activeCoin = activeCoin
-            if (coinHistory.earnedCoins.length != undefined && coinHistory.earnedCoins.length > 0) {
-                coinHistory.earnedCoins.push({
-                    type: 'gifted',
-                    gift: gift._id,
-                    fromUser: model.senderId,
-                    coins: gift.coin
-                })
-            } else {
-                coinHistory.earnedCoins = [{
-                    type: 'gifted',
-                    gift: gift._id,
-                    fromUser: model.senderId,
-                    coins: gift.coin
-                }]
-            }
+            coinHistory.earnedCoins.push({
+                type: 'gifted',
+                gift: gift._id,
+                fromUser: model.senderId,
+                coins: gift.coin
+            })
 
+            await coinHistory.save()
 
         }
         else {
@@ -113,7 +105,6 @@ const send = async (model, context) => {
                     }],
             }).save()
         }
-        await coin.save()
     } else {
         throw new Error("you don't have enough coin to send this gift")
     }

@@ -234,6 +234,8 @@ const connect = async (io, logger) => {
         socket.on('call-receive', async function (data) {
             log.info('call-receive called', { data })
             try {
+                data.callerId
+                data.receiverId
                 ioChat.to(socket.room).emit('call-receive', {});
                 socket.leave(socket.room);
             } catch (e) {
