@@ -7,15 +7,17 @@ exports.toModel = entity => {
         id: entity._id,
         msgFrom: entity.sender,
         msg: entity.content,
-        gift: {
+
+        date: entity.createdAt
+    };
+    if (entity.gift) {
+        model.gift = {
             title: entity.gift.title,
             icon: entity.gift.icon ? `${imageUrl}${entity.gift.icon}` : "",
             coin: entity.gift.coin,
             id: entity.gift._id
-        },
-        date: entity.createdAt
-    };
-
+        }
+    }
     return model;
 
 };
