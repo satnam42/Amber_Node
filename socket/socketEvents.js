@@ -134,10 +134,16 @@ const connect = async (io, logger) => {
                     })
                 }
 
-                const user = await db.user.findById(data.msgTo)
+                const user = await db.user.findById(socket.userId)
                 if (user && user.deviceToken != "" && user.deviceToken != undefined) {
-                    let response = service.pushNotification(user.deviceToken, user.firstName, data.msg)
-                    log.info('pushNotification called', { response })
+                    let response
+                    if (data.gift) {
+                        response = service.pushNotification(user.deviceToken, user.firstName, "gift", data.gift)
+
+                    } else {
+                        response = service.pushNotification(user.deviceToken, user.firstName, "messaging", data.msg)
+                    }
+                    log.info('pushNotification', { response })
                 }
                 let msgDate = moment.utc(data.date).format()
                 ioChat.to(socket.room).emit('chat-msg', {

@@ -9,11 +9,7 @@ const getOldChat = async (req, res) => {
     try {
         const oldChat = await service.getOldChat(req.query, req.context)
         log.end()
-        if (oldChat.length > 1) {
-            return response.page(res, messagesMapper(oldChat), Number(req.query.pageNo) || 1, Number(req.query.pageSize) || 10, oldChat.count)
-        } else {
-            return response.page(res, oldChat, Number(req.query.pageNo) || 1, Number(req.query.pageSize) || 10, oldChat.count)
-        }
+        return response.page(res, messagesMapper.toSearchModel(oldChat), Number(req.query.pageNo) || 1, Number(req.query.pageSize) || 10, oldChat.count)
     } catch (err) {
         log.error(err)
         log.end()
