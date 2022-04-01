@@ -119,7 +119,7 @@ const connect = async (io, logger) => {
                     await saveChat({
                         msgFrom: socket.userId,
                         msg: data.msg,
-                        gift: data.gift.id,
+                        giftId: data.gift.id,
                         msgTo: data.msgTo,
                         room: socket.room,
                         date: data.date
@@ -333,6 +333,7 @@ const connect = async (io, logger) => {
         const message = await new db.message({
             sender: data.msgFrom,
             receiver: data.msgTo,
+            gift: data.giftId,
             content: data.msg,
             read: data.read || true,
             conversation: data.room
