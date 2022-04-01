@@ -9,7 +9,11 @@ const getOldChat = async (query, context) => {
 
     let skipCount = pageSize * (pageNo - 1)
 
-    const chat = await db.message.find({ conversation: ObjectId(query.conversationId) }).sort({ createdAt: -1 }).skip(skipCount).limit(pageSize)
+    if (!query.conversationId) {
+        throw new Error('conversationId is required')
+    }
+
+    const chat = await db.message.find({ conversation: ObjectId(query.conversationId) }).populate("gift").sort({ createdAt: -1 }).skip(skipCount).limit(pageSize)
 
     chat.count = await db.message.find({ conversation: ObjectId(query.conversationId) }).count()
 
