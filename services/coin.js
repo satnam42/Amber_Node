@@ -130,10 +130,10 @@ const handlePaymentMethod = async (model, context) => {
     if (model.status == 'succeeded') {
         let coinHistory = await db.coinHistory.findOne({ user: payment.user })
         console.log('coinHistory', coinHistory)
-        let coin = await db.coin.findOne({ user: payment.coin })
+        let coin = await db.coin.findById(payment.coin)
         console.log('coin', coin)
         // if  user have coin update it 
-        if (coinHistory != undefined || coinHistory != null) {
+        if (coinHistory) {
             let totalCoin = coinHistory.totalCoin
             let activeCoin = coinHistory.activeCoin
             totalCoin += coin.coins

@@ -10,9 +10,9 @@ const configure = async logger => {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
-    if (process.env.NODE_ENV !== 'prod') {
-      mongoose.set('debug', true)
-    }
+    // if (process.env.NODE_ENV !== 'prod') {
+    //   mongoose.set('debug', true)
+    // }
     console.log(`mongoose default connection is open to ${dbConfig.url}`);
     await require("../models").configure();
     global.db = mongoose.models;
