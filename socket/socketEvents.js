@@ -118,7 +118,7 @@ const connect = async (io, logger) => {
                 await saveChat({
                     msgFrom: socket.userId,
                     msg: data.msg,
-                    gift: data.giftId,
+                    gift: data.gift.id,
                     msgTo: data.msgTo,
                     room: socket.room,
                     date: data.date
@@ -132,7 +132,7 @@ const connect = async (io, logger) => {
                 ioChat.to(socket.room).emit('chat-msg', {
                     msgFrom: socket.userId,
                     msg: data.msg,
-                    gift: data.giftId,
+                    gift: data.gift,
                     date: msgDate
                 });
             } catch (e) {
