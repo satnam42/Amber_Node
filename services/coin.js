@@ -125,9 +125,13 @@ const handlePaymentMethod = async (model, context) => {
     const log = context.logger.start(`services: coins: handlePaymentMethod ${{ model }}`);
     log.info('payment', model.id)
     let payment = await db.payment.findOne({ pi: model.id })
+    log.info('payment', payment)
+    console.log('payment', payment)
     if (model.status == 'succeeded') {
         let coinHistory = await db.coinHistory.findOne({ user: payment.user })
+        console.log('coinHistory', coinHistory)
         let coin = await db.coin.findOne({ user: payment.coin })
+        console.log('coin', coin)
         // if  user have coin update it 
         if (coinHistory != undefined || coinHistory != null) {
             let totalCoin = coinHistory.totalCoin
@@ -136,18 +140,18 @@ const handlePaymentMethod = async (model, context) => {
             activeCoin += coin.coins
             coinHistory.totalCoin = totalCoin
             coinHistory.activeCoin = activeCoin
-            if (coinHistory.purchasedCoins && coinHistory.purchasedCoins.length > 0) {
-                coinHistory.purchasedCoins.push({
-                    coinId: coin.id,
-                    coins: coin.coins,
-                })
-            }
-            else {
-                coinHistory.purchasedCoins = [{
-                    coinId: coin.id,
-                    coins: coin.coins,
-                }]
-            }
+            // if (coinHistory.purchasedCoins && coinHistory.purchasedCoins.length > 0) {
+            coinHistory.purchasedCoins.push({
+                coinId: coin.id,
+                coins: coin.coins,
+            })
+            // }
+            // else {
+            //     coinHistory.purchasedCoins = [{
+            //         coinId: coin.id,
+            //         coins: coin.coins,
+            //     }]
+            // }
             await coinHistory.save()
 
         }
