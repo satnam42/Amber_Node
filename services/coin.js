@@ -1,3 +1,5 @@
+const { logout } = require("./users");
+
 const ObjectId = require("mongodb").ObjectId
 const stripe = require('stripe')('sk_test_51KfdqKSIbgCXqMm2fnVDKcAd1LV0rVXZ9QiRvd0bm5JQYIeQXbF26NgYQA7RqiuSF3hUotbvt4FNPlsuI6OQgrPz00bCL9VA9k');
 const endpointSecret = 'whsec_Q2i0yFexQBvHn5QSLsldY4ZFMRBY2MYK';
@@ -121,12 +123,13 @@ const buy = async (model, context) => {
 
 const handlePaymentMethod = async (model, context) => {
     const log = context.logger.start(`services: coins: handlePaymentMethod ${{ model }}`);
+    log.info('payment', model.id)
     let payment = await db.payment.findOne({ pi: model.id })
     if (model.status == 'succeeded') {
-        let coinHistory = await db.coinHistory.findOne({ user: payment.userId })
-        let coin = await db.coin.findOne({ user: payment.coinId })
+        let coinHistory = await db.coinHistory.findOne({ user: payment.user })
+        let coin = await db.coin.findOne({ user: payment.coin })
         // if  user have coin update it 
-        if (coinHistory != undefined && coinHistory != null) {
+        if (coinHistory != undefined || coinHistory != null) {
             let totalCoin = coinHistory.totalCoin
             let activeCoin = coinHistory.activeCoin
             totalCoin += coin.coins

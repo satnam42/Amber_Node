@@ -272,14 +272,12 @@ const handlePaymentMethod = async (model, context) => {
     }
     return
 }
-
-
 const credit = async (model, context) => {
     const log = context.logger.start(`services: gifts: credit ${model}`);
     const { type, data: { object } } = model;
     switch (type) {
         case 'payment_intent.succeeded':
-            console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
+            // console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
             handlePaymentMethod(object, context);
             break;
         case 'payment_intent.amount_capturable_updated':
