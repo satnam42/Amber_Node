@@ -5,7 +5,7 @@ const conversationListMapper = require('../mappers/conversations')
 const messagesMapper = require('../mappers/messages')
 
 const getOldChat = async (req, res) => {
-    const log = req.context.logger.start(`api:conversations:getOldChat:${req.params.id}`)
+    const log = req.context.logger.start(`api:conversations:getOldChat:${req.query.id}`)
     try {
         const oldChat = await service.getOldChat(req.query, req.context)
         log.end()
