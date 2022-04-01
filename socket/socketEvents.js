@@ -115,14 +115,25 @@ const connect = async (io, logger) => {
         socket.on('chat-msg', async function (data) {
             log.info('chat-msg called', { data })
             try {
-                await saveChat({
-                    msgFrom: socket.userId,
-                    msg: data.msg,
-                    gift: data.gift.id,
-                    msgTo: data.msgTo,
-                    room: socket.room,
-                    date: data.date
-                })
+                if (data.gift) {
+                    await saveChat({
+                        msgFrom: socket.userId,
+                        msg: data.msg,
+                        gift: data.gift.id,
+                        msgTo: data.msgTo,
+                        room: socket.room,
+                        date: data.date
+                    })
+                } else {
+                    await saveChat({
+                        msgFrom: socket.userId,
+                        msg: data.msg,
+                        msgTo: data.msgTo,
+                        room: socket.room,
+                        date: data.date
+                    })
+                }
+
                 const user = await db.user.findById(data.msgTo)
                 if (user && user.deviceToken != "" && user.deviceToken != undefined) {
                     let response = service.pushNotification(user.deviceToken, user.firstName, data.msg)
@@ -278,8 +289,6 @@ const connect = async (io, logger) => {
         }
 
         let conversation = await db.conversation.findOne({ $or: [{ user1: room.conversationFrom, user2: room.conversationTo }, { user1: room.conversationTo, user2: room.conversationFrom }] })
-
-
         if (!conversation) {
             const conversation = await new db.conversation({
                 user1: room.conversationFrom,
