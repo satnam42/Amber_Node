@@ -245,14 +245,15 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.gifts.myGifts
     );
-
-
+    app.put('/api/gifts/uploadIcon/:id',
+        permit.context.validateToken,
+        api.gifts.uploadIcon
+    );
     app.post("/api/coins/add",
         permit.context.builder,
         validator.coins.create,
         api.coins.add
     );
-
     app.post("/api/coins/buy",
         permit.context.validateToken,
         api.coins.buy
