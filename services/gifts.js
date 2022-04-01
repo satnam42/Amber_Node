@@ -110,8 +110,8 @@ const send = async (model, context) => {
     }
 
     // let activeCoin = coinHistory.activeCoin
-    // activeCoin -= gift.coin
-    // coinHistory.activeCoin = activeCoin
+    activeCoin -= gift.coin
+    coinHistory.activeCoin = activeCoin
 
     // ==============manipulating  sender coin==================
     coinHistory.spendCoins.push({
