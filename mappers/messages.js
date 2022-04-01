@@ -9,7 +9,7 @@ exports.toModel = entity => {
         msg: entity.content,
         gift: {
             title: entity.gift.title,
-            icon: entity.gift.icon,
+            icon: entity.gift.icon ? `${imageUrl}${entity.gift.icon}` : "",
             coin: entity.gift.coin,
             id: entity.gift._id
         },
