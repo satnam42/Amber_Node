@@ -71,9 +71,22 @@ const myCoins = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+const deduct = async (req, res) => {
+    const log = req.context.logger.start(`api:coins:deduct`);
+    try {
+        const deduct = await service.deduct(req.body, req.context);
+        log.end();
+        return response.data(res, deduct);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
 
 exports.add = add;
 exports.getCoinList = getCoinList;
 exports.buy = buy;
 exports.checkPaymentStatus = checkPaymentStatus;
 exports.myCoins = myCoins;
+exports.deduct = deduct;

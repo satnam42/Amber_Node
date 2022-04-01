@@ -230,11 +230,83 @@ const myCoins = async (id, context) => {
     log.end();
     return coins
 };
+const deduct = async (model, context) => {
+    const log = context.logger.start(`services: coins: deduct`);
+
+    if (!model.from) {
+        throw new Error('from is Required')
+    }
+    if (!model.to) {
+        throw new Error('to is Required')
+    }
+    if (!model.callTime) {
+        throw new Error('callTime is Required')
+    }
+    let fromUser = await db.user.findById(model.from)
+    let toUser = await db.user.findById(model.to)
+    if (fromUser) {
+        // ==============manipulating  receiver coin==================
+        // receiver coin historyif 
+        // if(fromUser.gender =='male'){
+        const coinHistory = await db.coinHistory.findOne({ user: model.to })
+        // if  user have coin update it 
+        if (coinHistory) {
+            let totalCoin = coinHistory.totalCoin
+            let activeCoin = coinHistory.activeCoin
+            totalCoin += model.callTime
+            activeCoin += model.callTime
+            coinHistory.totalCoin = totalCoin
+            coinHistory.activeCoin = activeCoin
+            coinHistory.earnedCoins.push({
+                type: 'call',
+                fromUser: model.from,
+                coins: model.callTime
+            })
+            await coinHistory.save()
+        }
+        else {
+            // if  user have  no coin then create it 
+            const coin = await new db.coinHistory({
+                user: model.to,
+                totalCoin: model.callTime,
+                activeCoin: model.callTime,
+                earnedCoins: [
+                    {
+                        type: 'call',
+                        fromUser: model.from,
+                        coins: model.callTime
+                    }],
+            }).save()
+        }
+        // }
+
+    } if (toUser) {
+
+        let coinHistory = await db.coinHistory.findOne({ user: model.from })
+
+        let activeCoin = coinHistory.activeCoin
+        activeCoin -= model.callTime
+        coinHistory.activeCoin = activeCoin
+        // ==============manipulating  sender coin==================
+        coinHistory.spendCoins.push({
+            onUser: model.to,
+            type: 'call',
+            coins: activeCoin
+        })
+        await coinHistory.save()
+
+        log.end();
+    }
+    // .populate("giftedCoins.gift").populate("giftedCoins.fromUser")
+    log.end();
+    return "coin deduct successfully"
+};
 
 exports.create = create;
 exports.getCoinList = getCoinList;
 exports.buy = buy;
 exports.checkPaymentStatus = checkPaymentStatus;
 exports.myCoins = myCoins;
+exports.deduct = deduct;
 
 

@@ -1,23 +1,16 @@
 module.exports = [
     {
-        name: "addCoin",
+        name: "deductCoin",
         properties: {
-            coins: {
-                type: "number"
-            },
-            price: {
-                type: "number"
-            },
-            status: {
+            from: {
                 type: "string"
             },
-            category: {
+            to: {
                 type: "string"
             },
-            isFree: {
-                type: "boolean "
-            }
-
+            callTime: {
+                type: "number"
+            },
         }
     }
 ]
