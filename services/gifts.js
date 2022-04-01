@@ -109,7 +109,7 @@ const send = async (model, context) => {
         throw new Error("you don't have enough coin to send this gift")
     }
 
-    // let activeCoin = coinHistory.activeCoin
+    let activeCoin = coinHistory.activeCoin
     activeCoin -= gift.coin
     coinHistory.activeCoin = activeCoin
 
