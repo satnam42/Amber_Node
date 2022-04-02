@@ -1,7 +1,6 @@
 const ObjectId = require("mongodb").ObjectId
 const stripe = require('stripe')('sk_test_51KfdqKSIbgCXqMm2fnVDKcAd1LV0rVXZ9QiRvd0bm5JQYIeQXbF26NgYQA7RqiuSF3hUotbvt4FNPlsuI6OQgrPz00bCL9VA9k');
 const endpointSecret = 'whsec_qZYloeQTjG5bOmE1iE31H76UD6Ll7vQY';
-
 const buildGift = async (model, context) => {
     const { title, coin, description } = model;
     const log = context.logger.start(`services:gifts:buildGift${model}`);
@@ -38,6 +37,15 @@ const create = async (model, context) => {
         throw new Error(`${model.title} already exits choose another!`);
     } else {
         gift = buildGift(model, context);
+        // const message = await new db.coin({
+        //     totalCoin: 1000
+        // user: user.id,
+        // giftedCoins: [{
+        //     gift: giftId,
+        //     fromUser: data.msgFrom,
+        //     coin: data.giftedCoin
+        // }],
+        // }).save()
         log.end();
         return gift;
     }
@@ -58,71 +66,61 @@ const update = async (id, model, context) => {
 };
 
 const send = async (model, context) => {
+
     const log = context.logger.start(`services: gifts: send`);
+
     let gift = await db.gift.findById(model.giftId)
+
     if (!gift) {
         throw new Error('provider gift not found')
     }
+
     // checking user have coin to gift to  user
+    let coin = await db.coin.findOne({ user: model.senderId })
 
-    // sender coin history
-    let coinHistory = await db.coinHistory.findOne({ user: model.senderId })
-
-    // ==============manipulating  receiver coin==================
-    if (coinHistory && coinHistory.activeCoin >= gift.coin) {
-        // receiver coin history
-        const coinHistory = await db.coinHistory.findOne({ user: model.receiverId })
+    if (coin && coin.activeCoin >= gift.coin) {
+        let coin = db.coin.findOne({ user: model.receiverId })
         // if  user have coin update it 
-        if (coinHistory) {
-            let totalCoin = coinHistory.totalCoin
-            let activeCoin = coinHistory.activeCoin
+        if (coin) {
+            let totalCoin = coin.totalCoin
+            let activeCoin = coin.activeCoin
             totalCoin += gift.coin
             activeCoin += gift.coin
-            coinHistory.totalCoin = totalCoin
-            coinHistory.activeCoin = activeCoin
-            coinHistory.earnedCoins.push({
-                type: 'gifted',
-                gift: gift._id,
+            coin.totalCoin = totalCoin
+            coin.activeCoin = activeCoin
+            coin.giftedCoins.push({
+                gift: gift.id,
                 fromUser: model.senderId,
-                coins: gift.coin
+                coin: gift.coin
             })
-
-            await coinHistory.save()
 
         }
         else {
             // if  user have  no coin then create it 
-            const coin = await new db.coinHistory({
+            const coin = await new db.coin({
                 user: model.receiverId,
                 totalCoin: gift.coin,
                 activeCoin: gift.coin,
-                earnedCoins: [
+                giftedCoins: [
                     {
-                        type: 'gifted',
-                        gift: gift._id,
+                        gift: gift.id,
                         fromUser: model.senderId,
-                        coins: gift.coin
+                        coin: gift.coin
                     }],
             }).save()
         }
+        await coin.save()
     } else {
         throw new Error("you don't have enough coin to send this gift")
     }
-
-    let activeCoin = coinHistory.activeCoin
+    let activeCoin = coin.activeCoin
     activeCoin -= gift.coin
-    coinHistory.activeCoin = activeCoin
-
-    // ==============manipulating  sender coin==================
-    coinHistory.spendCoins.push({
+    coin.activeCoin = activeCoin
+    coin.spendCoins.push({
         onUser: model.receiverId,
-        type: 'gifted',
-        gift: gift._id,
-        coins: gift.coin
+        coin: gift.coin
     })
-    await coinHistory.save()
-    log.end();
-    return 'gift sent successfully'
+    await coin.save()
 }
 
 // const gift = await setGift(model, entity, context);
@@ -169,61 +167,99 @@ const uploadIcon = async (id, files, context) => {
 
 }
 
-const myGifts = async (id, model, context) => {
+const myGifts = async (id, context) => {
     const log = context.logger.start(`services: gifts: myGifts`);
     if (!id) {
         throw new Error('user id is Required')
     }
-    let myGifts = await db.coinHistory.findOne({ user: id }).populate("giftedCoins.gift").populate("giftedCoins.fromUser")
+    let myGifts = await db.coinHistory.findOne({ user: id, "earnedCoins.type": "gifted" }).populate("earnedCoins.gift").populate("earnedCoins.fromUser")
     log.end();
     return myGifts
 };
 
 const buy = async (model, context) => {
     const log = context.logger.start(`services: gifts: buy`);
-
     if (!model.userId) {
         throw new Error('user id is Required')
     }
-
     if (!model.giftId) {
         throw new Error('giftId id is Required')
     }
+    if (!model.paymentMethod) {
+        throw new Error('paymentMethod  is Required')
+    }
 
     const user = await db.user.findById(model.userId)
-
     if (!user) {
         throw new Error('user not found')
     }
 
     const gift = await db.gift.findById(model.giftId)
-
     if (!gift) {
         throw new Error('this id not associate any gift')
     }
 
-    let coinHistory = await db.coinHistory.findOne({ user: user.id })
-    // if  user have coin update it 
-    if (coinHistory != undefined && coinHistory != null && coinHistory.activeCoin >= gift.coin) {
-        let activeCoin = coinHistory.activeCoin
-        activeCoin -= gift.coin
-        coin.activeCoin = activeCoin
-        await coinHistory.save()
-    }
-    else {
-        throw new Error("you don't have enough coin to this gift")
-    }
+    const customer = await stripe.customers.create({
+        name: user.firstName || "",
+        // temp adding  address to handle indian rule
+        address: {
+            line1: '510 Townsend St',
+            postal_code: '98140',
+            city: 'San Francisco',
+            state: 'CA',
+            country: 'US',
+        }
+    });
+
+    const ephemeralKey = await stripe.ephemeralKeys.create(
+        { customer: customer.id },
+        { apiVersion: '2020-08-27' }
+    );
+    const paymentIntent = await stripe.paymentIntents.create({
+
+        amount: gift.coin,
+        description: 'social services',
+        // temp adding  address to handle indian rule
+        shipping: {
+            name: 'Jenny Rosen',
+            address: {
+                line1: '510 Townsend St',
+                postal_code: '98140',
+                city: 'San Francisco',
+                state: 'CA',
+                country: 'US',
+            },
+        },
+        currency: 'inr',
+        customer: customer.id,
+        payment_method_types: [model.paymentMethod],
+    });
+
+    const payment = await new db.payment({
+        user: user.id,
+        gift: gift.id,
+        pi: paymentIntent.id,
+        status: paymentIntent.status,
+        customerId: customer.id,
+        amount: gift.coin
+    }).save()
 
     log.end();
-    return coinHistory
-
+    return {
+        paymentIntent: paymentIntent.client_secret,
+        status: paymentIntent.status,
+        ephemeralKey: ephemeralKey.secret,
+        customer: customer.id,
+        publishableKey: 'sk_test_51KfdqKSIbgCXqMm2fnVDKcAd1LV0rVXZ9QiRvd0bm5JQYIeQXbF26NgYQA7RqiuSF3hUotbvt4FNPlsuI6OQgrPz00bCL9VA9k'
+    }
 };
 
 const handlePaymentMethod = async (model, context) => {
     const log = context.logger.start(`services: gifts: handlePaymentMethod ${{ model }}`);
     let payment = await db.payment.findOne({ pi: model.id })
+
     if (model.status == 'succeeded') {
-        let coin = await db.coinHistory.findOne({ user: payment.userId })
+        let coin = await db.coin.findOne({ user: payment.userId })
         let gift = await db.gift.findOne({ user: payment.giftId })
         // if  user have coin update it 
         if (coin != undefined && coin != null) {
@@ -250,7 +286,7 @@ const handlePaymentMethod = async (model, context) => {
         }
         else {
             // if  user have  no coin then create it 
-            coin = await new db.coinHistory({
+            coin = await new db.coin({
                 user: model.userId,
                 totalCoin: gift.coin,
                 activeCoin: gift.coin,
@@ -272,12 +308,19 @@ const handlePaymentMethod = async (model, context) => {
     }
     return
 }
+
+
 const credit = async (model, context) => {
     const log = context.logger.start(`services: gifts: credit ${model}`);
     const { type, data: { object } } = model;
+    // const sig = request.headers['stripe-signature'];
+    // let event;
+    // event = stripe.webhooks.constructEvent(request.body, endpointSecret);
+
+    // Handle the event
     switch (type) {
         case 'payment_intent.succeeded':
-            // console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
+            console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
             handlePaymentMethod(object, context);
             break;
         case 'payment_intent.amount_capturable_updated':

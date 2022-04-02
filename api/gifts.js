@@ -34,9 +34,9 @@ const update = async (req, res) => {
 const myGifts = async (req, res) => {
     const log = req.context.logger.start(`api:gifts:myGift`);
     try {
-        const myGifts = await service.myGift(req.params.id, req.context);
+        const myGifts = await service.myGifts(req.params.id, req.context);
         log.end();
-        return response.data(res, mapper.toModel(myGifts));
+        return response.data(res, myGifts);
         // return response.data(res, gift);
     } catch (err) {
         log.error(err);
