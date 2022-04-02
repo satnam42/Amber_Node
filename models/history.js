@@ -12,29 +12,28 @@ const history = mongoose.Schema({
         ref: "user",
         required: false,
     },
-
     type: {
         type: String,
-        default: "",
-        enum: ["", "video", "gift"],
+        default: "video",
+        enum: ["video", "voice"],
+    },
+    callType: {
+        type: String,
+        default: "incoming",
+        enum: ["missed", "outgoing", "incoming"],
     },
     duration: {
         type: String,
         default: "",
     },
-
     coin: {
         type: String,
         default: "",
     },
-
-    dateTime: {
-        type: Date,
-        default: Date.now
+    time: {
+        type: String,
+        default: ""
     },
-
-
-
 }, { timestamps: true });
 
 mongoose.model("history", history);

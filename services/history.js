@@ -2,9 +2,11 @@ const create = async (model, context) => {
     const log = context.logger.start(`services:history:create`);
     const history = await new db.history({
         toUser: model.toUser,
-        byUser: model.byUser,
+        fromUser: model.fromUser,
         type: model.type,
-        dateTime: model.dateTime,
+        callType: model.callType,
+        coin: model.coin,
+        time: model.dateTime,
         duration: model.duration,
     }).save();
     log.end();
@@ -16,7 +18,7 @@ const getHistoryByUserId = async (id, context) => {
     if (!id) {
         throw new Error('user id is required')
     }
-    const history = await db.history.find({ byUser: id }).populate('toUser')
+    const history = await db.history.find({ fromUser: id }).populate('toUser')
     log.end();
     return history
 };

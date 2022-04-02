@@ -159,7 +159,7 @@ const configure = (app, logger) => {
         api.blocks.blockList
     );
 
-    app.post("/api/history/create",
+    app.post("/api/history/make",
         permit.context.validateToken,
         validator.history.create,
         api.history.create

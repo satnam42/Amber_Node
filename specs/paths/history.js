@@ -1,6 +1,6 @@
 module.exports = [
     {
-        url: "/history",
+        url: "/make",
         post: {
             summary: "create history",
             description: "create history",

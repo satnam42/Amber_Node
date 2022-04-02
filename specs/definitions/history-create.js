@@ -5,16 +5,22 @@ module.exports = [
             toUser: {
                 type: "string"
             },
-            byUser: {
+            fromUser: {
                 type: "string"
             },
             type: {
                 type: "string"
             },
+            callType: {
+                type: "string"
+            },
             duration: {
                 type: "string"
             },
-            dateTime: {
+            time: {
+                type: "string"
+            },
+            coin: {
                 type: "string"
             }
 
