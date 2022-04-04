@@ -157,7 +157,32 @@ const profile = async (id, context) => {
         user = await db.user.findById(id)
     } else {
         user = await db.user.aggregate([
-            { $match: { _id: ObjectId(id) } },
+            {
+                $match: {
+                    and: [
+                        { _id: ObjectId(id) },
+                        {
+                            "following": {
+                                "$elemMatch": {
+                                    "$and": [
+                                        { "userId": ObjectId(context.user.id) },
+                                    ]
+                                }
+                            },
+                        },
+                        {
+                            "followers": {
+                                "$elemMatch": {
+                                    "$and": [
+                                        { "userId": ObjectId(context.user.id) },
+                                    ]
+                                }
+                            },
+                        }
+                    ]
+                }
+            },
+
             {
                 $project: {
                     _id: 0,
@@ -168,28 +193,28 @@ const profile = async (id, context) => {
                     "following": "$following",
                     "followers": "$followers",
                     // to handle following and follower count
-                    "follow": "$following",
-                    "follower": "$followers",
+                    // "follow": "$following",
+                    // "follower": "$followers",
                     "gender": "$gender",
                     "bio": "$bio",
                     "videos": "$videos",
                     "images": "$images",
                     // which i have follow
-                    // "followingF": {
-                    //     $filter: {
-                    //         input: "$following",
-                    //         as: "following",
-                    //         cond: { $eq: ["$$following.userId", ObjectId(context.user.id)] }
-                    //     }
-                    // },
+                    "followingF": {
+                        $filter: {
+                            input: "$following",
+                            as: "following",
+                            cond: { $eq: ["$$following.userId", ObjectId(context.user.id)] }
+                        }
+                    },
                     // my follower
-                    // "followersF": {
-                    //     $filter: {
-                    //         input: "$followers",
-                    //         as: "followers",
-                    //         cond: { $eq: ["$$followers.userId", ObjectId(context.user.id)] }
-                    //     }
-                    // }
+                    "followersF": {
+                        $filter: {
+                            input: "$followers",
+                            as: "followers",
+                            cond: { $eq: ["$$followers.userId", ObjectId(context.user.id)] }
+                        }
+                    }
 
                 }
             },
@@ -212,7 +237,7 @@ const profile = async (id, context) => {
                     {
                         $cond: {
                             if: {
-                                $eq: ["$following.userId", ObjectId(context.user.id)]
+                                $eq: ["$followingF.userId", ObjectId(context.user.id)]
                             }, then: true, else: false
                         }
                     }
@@ -224,7 +249,7 @@ const profile = async (id, context) => {
                     {
                         $cond: {
                             if: {
-                                $eq: ["$followers.userId", ObjectId(context.user.id)]
+                                $eq: ["$followersF.userId", ObjectId(context.user.id)]
                             }, then: true, else: false
                         }
                     }
