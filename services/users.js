@@ -606,7 +606,7 @@ const usersByFilter = async (query, context) => {
         throw new Error('country is required')
     }
 
-    let filter = {}
+    let filter = []
     // ===============================================for you=================================================
 
     if (query.gender !== "" && query.gender == undefined) {
