@@ -662,7 +662,7 @@ const usersByFilter = async (query, context) => {
 
 const remove = async (id, context) => {
     const log = context.logger.start(`services:users:remove ${id}`);
-    if (context.user.id !== id && user.isAdmin == false) {
+    if (context.user.id !== id) {
         throw new Error("you don't have right to delete this account ")
     }
     const user = await db.user.deleteOne({ id: id })
