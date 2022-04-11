@@ -665,7 +665,7 @@ const remove = async (id, context) => {
     if (context.user.id !== id) {
         throw new Error("you don't have right to delete this account ")
     }
-    const user = await db.user.deleteOne({ id: id })
+    const user = await db.user.deleteOne({ _id: id })
     if (user.deletedCount !== 1) {
         throw new Error('something went wrong please try again')
     }

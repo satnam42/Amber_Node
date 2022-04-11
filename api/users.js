@@ -296,9 +296,9 @@ const usersByFilter = async (req, res) => {
 const remove = async (req, res) => {
     const log = req.context.logger.start(`api:users:remove:${req.params.id}`);
     try {
-        const users = await service.remove(req.params.id, req.context);
+        const user = await service.remove(req.params.id, req.context);
         log.end();
-        return response.data(res, token);
+        return response.data(res, user);
         // return response.page(res, mapper.toSearchModel(users), Number(req.query.pageNo) || 1, Number(req.query.pageSize) || 10, users.length);
     } catch (err) {
         log.error(err);
