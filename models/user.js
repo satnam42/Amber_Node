@@ -3,7 +3,7 @@
 "use strict";
 const mongoose = require("mongoose");
 const user = mongoose.Schema({
-  username: { type: String, required: false, trim: true, lowercase: true, unique: true },
+  username: { type: String, required: false, trim: true, lowercase: true },
   firstName: { type: String, required: false },
   lastName: { type: String, required: false },
   email: { type: String, required: false, trim: true },

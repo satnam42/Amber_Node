@@ -2,7 +2,6 @@
 const imageUrl = require('config').get('image').url
 
 exports.toModel = entity => {
-
     const model = {
         id: entity._id,
         title: entity.title,
@@ -10,10 +9,7 @@ exports.toModel = entity => {
         description: entity.description,
         iconUrl: entity.icon ? `${imageUrl}${entity.icon}` : "",
     };
-
-
     return model;
-
 };
 
 

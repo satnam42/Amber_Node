@@ -26,10 +26,7 @@ const history = mongoose.Schema({
         type: String,
         default: "",
     },
-    coin: {
-        type: String,
-        default: "",
-    },
+
     time: {
         type: String,
         default: ""

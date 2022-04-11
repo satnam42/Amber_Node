@@ -13,6 +13,9 @@ module.exports = [
             },
             lastName: {
                 type: "string"
+            },
+            gender: {
+                type: "string"
             }
         }
     }
