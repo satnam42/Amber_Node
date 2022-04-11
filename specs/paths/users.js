@@ -692,5 +692,45 @@ module.exports = [{
         }
     },
 },
+{
+    url: "/deleteAccount",
+    delete: {
+        summary: "deleteAccount",
+        description: "deleteAccount",
+        parameters: [
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "path",
+                type: "string",
+                name: "id",
+                description: "user id",
+                required: true
+            }
+            // {
+            //     in: "body",
+            //     name: "body",
+            //     description: "Model of user logout",
+            //     required: true,
+            //     schema: {
+            //         $ref: "#/definitions/login"
+            //     }
+            // }
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
 
 ];

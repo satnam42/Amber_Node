@@ -635,6 +635,21 @@ const usersByFilter = async (query, context) => {
 
 };
 
+const remove = async (id, context) => {
+    const log = context.logger.start(`services:users:remove ${id}`);
+    if (context.user.id !== id && user.isAdmin == false) {
+        throw new Error("you don't have right to delete this account ")
+    }
+    const user = await db.user.deleteOne({ id: id })
+    if (user.deletedCount !== 1) {
+        throw new Error('something went wrong please try again')
+    }
+    await db.history.deleteOne({ fromUser: id })
+    await db.coinHistory.deleteOne({ user: id })
+    log.end()
+    return "account deleted successfully"
+};
+
 
 exports.create = create;
 exports.resetPassword = resetPassword;
@@ -662,4 +677,5 @@ exports.generateRtcToken = generateRtcToken
 exports.uploadStory = uploadStory
 exports.logout = logout
 exports.usersByFilter = usersByFilter
+exports.remove = remove
 

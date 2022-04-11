@@ -116,6 +116,10 @@ const configure = (app, logger) => {
         permit.context.builder,
         api.users.random
     );
+    app.delete("/api/users/deleteAccount",
+        permit.context.validateToken,
+        api.users.remove
+    );
 
     app.get("/api/users/getUsers",
         permit.context.validateToken,
