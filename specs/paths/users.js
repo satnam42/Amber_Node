@@ -693,7 +693,7 @@ module.exports = [{
     },
 },
 {
-    url: "/deleteAccount",
+    url: "/deleteAccount/{id}",
     delete: {
         summary: "deleteAccount",
         description: "deleteAccount",
