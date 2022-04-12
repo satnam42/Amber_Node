@@ -152,142 +152,134 @@ const profile = async (id, context) => {
         log.end();
         throw new Error("user id is required");
     }
-    let user
-    if (id == context.user.id) {
-        user = await db.user.findById(id)
+    let user = await db.user.aggregate([
+        {
+            $match: { _id: ObjectId(id) }
+            // $match: {
+            // and: [
+            //     {
+            // _id: ObjectId(id)
+            // },
+            //     {
+            //         "following": {
+            //             "$elemMatch": {
+            //                 "$and": [
+            //                     { "userId": ObjectId(context.user.id) },
+            //                 ]
+            //             }
+            //         },
+            //     },
+            //     {
+            //         "followers": {
+            //             "$elemMatch": {
+            //                 "$and": [
+            //                     { "userId": ObjectId(context.user.id) },
+            //                 ]
+            //             }
+            //         },
+            //     }
+            // ]
+            // }
+        },
+
+        {
+            $project: {
+                _id: 0,
+                "_id": "$_id",
+                "firstName": "$firstName",
+                "lastName": "$lastName",
+                "avatar": "$avatar",
+                "following": "$following",
+                "followers": "$followers",
+                // to handle following and follower count
+                // "follow": "$following",
+                // "follower": "$followers",
+                "gender": "$gender",
+                "bio": "$bio",
+                "videos": "$videos",
+                "images": "$images",
+                // which i have follow
+                "followingF": {
+                    $filter: {
+                        input: "$following",
+                        as: "following",
+                        cond: { $eq: ["$$following.userId", ObjectId(context.user.id)] }
+                    }
+                },
+                // my follower
+                "followersF": {
+                    $filter: {
+                        input: "$followers",
+                        as: "followers",
+                        cond: { $eq: ["$$followers.userId", ObjectId(context.user.id)] }
+                    }
+                }
+
+            }
+        },
+        {
+            $unwind: {
+                path: '$following',
+                preserveNullAndEmptyArrays: true
+            },
+        },
+        {
+            $unwind: {
+                path: '$followers',
+                preserveNullAndEmptyArrays: true
+            },
+        },
+
+        {
+            $addFields: {
+                "isFollowing":
+                {
+                    $cond: {
+                        if: {
+                            $eq: ["$followingF.userId", ObjectId(context.user.id)]
+                        }, then: true, else: false
+                    }
+                }
+            }
+        },
+        {
+            $addFields: {
+                "isFollower":
+                {
+                    $cond: {
+                        if: {
+                            $eq: ["$followersF.userId", ObjectId(context.user.id)]
+                        }, then: true, else: false
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                "_id": "$_id",
+                "firstName": "$firstName",
+                "lastName": "$lastName",
+                "avatar": "$avatar",
+                "following": "$follow",
+                "followers": "$follower",
+                "gender": "$gender",
+                "bio": "$bio",
+                "videos": "$videos",
+                "images": "$images",
+                "isFollowing": "$isFollowing",
+                "isFollower": "$isFollower",
+            }
+        },
+
+
+    ])
+    if (user.length > 0) {
+        user = user[0]
     } else {
-        user = await db.user.aggregate([
-            {
-                $match: {
-                    and: [
-                        { _id: ObjectId(id) },
-                        {
-                            "following": {
-                                "$elemMatch": {
-                                    "$and": [
-                                        { "userId": ObjectId(context.user.id) },
-                                    ]
-                                }
-                            },
-                        },
-                        {
-                            "followers": {
-                                "$elemMatch": {
-                                    "$and": [
-                                        { "userId": ObjectId(context.user.id) },
-                                    ]
-                                }
-                            },
-                        }
-                    ]
-                }
-            },
-
-            {
-                $project: {
-                    _id: 0,
-                    "_id": "$_id",
-                    "firstName": "$firstName",
-                    "lastName": "$lastName",
-                    "avatar": "$avatar",
-                    "following": "$following",
-                    "followers": "$followers",
-                    // to handle following and follower count
-                    // "follow": "$following",
-                    // "follower": "$followers",
-                    "gender": "$gender",
-                    "bio": "$bio",
-                    "videos": "$videos",
-                    "images": "$images",
-                    // which i have follow
-                    "followingF": {
-                        $filter: {
-                            input: "$following",
-                            as: "following",
-                            cond: { $eq: ["$$following.userId", ObjectId(context.user.id)] }
-                        }
-                    },
-                    // my follower
-                    "followersF": {
-                        $filter: {
-                            input: "$followers",
-                            as: "followers",
-                            cond: { $eq: ["$$followers.userId", ObjectId(context.user.id)] }
-                        }
-                    }
-
-                }
-            },
-            {
-                $unwind: {
-                    path: '$following',
-                    preserveNullAndEmptyArrays: true
-                },
-            },
-            {
-                $unwind: {
-                    path: '$followers',
-                    preserveNullAndEmptyArrays: true
-                },
-            },
-
-            {
-                $addFields: {
-                    "isFollowing":
-                    {
-                        $cond: {
-                            if: {
-                                $eq: ["$followingF.userId", ObjectId(context.user.id)]
-                            }, then: true, else: false
-                        }
-                    }
-                }
-            },
-            {
-                $addFields: {
-                    "isFollower":
-                    {
-                        $cond: {
-                            if: {
-                                $eq: ["$followersF.userId", ObjectId(context.user.id)]
-                            }, then: true, else: false
-                        }
-                    }
-                }
-            },
-
-
-            {
-                $project: {
-                    _id: 0,
-                    "_id": "$_id",
-                    "firstName": "$firstName",
-                    "lastName": "$lastName",
-                    "avatar": "$avatar",
-                    "following": "$follow",
-                    "followers": "$follower",
-                    "gender": "$gender",
-                    "bio": "$bio",
-                    "videos": "$videos",
-                    "images": "$images",
-                    "isFollowing": "$isFollowing",
-                    "isFollower": "$isFollower",
-                }
-            },
-
-
-        ])
-        if (user.length > 0) {
-            user = user[0]
-        } else {
-            user = undefined
-        }
-
-    }
-    if (!user) {
-        log.end();
         throw new Error("user not found");
     }
+
     log.end();
     return user
 };
