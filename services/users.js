@@ -75,6 +75,9 @@ const create = async (model, context) => {
     } else {
         model.password = encrypt.getHash(model.password, context);
         user = buildUser(model, context);
+        if (user.platform = "") {
+            user.token = auth.getToken(user.id, false, context);
+        }
         log.end();
         return user;
     }
