@@ -4,7 +4,7 @@ const imageUrl = require('config').get('image').url
 exports.toModel = entity => {
 
     const model = {
-        id: entity._id,
+        _id: entity._id,
         msgFrom: entity.sender,
         msg: entity.content,
 
