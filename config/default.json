@@ -1,6 +1,6 @@
 {
     "db": {
-        "url": "mongodb://93.188.167.68:33017",
+        "url": "mongodb://ambers:Z$ecurity#2020@93.188.167.68:33017",
         "database": "amber"
     },
     "app": {
