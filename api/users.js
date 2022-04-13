@@ -190,7 +190,7 @@ const socialLogin = async (req, res) => {
         const user = await service.socialLogin(req.body, req.context);
         let message = "login successfully"
         log.end();
-        return response.authorized(res, message, user, user.token);
+        return response.authorized(res, message, mapper.toModel(user), user.token);
     } catch (err) {
         log.error(err);
         log.end();

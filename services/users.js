@@ -460,7 +460,8 @@ const followers = async (id, context) => {
 
 const socialLogin = async (model, context) => {
     const log = context.logger.start(`services:users:socialLogin`);
-    let user = await db.user.findOne({ socialLoginId: model.socialLoginId });
+    let user = {}
+    user = await db.user.findOne({ socialLoginId: model.socialLoginId });
     if (!user) {
         user = await buildUser(model, context);
         log.end()
