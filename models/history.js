@@ -7,15 +7,15 @@ const history = mongoose.Schema({
         ref: "user",
         required: false,
     },
-    toUser: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
         required: false,
     },
-    type: {
-        type: String,
-        default: "video",
-        enum: ["video", "voice"],
+    toUser: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+        required: false,
     },
     callType: {
         type: String,

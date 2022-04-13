@@ -210,37 +210,55 @@ const connect = async (io, logger) => {
         }); //end of set-cannel event.
 
         socket.on('call-end', async function (data) {
-            log.info('call-end called', { data })
-            try {
-                ioChat.to(socket.room).emit('call-end', {});
-                socket.leave(socket.room);
-            } catch (e) {
-                log.info('call-end Err', e.message)
-                socket.emit('oops',
-                    {
-                        event: 'call-end',
-                        data: e.message
-                    });
-                return;
+            log.info('call-receive called', { data })
+            const user = await db.user.findById(data.receiverId)
+
+            user.callStatus == "inactive"
+            //for receiver
+            const history = await new db.history({
+                toUser: data.receiverId,
+                user: data.receiverId,
+                fromUser: data.callerId,
+                type: data.type,
+                callType: "incoming",
+                time: data.dateTime,
+                duration: data.duration,
+            }).save();
+            // for sender
+            const history = await new db.history({
+                toUser: data.receiverId,
+                fromUser: data.callerId,
+                user: data.callerId,
+                type: model.type,
+                callType: "outgoing",
+                coin: model.coin,
+                time: model.dateTime,
+                duration: model.duration,
+            }).save();
+            await user.save()
+            if (data.callerId) {
+                const user = await db.user.findById(data.receiverId)
+                user.callStatus == "inactive"
+                await user.save()
             }
+            ioChat.to(socket.room).emit('call-start', {});
+            socket.leave(socket.room);
 
 
-
-            // for (user in userStack) {
-
-            //     if (user == socket.userId) {
-            //         delete userStack[user]
-            //     }
-
+            // try {
+            //     data.callerId
+            //     data.receiverId
+            //     ioChat.to(socket.room).emit('call-receive', {});
+            //     socket.leave(socket.room);
+            // } catch (e) {
+            //     log.info('call-receive Err', e.message)
+            //     socket.emit('oops',
+            //         {
+            //             event: 'call-end',
+            //             data: e.message
+            //         });
+            //     return;
             // }
-
-            // let addUser = socket.userId
-
-            // const updateStack = { [addUser]: 'Online', ...userStack }
-
-            // userStack = updateStack;
-
-            // ioChat.emit('onlineStack', userStack);
 
         });
 
@@ -249,22 +267,45 @@ const connect = async (io, logger) => {
 
         // =====================================call receive start====================================//
 
-        socket.on('call-receive', async function (data) {
+        // socket.on('call-receive', async function (data) {
+        //     log.info('call-receive called', { data })
+        //     try {
+        //         data.callerId
+        //         data.receiverId
+        //         ioChat.to(socket.room).emit('call-receive', {});
+        //         socket.leave(socket.room);
+        //     } catch (e) {
+        //         log.info('call-receive Err', e.message)
+        //         socket.emit('oops',
+        //             {
+        //                 event: 'call-end',
+        //                 data: e.message
+        //             });
+        //         return;
+        //     }
+        // })
+
+        socket.on('call-start', async function (data) {
             log.info('call-receive called', { data })
-            try {
-                data.callerId
-                data.receiverId
-                ioChat.to(socket.room).emit('call-receive', {});
-                socket.leave(socket.room);
-            } catch (e) {
-                log.info('call-receive Err', e.message)
+            const user = await db.user.findById(data.receiverId)
+            if (user.callStatus == 'active') {
                 socket.emit('oops',
                     {
-                        event: 'call-end',
-                        data: e.message
+                        event: 'call-start',
+                        data: "user is busy"
                     });
-                return;
+            } else {
+                user.callStatus == "active"
+                await user.save()
+                if (data.callerId) {
+                    const user = await db.user.findById(data.receiverId)
+                    user.callStatus == "active"
+                    await user.save()
+                }
+                ioChat.to(socket.room).emit('call-start', {});
+                socket.leave(socket.room);
             }
+
         })
 
         // =====================================call receive start====================================//
