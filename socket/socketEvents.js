@@ -262,7 +262,7 @@ const connect = async (io, logger) => {
                 user.callStatus == "inactive"
                 await user.save()
                 //for receiver
-                const history = await new db.history({
+                await new db.history({
                     user: data.receiverId,
                     toUser: data.receiverId,
                     user: data.receiverId,
@@ -272,7 +272,7 @@ const connect = async (io, logger) => {
                     duration: data.duration,
                 }).save();
                 // for sender
-                const history = await new db.history({
+                await new db.history({
                     user: data.callerId,
                     toUser: data.receiverId,
                     fromUser: data.callerId,
