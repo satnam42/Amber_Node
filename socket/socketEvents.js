@@ -4,6 +4,7 @@ var moment = require('moment');
 var _ = require('lodash');
 var eventEmitter = new events.EventEmitter();
 const service = require('../services/notifications')
+const { deduct } = require('../services/coin')
 
 const connect = async (io, logger) => {
     // const sockets = async (http, logger) => {
@@ -260,6 +261,16 @@ const connect = async (io, logger) => {
                 const user = await db.user.findById(data.receiverId)
                 user.callStatus == "inactive"
                 await user.save()
+                if (!model.from) {
+                    throw new Error('from is Required')
+                }
+                if (!model.to) {
+                    throw new Error('to is Required')
+                }
+                if (!model.callTime) {
+                    throw new Error('callTime is Required')
+                }
+                deduct({ from: data.callerId, to: data.receiverId, callTime: parseInt(data.duration) }, logger)
                 //for receiver
                 await new db.history({
                     user: data.receiverId,
@@ -308,7 +319,6 @@ const connect = async (io, logger) => {
             // }
 
         });
-
 
         socket.on('call-start', async function (data) {
             let count = 0
