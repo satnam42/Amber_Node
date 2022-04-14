@@ -210,7 +210,6 @@ const connect = async (io, logger) => {
         }); //end of set-cannel event.
 
         socket.on('call-end', async function (data) {
-
             let count = 0
             log.info('call-end called', { data })
             if (data.receiverId == "" || data.receiverId == undefined) {
@@ -334,6 +333,7 @@ const connect = async (io, logger) => {
             }
             if (count === 0) {
                 const user = await db.user.findById(data.receiverId)
+                log.info('user ==== receiverId', user.firstName)
                 if (user.callStatus == 'active') {
                     socket.emit('oops',
                         {
@@ -344,7 +344,9 @@ const connect = async (io, logger) => {
                     user.callStatus == "active"
                     await user.save()
                     if (data.callerId) {
+
                         const user = await db.user.findById(data.callerId)
+                        log.info('user ==== callerId', user.firstName)
                         user.callStatus == "active"
                         await user.save()
                     }
