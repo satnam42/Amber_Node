@@ -278,7 +278,7 @@ const connect = async (io, logger) => {
                     user: data.callerId,
                     callType: "outgoing",
                     time: data.time,
-                    duration: model.duration,
+                    duration: data.duration,
                 }).save();
 
                 if (data.callerId) {
