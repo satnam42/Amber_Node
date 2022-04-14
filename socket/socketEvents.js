@@ -231,7 +231,7 @@ const connect = async (io, logger) => {
                     });
             }
 
-            if (data.dateTime == "" || data.dateTime == undefined) {
+            if (data.time == "" || data.time == undefined) {
                 count++
                 socket.emit('oops',
                     {
@@ -268,7 +268,7 @@ const connect = async (io, logger) => {
                     user: data.receiverId,
                     fromUser: data.callerId,
                     callType: "incoming",
-                    time: data.dateTime,
+                    time: data.time,
                     duration: data.duration,
                 }).save();
                 // for sender
@@ -278,7 +278,7 @@ const connect = async (io, logger) => {
                     fromUser: data.callerId,
                     user: data.callerId,
                     callType: "outgoing",
-                    time: model.dateTime,
+                    time: model.time,
                     duration: model.duration,
                 }).save();
 
