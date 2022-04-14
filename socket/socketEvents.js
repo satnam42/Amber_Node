@@ -261,15 +261,7 @@ const connect = async (io, logger) => {
                 const user = await db.user.findById(data.receiverId)
                 user.callStatus == "inactive"
                 await user.save()
-                if (!model.from) {
-                    throw new Error('from is Required')
-                }
-                if (!model.to) {
-                    throw new Error('to is Required')
-                }
-                if (!model.callTime) {
-                    throw new Error('callTime is Required')
-                }
+
                 deduct({ from: data.callerId, to: data.receiverId, callTime: parseInt(data.duration) }, logger)
                 //for receiver
                 await new db.history({
