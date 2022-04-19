@@ -262,7 +262,7 @@ const connect = async (io, logger) => {
                 user.callStatus == "inactive"
                 await user.save()
 
-                deduct({ from: data.callerId, to: data.receiverId, callTime: parseInt(data.duration) }, logger)
+                deduct({ from: data.callerId, to: data.receiverId, callTime: parseInt(data.duration) || 0 }, logger)
                 //for receiver
                 await new db.history({
                     user: data.receiverId,
