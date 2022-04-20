@@ -184,6 +184,7 @@ const connect = async (io, logger) => {
         });
 
         // =====================================call events start====================================
+        
         socket.on('set-channel', async function (cannelName) {
             log.info('join-cannel', { cannelName })
 
@@ -263,6 +264,7 @@ const connect = async (io, logger) => {
                 await user.save()
 
                 deduct({ from: data.callerId, to: data.receiverId, callTime: parseInt(data.duration) || 0 }, logger)
+
                 //for receiver
                 await new db.history({
                     user: data.receiverId,
@@ -273,6 +275,7 @@ const connect = async (io, logger) => {
                     time: data.time,
                     duration: data.duration,
                 }).save();
+
                 // for sender
                 await new db.history({
                     user: data.callerId,
@@ -285,9 +288,11 @@ const connect = async (io, logger) => {
                 }).save();
 
                 if (data.callerId) {
+
                     const user = await db.user.findById(data.callerId)
                     user.callStatus == "inactive"
                     await user.save()
+
                 }
 
                 ioChat.to(socket.room).emit('call-end', {});

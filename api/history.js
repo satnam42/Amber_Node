@@ -1,7 +1,7 @@
 "use strict";
 const service = require("../services/history");
 const response = require("../exchange/response");
-// const mapper = require("../mappers/user");
+const mapper = require("../mappers/history");
 const create = async (req, res) => {
     const log = req.context.logger.start(`api:history:create ${req.body}`);
     try {
@@ -22,7 +22,7 @@ const getByUserId = async (req, res) => {
         const history = await service.getHistoryByUserId(req.params.id, req.context);
         const msg = 'fetched history successfully'
         log.end();
-        return response.success(res, msg, history);
+        return response.success(res, msg, mapper.toSearchModel(history));
     }
     catch (err) {
         log.error(err);

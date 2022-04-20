@@ -271,6 +271,7 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.coins.myCoins
     );
+    
     app.post('/api/coins/deduct',
         permit.context.validateToken,
         api.coins.deduct
