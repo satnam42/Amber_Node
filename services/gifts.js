@@ -174,46 +174,50 @@ const myGifts = async (id, context) => {
     if (!id) {
         throw new Error('user id is Required')
     }
-    let myGifts = await db.coinHistory.findOne({ user: { $eq: id } }, { earnedCoins: { $elemMatch: { type: { $eq: "gifted" } } } })
-    // db.coinHistory.aggregate([
-    //     {
-    //         $match: {
-    //             and: [
-    //                 { user: ObjectId(id) },
-    //                 {
-    //                     "earnedCoins": {
-    //                         "$elemMatch": {
-    //                             "$and": [
-    //                                 { "type": "gifted" },
-    //                             ]
-    //                         }
-    //                     },
-    //                 },
-    //             ]
-    //         }
-    //     },
-    //     {
-    //        "$project" : {
-    //            "earnedCoins" : 1, "description" : 1,
-    //            "earnedCoins" : {
-    //               "$filter" : {
-    //                  "input" : "$earnedCoins",
-    //                  "as" : "earnedCoins",
-    //                  "cond" : {
-    //                     "$and" : [
-    //                        { "$eq" : [ "$earnedCoins.type", "gifted" ] },
-    //                     ]
-    //                  }
-    //               }
-    //            }
-    //        }
-    //     }
+    // let myGifts = await db.coinHistory.findOne({ user: id })
+    let myGifts = await db.coinHistory.aggregate([
 
+        {
+            $match: {
+                // and: [
+                // {
+                user: ObjectId(id)
+                // },
+                // {
+                //     "earnedCoins": {
+                //         "$elemMatch": {
+                //             "$and": [
+                //                 { "type": "gifted" },
+                //             ]
+                //         }
+                //     },
+                // },
+                // ]
+            }
+        },
+        {
+            "$project": {
+                // "earnedCoins": 1, "description": 1,
+                "earnedCoins": {
+                    "$filter": {
+                        "input": "$earnedCoins",
+                        "as": "earnedCoins",
+                        "cond": {
+                            "$and": [
+                                { "$eq": ["$$earnedCoins.type", "gifted"] },
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+
+    ])
 
 
     // .populate(["earnedCoins.gift", "earnedCoins.fromUser"])
     // let myGifts = await db.coinHistory.findOne({ $and: [{ user: { $eq: id } }, { "earnedCoins.type": { $eq: "gifted" } }] }).populate("earnedCoins.gift").populate("earnedCoins.fromUser")
-    log.end();
+    // log.end();
     return myGifts
 };
 
