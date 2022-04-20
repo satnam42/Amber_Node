@@ -45,6 +45,9 @@ const sendCallNotification = async (body, context) => {
     if (!user) {
         throw new Error('called  user not found')
     }
+    if (!user.callStatus == "active") {
+        throw new Error('user is busy on another call')
+    }
     if (!user.deviceToken) {
         throw new Error('called  user  device Token not found')
     }
