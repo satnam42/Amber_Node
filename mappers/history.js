@@ -5,6 +5,7 @@ exports.toModel = entity => {
 
     const model = {
         toUser: entity.toUser.firstName,
+        fromUser: entity.fromUser.firstName,
         toUserAvatar: entity.toUser.avatar ? `${imageUrl}${entity.toUser.avatar}` : "",
         fromUserAvatar: entity.fromUser.avatar ? `${imageUrl}${entity.fromUser.avatar}` : "",
         callType: entity.callType,

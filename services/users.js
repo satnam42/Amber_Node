@@ -374,6 +374,7 @@ const follow = async (model, context) => {
         $push: { following: { userId: model.toFollowUserId } }
     }
     const updated = await db.user.findOneAndUpdate(filter, update)
+
     // add your id to the followers array of the user you want to follow
     const secondFilter = {
         _id: model.toFollowUserId,
@@ -383,9 +384,9 @@ const follow = async (model, context) => {
         $push: { followers: { userId: model.userId } }
     }
     const secondUpdated = await db.user.findOneAndUpdate(secondFilter, secondUpdate)
-    if (!updated && !secondUpdated) {
-        throw new Error('something went wrong')
-    }
+    // if (!updated && !secondUpdated) {
+    //     throw new Error('something went wrong')
+    // }
     log.end()
     return "follow successfully"
 };
@@ -425,9 +426,9 @@ const unfollow = async (model, context) => {
 
     const secondUpdated = await db.user.updateOne(secondQuery, secondUpdate)
 
-    if (!updated && !secondUpdated) {
-        throw new Error('something went wrong')
-    }
+    // if (!updated && !secondUpdated) {
+    //     throw new Error('something went wrong')
+    // }
     log.end()
     return "unfollow successfully"
 };
