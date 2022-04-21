@@ -135,7 +135,7 @@ const connect = async (io, logger) => {
                     })
                 }
 
-                const user = await db.user.findById(socket.userId)
+                const user = await db.user.findById(data.msgTo)
                 if (user && user.deviceToken != "" && user.deviceToken != undefined) {
                     let response
                     if (data.gift) {
