@@ -429,10 +429,10 @@ const unfollow = async (model, context) => {
     // if (!updated && !secondUpdated) {
     //     throw new Error('something went wrong')
     // }
+
     log.end()
     return "unfollow successfully"
 };
-
 const following = async (id, context) => {
 
     const log = context.logger.start(`services:users:following`);
