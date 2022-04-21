@@ -16,18 +16,21 @@ const pushNotification = async (deviceToken, title, type, message) => {
             title: title,
             body: message,
             sound: "default"
-        }
+        },
+        token: deviceToken
     };
 
-    const options = {
-        priority: "high",
-        timeToLive: 60 * 60 * 24
-    };
-    admin.messaging().sendToDevice(deviceToken, payload, options).then(response => {
-        console.log('message Successfully sent :', response);
-    }).catch(error => {
-        console.log('Error sending message:', error);
-    });
+    // const options = {
+    //     priority: "high",
+    //     timeToLive: 60 * 60 * 24
+    // };
+    const res = await admin.messaging().send(payload)
+    log.info(res)
+    // admin.messaging().sendToDevice(deviceToken, payload, options).then(response => {
+    //     console.log('message Successfully sent :', response);
+    // }).catch(error => {
+    //     console.log('Error sending message:', error);
+    // });
 
 }
 
