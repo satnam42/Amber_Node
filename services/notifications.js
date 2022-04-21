@@ -14,8 +14,7 @@ const pushNotification = async (deviceToken, title, type, message) => {
         },
         notification: {
             title: title,
-            body: message,
-            sound: "default"
+            body: message
         },
         token: deviceToken
     };
