@@ -136,13 +136,14 @@ const connect = async (io, logger) => {
                 }
 
                 const user = await db.user.findById(data.msgTo)
+                const receiver = await db.user.findById(socket.userId)
                 if (user && user.deviceToken != "" && user.deviceToken != undefined) {
                     let response
                     if (data.gift) {
-                        response = service.pushNotification(user.deviceToken, user.firstName, "gift", data.gift)
+                        response = service.pushNotification(user.deviceToken, receiver.firstName, "gift", data.gift)
 
                     } else {
-                        response = service.pushNotification(user.deviceToken, user.firstName, "messaging", data.msg)
+                        response = service.pushNotification(user.deviceToken, receiver.firstName, "messaging", data.msg)
                     }
                     log.info('pushNotification', { response })
                 }
