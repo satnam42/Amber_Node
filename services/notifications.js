@@ -4,7 +4,7 @@ const admin = require("firebase-admin");
 const utility = require("../utility/index")
 
 const pushNotification = async (deviceToken, title, type, message) => {
-    console.log(`pushNotification==deviceToken${deviceToken}====title${title}type${type}message${message}`)
+    console.log(`pushNotification==deviceToken====${deviceToken}====title===${title}=====type===${type}======message===${message}`)
     let payload = {
         data: {  //you can send only notification or only data(or include both)
             type: type,
