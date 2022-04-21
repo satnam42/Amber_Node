@@ -24,7 +24,7 @@ const pushNotification = async (deviceToken, title, type, message) => {
     //     timeToLive: 60 * 60 * 24
     // };
     const res = await admin.messaging().send(payload)
-    log.info(res)
+    console.log(res)
     // admin.messaging().sendToDevice(deviceToken, payload, options).then(response => {
     //     console.log('message Successfully sent :', response);
     // }).catch(error => {
