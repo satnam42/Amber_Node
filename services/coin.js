@@ -249,6 +249,7 @@ const deduct = async (model, context) => {
         // receiver coin historyif 
         // if(fromUser.gender =='male'){
         const coinHistory = await db.coinHistory.findOne({ user: model.to })
+
         // if  user have coin update it 
         if (coinHistory) {
             let totalCoin = coinHistory.totalCoin
@@ -291,7 +292,7 @@ const deduct = async (model, context) => {
         coinHistory.spendCoins.push({
             onUser: model.to,
             type: 'call',
-            coins: activeCoin
+            coins: model.callTime
         })
         await coinHistory.save()
 

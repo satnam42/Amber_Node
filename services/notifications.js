@@ -45,6 +45,10 @@ const sendCallNotification = async (body, context) => {
     let rtcRes = await service.generateRtcToken(modal, context)
 
     const user = await db.user.findById(body.receiverId)
+    const callerCoinHistory = await db.coinHistory.findOne({ user: context.user.id })
+    if (callerCoinHistory.activeCoin < 59) {
+        throw new Error("you dont have enough coin")
+    }
     if (!user) {
         throw new Error('called  user not found')
     }
