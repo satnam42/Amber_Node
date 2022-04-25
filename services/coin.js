@@ -297,6 +297,7 @@ const deduct = async (model, context) => {
 
         log.end();
     }
+    log.info('total coin deducted ====', model.callTime)
     // .populate("giftedCoins.gift").populate("giftedCoins.fromUser")
     log.end();
     return "coin deduct successfully"

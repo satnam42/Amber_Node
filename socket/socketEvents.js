@@ -262,6 +262,8 @@ const connect = async (io, logger) => {
             if (count === 0) {
                 const user = await db.user.findById(data.receiverId)
                 user.callStatus == "inactive"
+
+                log.info("===call duration===", data.duration)
                 await user.save()
                 if (data.duration > 0) {
                     deduct({ from: data.callerId, to: data.receiverId, callTime: parseInt(data.duration) || 0 }, { logger })
