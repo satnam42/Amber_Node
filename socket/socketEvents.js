@@ -174,8 +174,9 @@ const connect = async (io, logger) => {
                     });
             } else {
                 //leaving room. 
-                socket.leave(socket.room);
+                // socket.leave(socket.room);
                 socket.room = cannelName
+                log.info("socket.room", socket.room)
                 socket.join(socket.room);
             }
 
@@ -326,8 +327,9 @@ const connect = async (io, logger) => {
 
         socket.on('call-decline', async function (data) {
             log.info("call-decline")
+            log.info("socket.room", socket.room)
             ioChat.to(socket.room).emit('call-decline', {});
-            socket.leave(socket.room);
+            // socket.leave(socket.room);
         }
 
         )
