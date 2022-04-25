@@ -325,6 +325,7 @@ const connect = async (io, logger) => {
         })
 
         socket.on('call-decline', async function (data) {
+            log.info("call-decline")
             ioChat.to(socket.room).emit('call-decline', {});
             socket.leave(socket.room);
         }
