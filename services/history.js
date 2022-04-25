@@ -18,7 +18,7 @@ const getHistoryByUserId = async (id, context) => {
     if (!id) {
         throw new Error('user id is required')
     }
-    const history = await db.history.find({ user: id }).populate(["fromUser", "toUser"])
+    const history = await db.history.find({ $or: [{ fromUser: id }, { toUser: id }] }).populate(["fromUser", "toUser"])
     log.end();
     return history
 };

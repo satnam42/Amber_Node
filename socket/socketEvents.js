@@ -106,12 +106,6 @@ const connect = async (io, logger) => {
             socket.to(socket.room).broadcast.emit('typing', " typing...");
         });
 
-        // ioChat.to(socket.room).emit('chat-msg', {
-        //     msgFrom: socket.userId,
-        //     msg: data.msg,
-        //     date: msgDate
-        // });
-        //for showing chats.
 
         socket.on('chat-msg', async function (data) {
             log.info('chat-msg called', { data })
@@ -166,25 +160,8 @@ const connect = async (io, logger) => {
             }
 
 
-            // for (user in userStack) {
-
-            //     if (user == socket.userId) {
-            //         delete userStack[user]
-            //     }
-
-            // }
-
-            // let addUser = socket.userId
-
-            // const updateStack = { [addUser]: 'Online', ...userStack }
-
-            // userStack = updateStack;
-
-            // ioChat.emit('onlineStack', userStack);
-
         });
 
-        // =====================================call events start====================================
 
         socket.on('set-channel', async function (cannelName) {
             log.info('join-cannel', { cannelName })
@@ -202,34 +179,35 @@ const connect = async (io, logger) => {
                 socket.join(socket.room);
             }
 
-            // ioChat.to(userSocket[socket.userId]).emit('set-room', socket.room);
-            //     }
-            //     } catch (e) {
-            //     log.info('set-room Err', e.message)
-            //     
-            // }
-
-
         }); //end of set-cannel event.
 
         socket.on('call-end', async function (data) {
             let count = 0
+            let updateHistory
             log.info('call-end called', { data })
-            if (data.receiverId == "" || data.receiverId == undefined) {
-                count++
-                socket.emit('oops',
-                    {
-                        event: 'call-end',
-                        data: "receiverId is required"
-                    });
-            }
+            // if (data.receiverId == "" || data.receiverId == undefined) {
+            //     count++
+            //     socket.emit('oops',
+            //         {
+            //             event: 'call-end',
+            //             data: "receiverId is required"
+            //         });
+            // }
 
-            if (data.callerId == "" || data.callerId == undefined) {
+            // if (data.callerId == "" || data.callerId == undefined) {
+            //     count++
+            //     socket.emit('oops',
+            //         {
+            //             event: 'call-end',
+            //             data: "callerId is required"
+            //         });
+            // }
+            if (data.historyId == "" || data.historyId == undefined) {
                 count++
                 socket.emit('oops',
                     {
                         event: 'call-end',
-                        data: "callerId is required"
+                        data: "historyId is required"
                     });
             }
 
@@ -260,68 +238,39 @@ const connect = async (io, logger) => {
             // }
 
             if (count === 0) {
-                const user = await db.user.findById(data.receiverId)
-                user.callStatus == "inactive"
-
-                log.info("===call duration===", data.duration)
-                await user.save()
-                if (data.duration > 0) {
-                    deduct({ from: data.callerId, to: data.receiverId, callTime: parseInt(data.duration) || 0 }, { logger })
-                }
-                //for receiver
-                await new db.history({
-                    user: data.receiverId,
-                    toUser: data.receiverId,
-                    user: data.receiverId,
-                    fromUser: data.callerId,
-                    callType: "incoming",
-                    time: data.time,
-                    duration: data.duration,
-                }).save();
-
-                // for sender
-                await new db.history({
-                    user: data.callerId,
-                    toUser: data.receiverId,
-                    fromUser: data.callerId,
-                    user: data.callerId,
-                    callType: "outgoing",
-                    time: data.time,
-                    duration: data.duration,
-                }).save();
-
-                if (data.callerId) {
-
-                    const user = await db.user.findById(data.callerId)
+                const history = await db.history.findById(data.historyId)
+                log.info('history', history)
+                if (history) {
+                    const user = await db.user.findById(data.toUser)
                     user.callStatus == "inactive"
+                    log.info("===call duration===", data.duration)
                     await user.save()
+                    if (data.duration > 0) {
+                        deduct({ from: history.fromUser, to: data.toUser, callTime: parseInt(data.duration) || 0 }, { logger })
+                    }
+                    updateHistory = await updateHistory(history, data, log)
+                    if (data.fromUser) {
+
+                        const user = await db.user.findById(data.fromUser)
+                        user.callStatus == "inactive"
+                        await user.save()
+                    }
+                } else {
+                    socket.emit('oops',
+                        {
+                            event: 'call-end',
+                            data: "history not found"
+                        });
 
                 }
-
-                ioChat.to(socket.room).emit('call-end', {});
+                ioChat.to(socket.room).emit('call-end', updateHistory);
                 socket.leave(socket.room);
-
             }
-
-            // try {
-            //     data.callerId
-            //     data.receiverId
-            //     ioChat.to(socket.room).emit('call-receive', {});
-            //     socket.leave(socket.room);
-            // } catch (e) {
-            //     log.info('call-receive Err', e.message)
-            //     socket.emit('oops',
-            //         {
-            //             event: 'call-end',
-            //             data: e.message
-            //         });
-            //     return;
-            // }
-
         });
 
         socket.on('call-start', async function (data) {
             let count = 0
+            let history
             log.info('call-start called', { data })
 
             if (data.receiverId == "" || data.receiverId == undefined) {
@@ -354,18 +303,35 @@ const connect = async (io, logger) => {
                     user.callStatus == "active"
                     await user.save()
                     if (data.callerId) {
-
                         const user = await db.user.findById(data.callerId)
                         log.info('user ==== callerId', user.firstName)
                         user.callStatus == "active"
                         await user.save()
+                        try {
+                            history = await createHistory(data, log)
+                        } catch (error) {
+                            socket.emit('oops',
+                                {
+                                    event: 'call-start',
+                                    data: error.message
+                                });
+                        }
                     }
-                    ioChat.to(socket.room).emit('call-start', {});
-                    socket.leave(socket.room);
+                    ioChat.to(socket.room).emit('call-start', history);
+                    // socket.leave(socket.room);
                 }
             }
 
         })
+
+        socket.on('call-decline', async function (data) {
+            ioChat.to(socket.room).emit('call-decline', {});
+            socket.leave(socket.room);
+        }
+
+        )
+
+
 
 
 
@@ -382,6 +348,33 @@ const connect = async (io, logger) => {
     //end of socket.io code for chat feature.
 
     //database operations are kept outside of socket.io code.
+
+    createHistory = async (data, log) => {
+        log.info('createHistory')
+        //for receiver
+        const history = await new db.history({
+            toUser: data.receiverId,
+            fromUser: data.callerId,
+            callType: "incoming",
+            time: data.time,
+            duration: data.duration,
+        }).save();
+        return history
+    }
+
+    updateHistory = async (history, data, log) => {
+        log.info('updateHistory')
+
+        if (model.time !== "string" && data.time !== undefined) {
+            user.time = data.time;
+        }
+        if (model.duration !== "string" && data.duration !== undefined) {
+            user.duration = data.duration;
+        }
+        await history.save();
+        return history;
+
+    }
 
     getRoomAndSetRoom = async (room) => {
         log.info("getRoomAndSetRoom:", room)

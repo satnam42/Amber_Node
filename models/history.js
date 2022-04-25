@@ -1,32 +1,20 @@
 "use strict";
 const mongoose = require("mongoose");
 const history = mongoose.Schema({
-
     fromUser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
-        required: false,
-    },
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
-        required: false,
+        required: true,
     },
     toUser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
-        required: false,
-    },
-    callType: {
-        type: String,
-        default: "incoming",
-        enum: ["missed", "outgoing", "incoming"],
+        required: true,
     },
     duration: {
         type: String,
-        default: "",
+        default: "0",
     },
-
     time: {
         type: String,
         default: ""
