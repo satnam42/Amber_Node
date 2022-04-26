@@ -10,7 +10,6 @@ exports.toModel = entity => {
         fromUserId: entity.fromUser._id,
         toUserAvatar: entity.toUser.avatar ? `${imageUrl}${entity.toUser.avatar}` : "",
         fromUserAvatar: entity.fromUser.avatar ? `${imageUrl}${entity.fromUser.avatar}` : "",
-        callType: entity.callType,
         duration: entity.duration,
         time: entity.time,
         createdAt: entity.createdAt
