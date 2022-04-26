@@ -361,10 +361,10 @@ const connect = async (io, logger) => {
         log.info('updateHistory')
 
         if (data.time !== "string" && data.time !== undefined) {
-            user.time = data.time;
+            history.time = data.time;
         }
         if (data.duration !== "string" && data.duration !== undefined) {
-            user.duration = data.duration;
+            history.duration = data.duration;
         }
         await history.save();
         return history;
