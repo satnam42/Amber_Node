@@ -183,7 +183,7 @@ const connect = async (io, logger) => {
 
         socket.on('call-end', async function (data) {
             let count = 0
-            let updateHistory
+            let updateHistoryRes
             log.info('call-end called', { data })
             // if (data.receiverId == "" || data.receiverId == undefined) {
             //     count++
@@ -242,7 +242,7 @@ const connect = async (io, logger) => {
                     if (data.duration > 0) {
                         deduct({ from: history.fromUser, to: history.toUser, callTime: parseInt(data.duration) || 0 }, { logger })
                     }
-                    updateHistory = await updateHistory(history, data, log)
+                    updateHistoryRes = await updateHistory(history, data, log)
                     if (history.fromUser) {
 
                         const user = await db.user.findById(history.fromUser)
@@ -257,7 +257,7 @@ const connect = async (io, logger) => {
                         });
 
                 }
-                ioChat.to(socket.room).emit('call-end', updateHistory);
+                ioChat.to(socket.room).emit('call-end', updateHistoryRes);
                 // socket.leave(socket.room);
             }
         });
