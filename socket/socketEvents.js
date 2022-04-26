@@ -360,10 +360,10 @@ const connect = async (io, logger) => {
         console.log('updateHistory', log)
         log.info('updateHistory')
 
-        if (model.time !== "string" && data.time !== undefined) {
+        if (data.time !== "string" && data.time !== undefined) {
             user.time = data.time;
         }
-        if (model.duration !== "string" && data.duration !== undefined) {
+        if (data.duration !== "string" && data.duration !== undefined) {
             user.duration = data.duration;
         }
         await history.save();
