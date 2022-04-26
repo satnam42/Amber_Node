@@ -50,7 +50,6 @@ const connect = async (io, logger) => {
         //     console.log(err.message); // prints the message associated with the error
         // });
         // }); /
-
         log.info(userId + "  logged In");
         //storing variable.
         // socket.userId = userId;
@@ -165,7 +164,7 @@ const connect = async (io, logger) => {
 
         socket.on('set-channel', async function (cannelName) {
             log.info('join-cannel', { cannelName })
-
+            socket.leave(socket.room);
             if (!cannelName || cannelName == "" || cannelName == undefined) {
                 socket.emit('oops',
                     {
@@ -175,9 +174,10 @@ const connect = async (io, logger) => {
             } else {
                 //leaving room. 
                 // socket.leave(socket.room);
-                socket.room = cannelName
+                socket.room = cannelName;
                 log.info("socket.room", socket.room)
                 socket.join(socket.room);
+                ioChat.to(userSocket[socket.userId]).emit('set-room', socket.room);
             }
 
         }); //end of set-cannel event.
@@ -230,13 +230,7 @@ const connect = async (io, logger) => {
                     });
             }
 
-            // if(data){
-            //     socket.emit('oops',
-            //     {
-            //         event: 'call-end',
-            //         data: e.message
-            //     });
-            // }
+
 
             if (count === 0) {
                 const history = await db.history.findById(data.historyId)
@@ -265,7 +259,7 @@ const connect = async (io, logger) => {
 
                 }
                 ioChat.to(socket.room).emit('call-end', updateHistory);
-                socket.leave(socket.room);
+                // socket.leave(socket.room);
             }
         });
 
@@ -330,9 +324,7 @@ const connect = async (io, logger) => {
             log.info("socket.room", socket.room)
             ioChat.to(socket.room).emit('call-decline', {});
             // socket.leave(socket.room);
-        }
-
-        )
+        })
 
 
 
