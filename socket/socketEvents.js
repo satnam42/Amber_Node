@@ -24,7 +24,6 @@ const connect = async (io, logger) => {
                 data: 'token is not valid'
             });
         }
-
         //function to get user name
         // socket.emit('set-user-data', (userId) => {
         // })
@@ -74,7 +73,7 @@ const connect = async (io, logger) => {
 
         //setting room.
         socket.on('set-room', async function (room) {
-            log.info('set-room called', { room })
+
             //leaving room. 
             socket.leave(socket.room);
             try {
@@ -323,7 +322,7 @@ const connect = async (io, logger) => {
             log.info("call-decline")
             log.info("socket.room", socket.room)
             ioChat.to(socket.room).emit('call-decline', {});
-            // socket.leave(socket.room);
+            socket.leave(socket.room);
         })
 
 
@@ -345,19 +344,20 @@ const connect = async (io, logger) => {
     //database operations are kept outside of socket.io code.
 
     createHistory = async (data, log) => {
+        console.log('createHistory', log)
         log.info('createHistory')
         //for receiver
         const history = await new db.history({
             toUser: data.receiverId,
             fromUser: data.callerId,
-            callType: "incoming",
-            time: data.time,
-            duration: data.duration,
+            // time: data.time,
+            // duration: data.duration,
         }).save();
         return history
     }
 
     updateHistory = async (history, data, log) => {
+        console.log('updateHistory', log)
         log.info('updateHistory')
 
         if (model.time !== "string" && data.time !== undefined) {
