@@ -235,17 +235,17 @@ const connect = async (io, logger) => {
                 const history = await db.history.findById(data.historyId)
                 log.info('history', history)
                 if (history) {
-                    const user = await db.user.findById(data.toUser)
+                    const user = await db.user.findById(history.toUser)
                     user.callStatus == "inactive"
                     log.info("===call duration===", data.duration)
                     await user.save()
                     if (data.duration > 0) {
-                        deduct({ from: history.fromUser, to: data.toUser, callTime: parseInt(data.duration) || 0 }, { logger })
+                        deduct({ from: history.fromUser, to: history.toUser, callTime: parseInt(data.duration) || 0 }, { logger })
                     }
                     updateHistory = await updateHistory(history, data, log)
-                    if (data.fromUser) {
+                    if (history.fromUser) {
 
-                        const user = await db.user.findById(data.fromUser)
+                        const user = await db.user.findById(history.fromUser)
                         user.callStatus == "inactive"
                         await user.save()
                     }
