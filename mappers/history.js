@@ -1,7 +1,7 @@
 "use strict";
 const imageUrl = require('config').get('image').url
 
-exports.toModel = entity => {
+exports.toModel = (entity, context) => {
 
     const model = {
         toUser: entity.toUser.firstName,
@@ -14,14 +14,20 @@ exports.toModel = entity => {
         time: entity.time,
         createdAt: entity.createdAt
     };
+    // : entity.fromUser.id == context.user.id ? 'outgoing' : 'incoming',
+    if (entity.duration == 0) {
+        model.callType = 'missed'
+    } else {
+        model.callType = entity.fromUser.id == context.user.id ? 'outgoing' : 'incoming'
+    }
 
     return model;
 
 };
 
 
-exports.toSearchModel = entities => {
+exports.toSearchModel = (entities, context) => {
     return entities.map(entity => {
-        return exports.toModel(entity);
+        return exports.toModel(entity, context);
     });
 };

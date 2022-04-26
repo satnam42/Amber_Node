@@ -22,7 +22,7 @@ const getByUserId = async (req, res) => {
         const history = await service.getHistoryByUserId(req.params.id, req.context);
         const msg = 'fetched history successfully'
         log.end();
-        return response.success(res, msg, mapper.toSearchModel(history));
+        return response.success(res, msg, mapper.toSearchModel(history, req.context));
     }
     catch (err) {
         log.error(err);
