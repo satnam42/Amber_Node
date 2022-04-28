@@ -201,7 +201,7 @@ const profile = async (id, context) => {
                 "videos": "$videos",
                 "images": "$images",
                 // which i have follow
-                "followingF": {
+                "followersF": {
                     $filter: {
                         input: "$following",
                         as: "following",
@@ -209,7 +209,7 @@ const profile = async (id, context) => {
                     }
                 },
                 // my follower
-                "followersF": {
+                "followingF": {
                     $filter: {
                         input: "$followers",
                         as: "followers",
