@@ -231,6 +231,18 @@ const profile = async (id, context) => {
                 preserveNullAndEmptyArrays: true
             },
         },
+        // {
+        //     $unwind: {
+        //         path: '$following',
+        //         preserveNullAndEmptyArrays: true
+        //     },
+        // },
+        // {
+        //     $unwind: {
+        //         path: '$followers',
+        //         preserveNullAndEmptyArrays: true
+        //     },
+        // },
 
         {
             $addFields: {
@@ -263,8 +275,8 @@ const profile = async (id, context) => {
                 "firstName": "$firstName",
                 "lastName": "$lastName",
                 "avatar": "$avatar",
-                "following": "$follow",
-                "followers": "$follower",
+                "following": "$following",
+                "followers": "$followers",
                 "gender": "$gender",
                 "bio": "$bio",
                 "videos": "$videos",
