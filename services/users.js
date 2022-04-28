@@ -221,13 +221,13 @@ const profile = async (id, context) => {
         },
         {
             $unwind: {
-                path: '$following',
+                path: '$followingF',
                 preserveNullAndEmptyArrays: true
             },
         },
         {
             $unwind: {
-                path: '$followers',
+                path: '$followersF',
                 preserveNullAndEmptyArrays: true
             },
         },

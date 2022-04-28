@@ -1,5 +1,4 @@
 "use strict";
-const user = require('../models/user');
 const imageUrl = require('config').get('image').url
 const videoUrl = require('config').get('video').url
 
