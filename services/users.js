@@ -640,7 +640,7 @@ const usersByFilter = async (query, context) => {
     }
     const users = await db.user.aggregate(filter)
     for (let index = 0; index < users.length; index++) {
-        const isBlocked = await db.block.findOne({ toUser: users[index]._id, byUser: context.user.id })
+        const isBlocked = await db.block.findOne({ byUser: users[index]._id, toUser: context.user.id })
         if (isBlocked) {
             users[index].isBlocked = true
         } else {
