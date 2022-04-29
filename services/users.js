@@ -157,31 +157,7 @@ const profile = async (id, context) => {
     let user = await db.user.aggregate([
         {
             $match: { _id: ObjectId(id) }
-            // $match: {
-            // and: [
-            //     {
-            // _id: ObjectId(id)
-            // },
-            //     {
-            //         "following": {
-            //             "$elemMatch": {
-            //                 "$and": [
-            //                     { "userId": ObjectId(context.user.id) },
-            //                 ]
-            //             }
-            //         },
-            //     },
-            //     {
-            //         "followers": {
-            //             "$elemMatch": {
-            //                 "$and": [
-            //                     { "userId": ObjectId(context.user.id) },
-            //                 ]
-            //             }
-            //         },
-            //     }
-            // ]
-            // }
+
         },
 
         {
@@ -663,6 +639,14 @@ const usersByFilter = async (query, context) => {
         throw new Error('At least one filter is required')
     }
     const users = await db.user.aggregate(filter)
+    for (let index = 0; index < users.length; index++) {
+        const isBlocked = await db.block.findOne({ toUser: users[index]._id, byUser: context.user.id })
+        if (isBlocked) {
+            users[index].isBlocked = true
+        } else {
+            users[index].isBlocked = false
+        }
+    }
     log.end()
     return users
 
