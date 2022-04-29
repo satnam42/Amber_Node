@@ -2,15 +2,18 @@
 const service = require("../services/users");
 const admin = require("firebase-admin");
 const utility = require("../utility/index")
+const imageUrl = require('config').get('image').url
 
-const pushNotification = async (deviceToken, title, type, message) => {
+const pushNotification = async (deviceToken, title, type, message, conversationId, senderId, senderImage) => {
     console.log(`pushNotification==deviceToken====${deviceToken}====title===${title}=====type===${type}======message===${message}`)
     let payload = {
         data: {  //you can send only notification or only data(or include both)
             type: type,
             "channelName": "",
-            "name": "",
-            "imageUrl": "",
+            "name": title,
+            "imageUrl": imageUrl + senderImage,
+            "conversationId": conversationId,
+            "senderId": senderId,
         },
         notification: {
             title: title,
