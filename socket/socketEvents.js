@@ -183,8 +183,8 @@ const connect = async (io, logger) => {
         }); //end of set-cannel event.
 
         socket.on('call-end', async function (data) {
-            let count = 0
-            let updateHistoryRes
+            // let count = 0
+            // let updateHistoryRes
             log.info('call-end called', { data })
             // if (data.receiverId == "" || data.receiverId == undefined) {
             //     count++
@@ -203,119 +203,120 @@ const connect = async (io, logger) => {
             //             data: "callerId is required"
             //         });
             // }
-            if (data.historyId == "" || data.historyId == undefined) {
-                count++
-                socket.emit('oops',
-                    {
-                        event: 'call-end',
-                        data: "historyId is required"
-                    });
-            }
+            // if (data.historyId == "" || data.historyId == undefined) {
+            //     count++
+            //     socket.emit('oops',
+            //         {
+            //             event: 'call-end',
+            //             data: "historyId is required"
+            //         });
+            // }
 
-            if (data.time == "" || data.time == undefined) {
-                count++
-                socket.emit('oops',
-                    {
-                        event: 'call-end',
-                        data: "dateTime is required"
-                    });
-            }
+            // if (data.time == "" || data.time == undefined) {
+            //     count++
+            //     socket.emit('oops',
+            //         {
+            //             event: 'call-end',
+            //             data: "dateTime is required"
+            //         });
+            // }
 
-            if (data.duration == "" || data.duration == undefined) {
-                count++
-                socket.emit('oops',
-                    {
-                        event: 'call-end',
-                        data: "duration is required"
-                    });
-            }
+            // if (data.duration == "" || data.duration == undefined) {
+            //     count++
+            //     socket.emit('oops',
+            //         {
+            //             event: 'call-end',
+            //             data: "duration is required"
+            //         });
+            // }
 
 
 
-            if (count === 0) {
-                const history = await db.history.findById(data.historyId)
-                log.info('history', history)
-                if (history) {
-                    const user = await db.user.findById(history.toUser)
-                    user.callStatus == "inactive"
-                    log.info("===call duration===", data.duration)
-                    await user.save()
-                    if (data.duration > 0) {
-                        deduct({ from: history.fromUser, to: history.toUser, callTime: parseInt(data.duration) || 0 }, { logger })
-                    }
-                    updateHistoryRes = await updateHistory(history, data, log)
-                    if (history.fromUser) {
+            // if (count === 0) {
+            //     const history = await db.history.findById(data.historyId)
+            //     log.info('history', history)
+            //     if (history) {
+            //         const user = await db.user.findById(history.toUser)
+            //         user.callStatus == "inactive"
+            //         log.info("===call duration===", data.duration)
+            //         await user.save()
+            //         if (data.duration > 0) {
+            //             deduct({ from: history.fromUser, to: history.toUser, callTime: parseInt(data.duration) || 0 }, { logger })
+            //         }
+            //         updateHistoryRes = await updateHistory(history, data, log)
+            //         if (history.fromUser) {
 
-                        const user = await db.user.findById(history.fromUser)
-                        user.callStatus == "inactive"
-                        await user.save()
-                    }
-                } else {
-                    socket.emit('oops',
-                        {
-                            event: 'call-end',
-                            data: "history not found"
-                        });
+            //             const user = await db.user.findById(history.fromUser)
+            //             user.callStatus == "inactive"
+            //             await user.save()
+            //         }
+            //     } else {
+            //         socket.emit('oops',
+            //             {
+            //                 event: 'call-end',
+            //                 data: "history not found"
+            //             });
 
-                }
-                ioChat.to(socket.room).emit('call-end', updateHistoryRes);
-                // socket.leave(socket.room);
-            }
+            //     }
+            //     // socket.leave(socket.room);
+            // }
+
+            ioChat.to(socket.room).emit('call-end',);
+
         });
 
         socket.on('call-start', async function (data) {
-            let count = 0
-            let history
-            log.info('call-start called', { data })
+            //     let count = 0
+            //     let history
+            //     log.info('call-start called', { data })
+            //     if (data.receiverId == "" || data.receiverId == undefined) {
+            //         count++
+            //         socket.emit('oops',
+            //             {
+            //                 event: 'call-start',
+            //                 data: "receiverId is required"
+            //             });
+            //     }
 
-            if (data.receiverId == "" || data.receiverId == undefined) {
-                count++
-                socket.emit('oops',
-                    {
-                        event: 'call-start',
-                        data: "receiverId is required"
-                    });
-            }
-
-            if (data.callerId == "" || data.callerId == undefined) {
-                count++
-                socket.emit('oops',
-                    {
-                        event: 'call-start',
-                        data: "callerId is required"
-                    });
-            }
-            if (count === 0) {
-                const user = await db.user.findById(data.receiverId)
-                log.info('user ==== receiverId', user.firstName)
-                if (user.callStatus == 'active') {
-                    socket.emit('oops',
-                        {
-                            event: 'call-start',
-                            data: "user is busy"
-                        });
-                } else {
-                    user.callStatus == "active"
-                    await user.save()
-                    if (data.callerId) {
-                        const user = await db.user.findById(data.callerId)
-                        log.info('user ==== callerId', user.firstName)
-                        user.callStatus == "active"
-                        await user.save()
-                        try {
-                            history = await createHistory(data, log)
-                        } catch (error) {
-                            socket.emit('oops',
-                                {
-                                    event: 'call-start',
-                                    data: error.message
-                                });
-                        }
-                    }
-                    ioChat.to(socket.room).emit('call-start', history);
-                    // socket.leave(socket.room);
-                }
-            }
+            //     if (data.callerId == "" || data.callerId == undefined) {
+            //         count++
+            //         socket.emit('oops',
+            //             {
+            //                 event: 'call-start',
+            //                 data: "callerId is required"
+            //             });
+            //     }
+            //     if (count === 0) {
+            //         const user = await db.user.findById(data.receiverId)
+            //         log.info('user ==== receiverId', user.firstName)
+            //         if (user.callStatus == 'active') {
+            //             socket.emit('oops',
+            //                 {
+            //                     event: 'call-start',
+            //                     data: "user is busy"
+            //                 });
+            //         } else {
+            //             user.callStatus == "active"
+            //             await user.save()
+            //             if (data.callerId) {
+            //                 const user = await db.user.findById(data.callerId)
+            //                 log.info('user ==== callerId', user.firstName)
+            //                 user.callStatus == "active"
+            //                 await user.save()
+            //                 try {
+            //                     history = await createHistory(data, log)
+            //                 } catch (error) {
+            //                     socket.emit('oops',
+            //                         {
+            //                             event: 'call-start',
+            //                             data: error.message
+            //                         });
+            //                 }
+            //             }
+            //             // socket.leave(socket.room);
+            //         }
+            //     }
+            ioChat.to(socket.room).emit('call-start',);
 
         })
 

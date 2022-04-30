@@ -44,7 +44,6 @@ const sendCallNotification = async (body, context) => {
     if (body.receiverId == context.user.id) {
         throw new Error('you cannot call to  yourself')
     }
-
     let rtcRes = await service.generateRtcToken(modal, context)
 
     const user = await db.user.findById(body.receiverId)
@@ -62,7 +61,14 @@ const sendCallNotification = async (body, context) => {
         throw new Error('called  user  device Token not found')
     }
     utility.verifyFCMToken(user.deviceToken)
+
+    const history = await new db.history({
+        toUser: body.receiverId,
+        fromUser: context.user.id,
+    }).save();
+
     const registrationToken = user.deviceToken;
+
     const message = {
         data: {  //you can send only notification or only data(or include both)
             type: "callReceive",
@@ -70,6 +76,7 @@ const sendCallNotification = async (body, context) => {
             "channelName": body.channelName.toString(),
             "name": body.username,
             "imageUrl": body.imageUrl,
+            historyId: history.id,
             token: rtcRes.token,
             userId: rtcRes.userId.toString()
 
@@ -81,21 +88,15 @@ const sendCallNotification = async (body, context) => {
         token: registrationToken
     };
     const res = await admin.messaging().send(message)
-    log.info(res)
     log.end()
+
+    return history
 
 
 }
 
 const random = async (modal, context) => {
     const log = context.logger.start(`services:notifications:random`);
-    // let caller = {}
-    // caller.channelId = context.user.id
-    // caller.isPublisher = true
-    // caller.username = context.user.username
-    // const callerRtc = await service.generateRtcToken(caller, context)
-    // caller.userId = callerRtc.userId.toString()
-    // caller.token = callerRtc.token
     if (!modal.channelId || modal.channelId == "") {
         throw new Error('channelId is required')
     }
@@ -115,9 +116,32 @@ const random = async (modal, context) => {
     }
     let receiver = {}
     receiver.deviceToken = randomUser[0].deviceToken
+    let recUser = randomUser[0]
     if (!receiver.deviceToken) {
         throw new Error('called  user  device Token not found')
     }
+
+    const user = await db.user.findById(recUser.id)
+    const callerCoinHistory = await db.coinHistory.findOne({ user: context.user.id })
+    if (callerCoinHistory.activeCoin < 59) {
+        throw new Error("you dont have enough coin")
+    }
+    if (!user) {
+        throw new Error('called  user not found')
+    }
+    if (!user.callStatus == "active") {
+        throw new Error('user is busy on another call')
+    }
+    if (!user.deviceToken) {
+        throw new Error('called  user  device Token not found')
+    }
+    utility.verifyFCMToken(user.deviceToken)
+
+    const history = await new db.history({
+        toUser: body.recUser.id,
+        fromUser: context.user.id,
+    }).save();
+
     const registrationToken = receiver.deviceToken;
     utility.verifyFCMToken(receiver.deviceToken)
     receiver.channelId = modal.channelId
@@ -130,8 +154,10 @@ const random = async (modal, context) => {
             "channelName": receiver.channelId.toString(),
             "name": context.user.username,
             // "imageUrl": caller.imageUrl,
+            historyId: history.id,
             token: receiverRtc.token,
-            userId: receiverRtc.userId.toString()
+            userId: receiverRtc.userId.toString(),
+            receiverId: recUser.id
 
         },
         notification: {
@@ -141,8 +167,8 @@ const random = async (modal, context) => {
         token: registrationToken
     };
     const res = await admin.messaging().send(message)
-    log.info(res)
     log.end()
+    return history
 }
 
 exports.pushNotification = pushNotification

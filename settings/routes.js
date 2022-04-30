@@ -59,6 +59,11 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.update
     );
+    app.put(
+        "/api/users/removePicOrVideo/:id",
+        permit.context.validateToken,
+        api.users.removePicOrVideo
+    );
 
     app.get(
         "/api/users/profile/:id",
@@ -174,6 +179,12 @@ const configure = (app, logger) => {
         api.history.getByUserId
     );
 
+    app.put(
+        "/api/history/update/:id",
+        permit.context.validateToken,
+        api.history.update
+    );
+
     app.post("/api/club/join",
         permit.context.validateToken,
         validator.club.joinOrLeave,
@@ -271,7 +282,7 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.coins.myCoins
     );
-    
+
     app.post('/api/coins/deduct',
         permit.context.validateToken,
         api.coins.deduct

@@ -31,5 +31,20 @@ const getByUserId = async (req, res) => {
     }
 };
 
+const update = async (req, res) => {
+    const log = req.context.logger.start(`api:history:update `);
+    try {
+        const history = await service.update(req.params.id, req.body, req.context);
+        log.end();
+        return response.data(res, history);
+    }
+    catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
 exports.create = create;
 exports.getByUserId = getByUserId;
+exports.update = update;

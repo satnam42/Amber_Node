@@ -239,6 +239,18 @@ const removeProfilePic = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+const removePicOrVideo = async (req, res) => {
+    const log = req.context.logger.start(`api:users:removePicOrVideo`);
+    try {
+        const product = await service.removePicOrVideo(req.params.id, req.body, req.context);
+        log.end();
+        return response.data(res, product);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
 
 const getRtcToken = async (req, resp) => {
     const log = req.context.logger.start(`api:users:getRtcToken`);
@@ -293,6 +305,7 @@ const usersByFilter = async (req, res) => {
     }
 
 };
+
 const remove = async (req, res) => {
     const log = req.context.logger.start(`api:users:remove:${req.params.id}`);
     try {
@@ -329,4 +342,5 @@ exports.getRtcToken = getRtcToken;
 exports.logout = logout;
 exports.usersByFilter = usersByFilter;
 exports.remove = remove;
+exports.removePicOrVideo = removePicOrVideo;
 

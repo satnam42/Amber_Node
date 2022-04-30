@@ -668,6 +668,34 @@ const remove = async (id, context) => {
 };
 
 
+const removePicOrVideo = async (data, context) => {
+    const log = context.logger.start(`services:users:removePicOrVideo ${id}`);
+    if (context.user.id !== data.userId) {
+        throw new Error("you don't have right to delete this account ")
+    }
+    const user = await db.user.findById(data.userId)
+    if (data.type == 'image') {
+        const picDestination = path.join(__dirname, '../', 'assets/images')
+        const picLocation = picDestination + '/' + data.fileName
+        fs.unlinkSync(picLocation);
+        const images = user.images.filter(obj => obj.name !== data.fileName)
+        user.images = images
+        await user.save()
+
+    }
+    else {
+        const videoDestination = path.join(__dirname, '../', 'assets/video')
+        const videoLocation = videoDestination + '/' + data.fileName
+        fs.unlinkSync(videoLocation);
+        const videos = user.videos.filter(obj => obj.name !== data.fileName)
+        user.videos = videos
+        await user.save()
+    }
+    log.end()
+    return user
+};
+
+
 exports.create = create;
 exports.resetPassword = resetPassword;
 exports.update = update;
@@ -695,4 +723,5 @@ exports.uploadStory = uploadStory
 exports.logout = logout
 exports.usersByFilter = usersByFilter
 exports.remove = remove
+exports.removePicOrVideo = removePicOrVideo
 
