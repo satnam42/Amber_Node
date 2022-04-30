@@ -54,7 +54,7 @@ const update = async (id, data, context) => {
         if (data.duration !== "string" && data.duration !== undefined) {
             history.duration = data.duration;
         }
-        await history.save(); s
+        await history.save();
         log.end();
         return history
     };
