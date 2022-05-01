@@ -48,6 +48,7 @@ const sendCallNotification = async (body, context) => {
 
     const user = await db.user.findById(body.receiverId)
     const callerCoinHistory = await db.coinHistory.findOne({ user: context.user.id })
+
     if (callerCoinHistory.activeCoin < 59) {
         throw new Error("you dont have enough coin")
     }
@@ -87,7 +88,9 @@ const sendCallNotification = async (body, context) => {
         },
         token: registrationToken
     };
+
     const res = await admin.messaging().send(message)
+
     log.end()
 
     return history

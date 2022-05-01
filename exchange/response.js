@@ -16,6 +16,13 @@ const failure = (res, message) => {
     error: message
   });
 };
+const payPalfailure = (res, message, code) => {
+  res.status(code).json({
+    isSuccess: false,
+    statusCode: code,
+    error: message
+  });
+};
 
 const unAuthorized = (res, message) => {
   res.status(401).json({
@@ -62,3 +69,4 @@ exports.success = success;
 exports.failure = failure;
 exports.authorized = authorized;
 exports.unAuthorized = unAuthorized;
+exports.payPalfailure = payPalfailure;

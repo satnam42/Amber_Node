@@ -295,6 +295,16 @@ const configure = (app, logger) => {
         api.coins.checkPaymentStatus
     );
 
+    app.post("/api/redeem/create",
+        permit.context.builder,
+        api.redeem.create
+    );
+
+    app.post("/api/redeem/updateStatus",
+        permit.context.builder,
+        api.redeem.updateStatus
+    );
+
 
     log.end();
 };
