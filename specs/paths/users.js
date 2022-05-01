@@ -157,29 +157,30 @@ module.exports = [{
     put: {
         summary: "removePicOrVideo",
         description: "remove PicOrVideo using user id ",
-        parameters: [{
-            in: "header",
-            name: "x-access-token",
-            description: "token to access api",
-            required: true,
-            type: "string"
-        },
-        {
-            in: "path",
-            type: "string",
-            name: "id",
-            description: "user id",
-            required: true
-        },
-        {
-            in: "body",
-            name: "body",
-            description: "Model of removePicOrVideo please set type image for image for video set video",
-            required: true,
-            schema: {
-                $ref: "#/definitions/removePicOrVideo"
+        parameters: [
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "path",
+                type: "string",
+                name: "id",
+                description: "user id",
+                required: true
+            },
+            {
+                in: "body",
+                name: "body",
+                description: "Model of removePicOrVideo please set type image for image for video set video",
+                required: true,
+                schema: {
+                    $ref: "#/definitions/removePicOrVideo"
+                }
             }
-        }
         ],
         responses: {
             default: {
