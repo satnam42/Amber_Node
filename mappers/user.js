@@ -33,11 +33,12 @@ exports.toModel = entity => {
         bio: entity.bio,
         website: entity.website,
         country: entity.country,
-        token: entity.token
+        token: entity.token,
+        isBlocked: entity.isBlocked ? entity.isBlocked : false
     };
-    if (entity.isBlocked == true || entity.isBlocked == false) {
-        model.isBlocked = entity.isBlocked
-    }
+    // if (entity.isBlocked == true || entity.isBlocked == false) {
+    //     model.isBlocked = entity.isBlocked
+    // }
 
     if (entity.images && entity.images.length > 0) {
         for (let index = 0; index < entity.images.length; index++) {

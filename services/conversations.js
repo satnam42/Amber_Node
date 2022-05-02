@@ -106,14 +106,33 @@ const conversationList = async (id, context) => {
         }
     ])
 
+    const blockedUsers = await db.block.find({ $or: [{ byUser: id }, { toUser: id }] })
     for (let index = 0; index < conversation.length; index++) {
-        const isBlocked = await db.block.findOne({ byUser: conversation[index].userId, toUser: id })
-        if (isBlocked) {
-            conversation[index].isBlocked = true
-        } else {
-            conversation[index].isBlocked = false
+        const user = conversation[index]
+        for (let i = 0; i < blockedUsers.length; i++) {
+            const blockedUser = blockedUsers[i];
+            console.log(blockedUser.toUser.toString() == user._id.toString())
+            if (blockedUser.toUser.toString() == user._id.toString()) {
+                conversation[index].isBlocked = true
+            } else {
+                console.log(blockedUser.byUser.toString() == user._id.toString())
+                if (blockedUser.byUser.toString() == user._id.toString()) {
+                    conversation[index].isBlocked = true
+                }
+
+            }
         }
+
     }
+
+    // for (let index = 0; index < conversation.length; index++) {
+    //     const isBlocked = await db.block.findOne({ byUser: conversation[index].userId, toUser: id })
+    //     if (isBlocked) {
+    //         conversation[index].isBlocked = true
+    //     } else {
+    //         conversation[index].isBlocked = false
+    //     }
+    // }
 
     log.end()
     return conversation

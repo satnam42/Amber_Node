@@ -634,13 +634,24 @@ const usersByFilter = async (query, context) => {
         throw new Error('At least one filter is required')
     }
     const users = await db.user.aggregate(filter)
+    const blockedUsers = await db.block.find({ $or: [{ byUser: context.user.id }, { toUser: context.user.id }] })
+
     for (let index = 0; index < users.length; index++) {
-        const isBlocked = await db.block.findOne({ byUser: users[index]._id, toUser: context.user.id })
-        if (isBlocked) {
-            users[index].isBlocked = true
-        } else {
-            users[index].isBlocked = false
+        const user = users[index]
+        for (let i = 0; i < blockedUsers.length; i++) {
+            const blockedUser = blockedUsers[i];
+            console.log(blockedUser.toUser.toString() == user._id.toString())
+            if (blockedUser.toUser.toString() == user._id.toString()) {
+                users[index].isBlocked = true
+            } else {
+                console.log(blockedUser.byUser.toString() == user._id.toString())
+                if (blockedUser.byUser.toString() == user._id.toString()) {
+                    users[index].isBlocked = true
+                }
+
+            }
         }
+
     }
     log.end()
     return users
