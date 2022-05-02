@@ -8,6 +8,9 @@ exports.toModel = entity => {
         image: entity.image ? `${imageUrl}${entity.image}` : "",
         conversationId: entity.conversationId,
     };
+    if (entity.isBlocked == true || entity.isBlocked == false) {
+        model.isBlocked = entity.isBlocked
+    }
     return model;
 };
 

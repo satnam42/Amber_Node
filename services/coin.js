@@ -58,6 +58,11 @@ const buy = async (model, context) => {
     }
 
     const user = await db.user.findById(model.userId)
+
+    if (user.gender == 'female') {
+        throw new Error("this feature is for male user")
+    }
+
     if (!user) {
         throw new Error('user not found')
     }
@@ -244,61 +249,64 @@ const deduct = async (model, context) => {
     }
     let fromUser = await db.user.findById(model.from)
     let toUser = await db.user.findById(model.to)
-    if (fromUser) {
-        // ==============manipulating  receiver coin==================
-        // receiver coin historyif 
-        // if(fromUser.gender =='male'){
-        const coinHistory = await db.coinHistory.findOne({ user: model.to })
+    if (fromUser.gender == 'male') {
+        if (fromUser) {
+            // ==============manipulating  receiver coin==================
+            // receiver coin historyif 
+            // if(fromUser.gender =='male'){
+            const coinHistory = await db.coinHistory.findOne({ user: model.to })
 
-        // if  user have coin update it 
-        if (coinHistory) {
-            let totalCoin = coinHistory.totalCoin
+            // if  user have coin update it 
+            if (coinHistory) {
+                let totalCoin = coinHistory.totalCoin
+                let activeCoin = coinHistory.activeCoin
+                totalCoin += model.callTime * 10
+                activeCoin += model.callTime * 10
+                coinHistory.totalCoin = totalCoin
+                coinHistory.activeCoin = activeCoin
+                coinHistory.earnedCoins.push({
+                    type: 'call',
+                    fromUser: model.from,
+                    coins: model.callTime * 10
+                })
+                await coinHistory.save()
+            }
+            else {
+                // if  user have  no coin then create it 
+                const coin = await new db.coinHistory({
+                    user: model.to,
+                    totalCoin: model.callTime * 10,
+                    activeCoin: model.callTime * 10,
+                    earnedCoins: [
+                        {
+                            type: 'call',
+                            fromUser: model.from,
+                            coins: model.callTime + 10
+                        }],
+                }).save()
+            }
+            // }
+
+        } if (toUser) {
+
+            let coinHistory = await db.coinHistory.findOne({ user: model.from })
+
             let activeCoin = coinHistory.activeCoin
-            totalCoin += model.callTime
-            activeCoin += model.callTime
-            coinHistory.totalCoin = totalCoin
+            activeCoin -= model.callTime
             coinHistory.activeCoin = activeCoin
-            coinHistory.earnedCoins.push({
+            // ==============manipulating  sender coin==================
+            coinHistory.spendCoins.push({
+                onUser: model.to,
                 type: 'call',
-                fromUser: model.from,
                 coins: model.callTime
             })
             await coinHistory.save()
+
+            log.end();
         }
-        else {
-            // if  user have  no coin then create it 
-            const coin = await new db.coinHistory({
-                user: model.to,
-                totalCoin: model.callTime,
-                activeCoin: model.callTime,
-                earnedCoins: [
-                    {
-                        type: 'call',
-                        fromUser: model.from,
-                        coins: model.callTime
-                    }],
-            }).save()
-        }
-        // }
-
-    } if (toUser) {
-
-        let coinHistory = await db.coinHistory.findOne({ user: model.from })
-
-        let activeCoin = coinHistory.activeCoin
-        activeCoin -= model.callTime
-        coinHistory.activeCoin = activeCoin
-        // ==============manipulating  sender coin==================
-        coinHistory.spendCoins.push({
-            onUser: model.to,
-            type: 'call',
-            coins: model.callTime
-        })
-        await coinHistory.save()
-
-        log.end();
+        log.info('total coin deducted ====', model.callTime)
     }
-    log.info('total coin deducted ====', model.callTime)
+
     // .populate("giftedCoins.gift").populate("giftedCoins.fromUser")
     log.end();
     return "coin deduct successfully"

@@ -14,7 +14,7 @@ exports.toModel = (entity, context) => {
         time: entity.time,
         createdAt: entity.createdAt
     };
-    // : entity.fromUser.id == context.user.id ? 'outgoing' : 'incoming',
+
     if (entity.duration == 0) {
         model.callType = entity.fromUser.id == context.user.id ? 'outgoing' : 'missed'
     } else {

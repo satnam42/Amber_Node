@@ -105,6 +105,16 @@ const conversationList = async (id, context) => {
             }
         }
     ])
+
+    for (let index = 0; index < conversation.length; index++) {
+        const isBlocked = await db.block.findOne({ byUser: conversation[index].userId, toUser: context.user.id })
+        if (isBlocked) {
+            conversation[index].isBlocked = true
+        } else {
+            conversation[index].isBlocked = false
+        }
+    }
+
     log.end()
     return conversation
 }
