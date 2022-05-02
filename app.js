@@ -6,6 +6,7 @@ const logger = require("@open-age/logger")("server");
 const auth = require("./permit/auth");
 // const Http = require("http");
 // const Http = require("http");
+const fs = require('fs');
 const Https = require("https");
 const port = process.env.PORT || appConfig.port || 3000;
 const app = express();
