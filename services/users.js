@@ -665,8 +665,8 @@ const remove = async (id, context) => {
 
 const removePicOrVideo = async (data, context) => {
     const log = context.logger.start(`services:users:removePicOrVideo `);
-    if (context.user.id !== data.userId) {
-        throw new Error("you don't have right to delete this account ")
+    if (context.user.id == data.userId) {
+        throw new Error("you don't have right to delete operation ")
     }
     const user = await db.user.findById(data.userId)
     if (data.type == 'image') {
