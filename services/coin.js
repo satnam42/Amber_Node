@@ -260,28 +260,30 @@ const deduct = async (model, context) => {
             if (coinHistory) {
                 let totalCoin = coinHistory.totalCoin
                 let activeCoin = coinHistory.activeCoin
-                totalCoin += model.callTime * 10
-                activeCoin += model.callTime * 10
+                let diamond = model.callTime * 10
+                totalCoin += diamond
+                activeCoin += diamond
                 coinHistory.totalCoin = totalCoin
                 coinHistory.activeCoin = activeCoin
                 coinHistory.earnedCoins.push({
                     type: 'call',
                     fromUser: model.from,
-                    coins: model.callTime * 10
+                    coins: diamond
                 })
                 await coinHistory.save()
             }
             else {
+                let diamond = model.callTime * 10
                 // if  user have  no coin then create it 
                 const coin = await new db.coinHistory({
                     user: model.to,
-                    totalCoin: model.callTime * 10,
-                    activeCoin: model.callTime * 10,
+                    totalCoin: diamond,
+                    activeCoin: diamond,
                     earnedCoins: [
                         {
                             type: 'call',
                             fromUser: model.from,
-                            coins: model.callTime + 10
+                            coins: diamond
                         }],
                 }).save()
             }
