@@ -12,7 +12,7 @@ const spec = {
     host: webServer.rootUrl,
     basePath: '/api',
     schemes: [
-        'http'
+        'http', 'https'
     ],
     consumes: [
         'application/json',
