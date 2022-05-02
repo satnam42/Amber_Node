@@ -1,15 +1,15 @@
 {
     "db": {
-        "url": "mongodb://localhost:27017",
+        "url": "mongodb://ambers:Z$ecurity#2020@93.188.167.68:33017",
         "database": "amber"
     },
     "app": {
-        "url": "https://amberclubpro.com",
-        "port": 8001
+        "url": "http://93.188.167.68",
+        "port": 8003
     },
     "webServer": {
-        "url": "https://amberclubpro.com",
-        "port": 8001
+        "url": "http://93.188.167.68",
+        "port": 8003
     },
     "auth": {
         "jwtKey": "supersecret"
@@ -19,12 +19,12 @@
         "appCertificate": "094e885a4c2140d3aa7226b81664daa8"
     },
     "image": {
-        "url": "https://amberclubpro.com/images/",
-        "port": 8001
+        "url": "http://93.188.167.68/projects/amber_nodejs/assets/images/",
+        "port": 8003
     },
     "video": {
-        "url": "https://amberclubpro.com/videos/",
-        "port": 8001
+        "url": "http://93.188.167.68/projects/amber_nodejs/assets/videos/",
+        "port": 8003
     },
     "providers": {},
     "logger": {
