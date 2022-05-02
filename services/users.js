@@ -663,12 +663,12 @@ const remove = async (id, context) => {
 };
 
 
-const removePicOrVideo = async (data, context) => {
+const removePicOrVideo = async (id, data, context) => {
     const log = context.logger.start(`services:users:removePicOrVideo `);
     if (context.user.id == data.userId) {
         throw new Error("you don't have right to delete operation ")
     }
-    const user = await db.user.findById(data.userId)
+    const user = await db.user.findById(id)
     if (data.type == 'image') {
         // const picDestination = path.join(__dirname, '../', 'assets/images')
         // const picLocation = picDestination + '/' + data.fileName

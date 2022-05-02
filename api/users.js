@@ -242,7 +242,7 @@ const removeProfilePic = async (req, res) => {
 const removePicOrVideo = async (req, res) => {
     const log = req.context.logger.start(`api:users:removePicOrVideo`);
     try {
-        const product = await service.removePicOrVideo(req.body, req.context);
+        const product = await service.removePicOrVideo(req.params.id, req.body, req.context);
         log.end();
         return response.data(res, product);
     } catch (err) {
