@@ -10,7 +10,7 @@ const Https = require("https");
 const port = process.env.PORT || appConfig.port || 3000;
 const app = express();
 const admin = require("firebase-admin");
-var server = Http.createServer(app);
+// var server = Http.createServer(app);
 var serviceAccount = require("./amber-firebase-adminsdk.json");
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
