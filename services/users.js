@@ -433,7 +433,6 @@ const following = async (id, context) => {
     return user.following
 
 };
-
 const followers = async (id, context) => {
 
     const log = context.logger.start(`services:users:followers`);
@@ -445,7 +444,6 @@ const followers = async (id, context) => {
     return user.followers
 
 };
-
 const socialLogin = async (model, context) => {
     const log = context.logger.start(`services:users:socialLogin`);
     let user = {}
@@ -457,7 +455,6 @@ const socialLogin = async (model, context) => {
     user.token = auth.getToken(user.id, false, context);
     return user
 }
-
 const random = async (query, context) => {
     const log = context.logger.start(`services:users:random`);
     let pageNo = Number(query.pageNo) || 1;
@@ -479,7 +476,6 @@ const random = async (query, context) => {
     log.end()
     return users
 };
-
 const getUsers = async (query, context) => {
     const log = context.logger.start(`services:users:getUsers`);
     let pageNo = Number(query.pageNo) || 1;
@@ -491,7 +487,6 @@ const getUsers = async (query, context) => {
     log.end()
     return users
 };
-
 // const myStatistics = async (id, context) => {
 //     const log = context.logger.start(`services:users:myStatistics`);
 //     if (!id) {
@@ -669,7 +664,7 @@ const remove = async (id, context) => {
 
 
 const removePicOrVideo = async (data, context) => {
-    const log = context.logger.start(`services:users:removePicOrVideo ${id}`);
+    const log = context.logger.start(`services:users:removePicOrVideo `);
     if (context.user.id !== data.userId) {
         throw new Error("you don't have right to delete this account ")
     }
