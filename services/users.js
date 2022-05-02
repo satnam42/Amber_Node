@@ -670,18 +670,18 @@ const removePicOrVideo = async (data, context) => {
     }
     const user = await db.user.findById(data.userId)
     if (data.type == 'image') {
-        const picDestination = path.join(__dirname, '../', 'assets/images')
-        const picLocation = picDestination + '/' + data.fileName
-        fs.unlinkSync(picLocation);
+        // const picDestination = path.join(__dirname, '../', 'assets/images')
+        // const picLocation = picDestination + '/' + data.fileName
+        // fs.unlinkSync(picLocation);
         const images = user.images.filter(obj => obj.name !== data.fileName)
         user.images = images
         await user.save()
 
     }
     else {
-        const videoDestination = path.join(__dirname, '../', 'assets/video')
-        const videoLocation = videoDestination + '/' + data.fileName
-        fs.unlinkSync(videoLocation);
+        // const videoDestination = path.join(__dirname, '../', 'assets/video')
+        // const videoLocation = videoDestination + '/' + data.fileName
+        // fs.unlinkSync(videoLocation);
         const videos = user.videos.filter(obj => obj.name !== data.fileName)
         user.videos = videos
         await user.save()
