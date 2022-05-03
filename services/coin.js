@@ -249,6 +249,7 @@ const deduct = async (model, context) => {
     }
     let fromUser = await db.user.findById(model.from)
     let toUser = await db.user.findById(model.to)
+    let calDuration = model.callTime
     let diamond = calDuration * 10
 
     if (fromUser.gender == 'male') {
