@@ -2,10 +2,10 @@ module.exports = [
     {
         name: "redeem",
         properties: {
-            userId: {
-                type: "string"
+            amount: {
+                type: "number"
             },
-            diamond: {
+            email: {
                 type: "string"
             },
         }
