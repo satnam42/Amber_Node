@@ -249,18 +249,19 @@ const deduct = async (model, context) => {
     }
     let fromUser = await db.user.findById(model.from)
     let toUser = await db.user.findById(model.to)
+    let diamond = calDuration * 10
+
     if (fromUser.gender == 'male') {
         if (fromUser) {
             // ==============manipulating  receiver coin==================
             // receiver coin historyif 
             // if(fromUser.gender =='male'){
             const coinHistory = await db.coinHistory.findOne({ user: model.to })
-
+            let calDuration = model.callTime
             // if  user have coin update it 
             if (coinHistory) {
                 let totalCoin = coinHistory.totalCoin
                 let activeCoin = coinHistory.activeCoin
-                let diamond = model.callTime * 10
                 totalCoin += diamond
                 activeCoin += diamond
                 coinHistory.totalCoin = totalCoin
@@ -273,7 +274,6 @@ const deduct = async (model, context) => {
                 await coinHistory.save()
             }
             else {
-                let diamond = model.callTime * 10
                 // if  user have  no coin then create it 
                 const coin = await new db.coinHistory({
                     user: model.to,
@@ -293,9 +293,8 @@ const deduct = async (model, context) => {
 
             let coinHistory = await db.coinHistory.findOne({ user: model.from })
 
-            let activeCoin = coinHistory.activeCoin
-            activeCoin -= model.callTime
-            coinHistory.activeCoin = activeCoin
+            coinHistory.activeCoin -= model.callTime
+
             // ==============manipulating  sender coin==================
             coinHistory.spendCoins.push({
                 onUser: model.to,
@@ -306,7 +305,7 @@ const deduct = async (model, context) => {
 
             log.end();
         }
-        log.info('total coin deducted ====', model.callTime)
+        log.info('total coin deducted ====', diamond)
     }
 
     // .populate("giftedCoins.gift").populate("giftedCoins.fromUser")
