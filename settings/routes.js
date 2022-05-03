@@ -300,7 +300,7 @@ const configure = (app, logger) => {
         api.redeem.create
     );
 
-    app.post("/api/redeem/updateStatus ",
+    app.post("/api/redeem/updateStatus",
         permit.context.builder,
         api.redeem.updateStatus
     );
