@@ -79,6 +79,7 @@ const create = async (model, context) => {
             user.token = auth.getToken(user.id, false, context);
         }
         log.end();
+        return user
     }
 };
 
