@@ -258,7 +258,7 @@ const deduct = async (model, context) => {
             // receiver coin historyif 
             // if(fromUser.gender =='male'){
             const coinHistory = await db.coinHistory.findOne({ user: model.to })
-            let calDuration = model.callTime
+            // let calDuration = model.callTime
             // if  user have coin update it 
             if (coinHistory) {
                 let totalCoin = coinHistory.totalCoin
@@ -293,20 +293,19 @@ const deduct = async (model, context) => {
         } if (toUser) {
 
             let coinHistory = await db.coinHistory.findOne({ user: model.from })
-
+            log.info(' =====coin deducted  Before ====', coinHistory.activeCoin)
             coinHistory.activeCoin -= model.callTime
-
+            log.info(' =====coin deducted  after ====', coinHistory.activeCoin)
             // ==============manipulating  sender coin==================
             coinHistory.spendCoins.push({
                 onUser: model.to,
                 type: 'call',
                 coins: model.callTime
             })
-            await coinHistory.save()
-
+            let result = await coinHistory.save()
+            log.info('after response  coin ====', result.activeCoin)
             log.end();
         }
-        log.info('total coin deducted ====', diamond)
     }
 
     // .populate("giftedCoins.gift").populate("giftedCoins.fromUser")
