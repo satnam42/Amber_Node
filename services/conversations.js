@@ -116,10 +116,12 @@ const conversationList = async (id, context) => {
             if (blockedUser) {  // console.log(blockedUser.toUser.toString() == user._id.toString())
                 if (blockedUser.toUser && user._id && blockedUser.toUser == user._id) {
                     conversation[index].isBlocked = true
+                    console.log('conversation == blockedUser', index)
                 } else {
                     if (user && user._id) {
                         // console.log(blockedUser.byUser.toString() == user._id.toString())
                         if (blockedUser.byUser == user._id) {
+                            console.log('conversation == user ', index)
                             conversation[index].isBlocked = true
                         }
                     }
@@ -137,7 +139,7 @@ const conversationList = async (id, context) => {
     //         conversation[index].isBlocked = false
     //     }
     // }
-
+    console.log('conversation', conversation)
     log.end()
     return conversation
 }
