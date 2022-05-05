@@ -4,24 +4,23 @@ const express = require("express");
 const appConfig = require("config").get("app");
 const logger = require("@open-age/logger")("server");
 const auth = require("./permit/auth");
-// const Http = require("http");
-// const Http = require("http");
+const Http = require("http");
 const fs = require('fs');
-const Https = require("https");
+// const Https = require("https");
 const port = process.env.PORT || appConfig.port || 3000;
 const app = express();
 const admin = require("firebase-admin");
-// var server = Http.createServer(app);
+var server = Http.createServer(app);
 var serviceAccount = require("./amber-firebase-adminsdk.json");
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
-const options = {
-  cert: fs.readFileSync('/etc/letsencrypt/live/amberclubpro.com/fullchain.pem'),
-  key: fs.readFileSync('/etc/letsencrypt/live/amberclubpro.com/privkey.pem')
-};
-var server = Https.createServer(options, app);
-// var server = Http.createServer(app);
+// const options = {
+//   cert: fs.readFileSync('/etc/letsencrypt/live/amberclubpro.com/fullchain.pem'),
+//   key: fs.readFileSync('/etc/letsencrypt/live/amberclubpro.com/privkey.pem')
+// };
+// var server = Https.createServer(options, app);
+var server = Http.createServer(app);
 
 // admin.initializeApp({
 //   credential: admin.credential.cert(serviceAccount)
@@ -39,6 +38,7 @@ const boot = async () => {
     log.info(`listening on port: ${port}`);
     log.end();
   });
+
   const io = await require("socket.io")(server, {
     allowEIO3: true,
     cors: {
@@ -56,7 +56,6 @@ const boot = async () => {
         next(new Error('token expired'));
         // throw new Error("token expired");
       }
-
       if (details.name === "JsonWebTokenError") {
         next(new Error('token is invalid'));
         // throw new Error("token is invalid");

@@ -3,6 +3,7 @@ const { logout } = require("./users");
 const ObjectId = require("mongodb").ObjectId
 const stripe = require('stripe')('sk_test_51KfdqKSIbgCXqMm2fnVDKcAd1LV0rVXZ9QiRvd0bm5JQYIeQXbF26NgYQA7RqiuSF3hUotbvt4FNPlsuI6OQgrPz00bCL9VA9k');
 const endpointSecret = 'whsec_Q2i0yFexQBvHn5QSLsldY4ZFMRBY2MYK';
+const { isPositiveInteger } = require("../utility")
 
 const buildCoin = async (model, context) => {
     const { coins, price, status, isFree, category } = model;
@@ -133,36 +134,36 @@ const handlePaymentMethod = async (model, context) => {
     log.info('payment', payment)
     console.log('payment', payment)
     if (model.status == 'succeeded') {
-        let coinHistory = await db.coinHistory.findOne({ user: payment.user })
-        console.log('coinHistory', coinHistory)
+        let coinBalance = await db.coinBalance.findOne({ user: payment.user })
+        console.log('coinBalance', coinBalance)
         let coin = await db.coin.findById(payment.coin)
         console.log('coin', coin)
         // if  user have coin update it 
-        if (coinHistory) {
-            let totalCoin = coinHistory.totalCoin
-            let activeCoin = coinHistory.activeCoin
+        if (coinBalance) {
+            let totalCoin = coinBalance.totalCoin
+            let activeCoin = coinBalance.activeCoin
             totalCoin += coin.coins
             activeCoin += coin.coins
-            coinHistory.totalCoin = totalCoin
-            coinHistory.activeCoin = activeCoin
-            // if (coinHistory.purchasedCoins && coinHistory.purchasedCoins.length > 0) {
-            coinHistory.purchasedCoins.push({
+            coinBalance.totalCoin = totalCoin
+            coinBalance.activeCoin = activeCoin
+            // if (coinBalance.purchasedCoins && coinBalance.purchasedCoins.length > 0) {
+            coinBalance.purchasedCoins.push({
                 coinId: coin.id,
                 coins: coin.coins,
             })
             // }
             // else {
-            //     coinHistory.purchasedCoins = [{
+            //     coinBalance.purchasedCoins = [{
             //         coinId: coin.id,
             //         coins: coin.coins,
             //     }]
             // }
-            await coinHistory.save()
+            await coinBalance.save()
 
         }
         else {
             // if  user have  no coin then create it 
-            coinHistory = await new db.coinHistory({
+            coinBalance = await new db.coinBalance({
                 user: payment.user,
                 totalCoin: coin.coins,
                 activeCoin: coin.coins,
@@ -230,7 +231,7 @@ const myCoins = async (id, context) => {
     if (!id) {
         throw new Error('user id is Required')
     }
-    let coins = await db.coinHistory.findOne({ user: ObjectId(id) })
+    let coins = await db.coinBalance.findOne({ user: ObjectId(id) })
     // .populate("giftedCoins.gift").populate("giftedCoins.fromUser")
     log.end();
     return coins
@@ -247,6 +248,7 @@ const deduct = async (model, context) => {
     if (!model.callTime) {
         throw new Error('callTime is Required')
     }
+
     let fromUser = await db.user.findById(model.from)
     let toUser = await db.user.findById(model.to)
     let calDuration = model.callTime
@@ -257,26 +259,26 @@ const deduct = async (model, context) => {
             // ==============manipulating  receiver coin==================
             // receiver coin historyif 
             // if(fromUser.gender =='male'){
-            const coinHistory = await db.coinHistory.findOne({ user: model.to })
+            const coinBalance = await db.coinBalance.findOne({ user: model.to })
             // let calDuration = model.callTime
             // if  user have coin update it 
-            if (coinHistory) {
-                let totalCoin = coinHistory.totalCoin
-                let activeCoin = coinHistory.activeCoin
+            if (coinBalance) {
+                let totalCoin = coinBalance.totalCoin
+                let activeCoin = coinBalance.activeCoin
                 totalCoin += diamond
                 activeCoin += diamond
-                coinHistory.totalCoin = totalCoin
-                coinHistory.activeCoin = activeCoin
-                coinHistory.earnedCoins.push({
+                coinBalance.totalCoin = totalCoin
+                coinBalance.activeCoin = activeCoin
+                coinBalance.earnedCoins.push({
                     type: 'call',
                     fromUser: model.from,
                     coins: diamond
                 })
-                await coinHistory.save()
+                await coinBalance.save()
             }
             else {
                 // if  user have  no coin then create it 
-                const coin = await new db.coinHistory({
+                const coin = await new db.coinBalance({
                     user: model.to,
                     totalCoin: diamond,
                     activeCoin: diamond,
@@ -291,18 +293,20 @@ const deduct = async (model, context) => {
             // }
 
         } if (toUser) {
-
-            let coinHistory = await db.coinHistory.findOne({ user: model.from })
-            log.info(' =====coin deducted  Before ====', coinHistory.activeCoin)
-            coinHistory.activeCoin -= model.callTime
-            log.info(' =====coin deducted  after ====', coinHistory.activeCoin)
+            let coinBalance = await db.coinBalance.findOne({ user: model.from })
+            log.info(' =====coin deducted  Before ====', coinBalance.activeCoin)
+            coinBalance.activeCoin -= model.callTime
+            if (!isPositiveInteger(coinBalance.activeCoin)) {
+                coinBalance.activeCoin = 0
+            }
+            log.info(' =====coin deducted  after ====', coinBalance.activeCoin)
             // ==============manipulating  sender coin==================
-            coinHistory.spendCoins.push({
+            coinBalance.spendCoins.push({
                 onUser: model.to,
                 type: 'call',
                 coins: model.callTime
             })
-            let result = await coinHistory.save()
+            let result = await coinBalance.save()
             log.info('after response  coin ====', result.activeCoin)
             log.end();
         }

@@ -1,7 +1,7 @@
 "use strict";
 const mongoose = require("mongoose");
 
-const coinHistory = mongoose.Schema({
+const coinBalance = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
@@ -66,6 +66,6 @@ const coinHistory = mongoose.Schema({
 
 }, { timestamps: true });
 
-mongoose.model("coinHistory", coinHistory);
+mongoose.model("coinBalance", coinBalance);
 
-module.exports = coinHistory;
+module.exports = coinBalance;

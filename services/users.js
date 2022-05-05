@@ -669,7 +669,7 @@ const remove = async (id, context) => {
         throw new Error('something went wrong please try again')
     }
     await db.history.deleteOne({ fromUser: id })
-    await db.coinHistory.deleteOne({ user: id })
+    await db.coinBalance.deleteOne({ user: id })
     log.end()
     return "account deleted successfully"
 };

@@ -66,33 +66,33 @@ const send = async (model, context) => {
     // checking user have coin to gift to  user
 
     // sender coin history
-    let coinHistory = await db.coinHistory.findOne({ user: model.senderId })
+    let coinBalance = await db.coinBalance.findOne({ user: model.senderId })
 
     // ==============manipulating  receiver coin==================
-    if (coinHistory && coinHistory.activeCoin >= gift.coin) {
+    if (coinBalance && coinBalance.activeCoin >= gift.coin) {
         // receiver coin history
-        const coinHistory = await db.coinHistory.findOne({ user: model.receiverId })
+        const coinBalance = await db.coinBalance.findOne({ user: model.receiverId })
         // if  user have coin update it 
-        if (coinHistory) {
-            let totalCoin = coinHistory.totalCoin
-            let activeCoin = coinHistory.activeCoin
+        if (coinBalance) {
+            let totalCoin = coinBalance.totalCoin
+            let activeCoin = coinBalance.activeCoin
             totalCoin += gift.coin
             activeCoin += gift.coin
-            coinHistory.totalCoin = totalCoin
-            coinHistory.activeCoin = activeCoin
-            coinHistory.earnedCoins.push({
+            coinBalance.totalCoin = totalCoin
+            coinBalance.activeCoin = activeCoin
+            coinBalance.earnedCoins.push({
                 type: 'gifted',
                 gift: gift._id,
                 fromUser: model.senderId,
                 coins: gift.coin
             })
 
-            await coinHistory.save()
+            await coinBalance.save()
 
         }
         else {
             // if  user have  no coin then create it 
-            const coin = await new db.coinHistory({
+            const coin = await new db.coinBalance({
                 user: model.receiverId,
                 totalCoin: gift.coin,
                 activeCoin: gift.coin,
@@ -109,18 +109,18 @@ const send = async (model, context) => {
         throw new Error("you don't have enough coin to send this gift")
     }
 
-    let activeCoin = coinHistory.activeCoin
+    let activeCoin = coinBalance.activeCoin
     activeCoin -= gift.coin
-    coinHistory.activeCoin = activeCoin
+    coinBalance.activeCoin = activeCoin
 
     // ==============manipulating  sender coin==================
-    coinHistory.spendCoins.push({
+    coinBalance.spendCoins.push({
         onUser: model.receiverId,
         type: 'gifted',
         gift: gift._id,
         coins: gift.coin
     })
-    await coinHistory.save()
+    await coinBalance.save()
     log.end();
     return 'gift sent successfully'
 }
@@ -174,8 +174,8 @@ const myGifts = async (id, context) => {
     if (!id) {
         throw new Error('user id is Required')
     }
-    // let myGifts = await db.coinHistory.findOne({ user: id })
-    let myGifts = await db.coinHistory.aggregate([
+    // let myGifts = await db.coinBalance.findOne({ user: id })
+    let myGifts = await db.coinBalance.aggregate([
 
         {
             $match: {
@@ -216,7 +216,7 @@ const myGifts = async (id, context) => {
 
 
     // .populate(["earnedCoins.gift", "earnedCoins.fromUser"])
-    // let myGifts = await db.coinHistory.findOne({ $and: [{ user: { $eq: id } }, { "earnedCoins.type": { $eq: "gifted" } }] }).populate("earnedCoins.gift").populate("earnedCoins.fromUser")
+    // let myGifts = await db.coinBalance.findOne({ $and: [{ user: { $eq: id } }, { "earnedCoins.type": { $eq: "gifted" } }] }).populate("earnedCoins.gift").populate("earnedCoins.fromUser")
     // log.end();
     return myGifts
 };
@@ -244,20 +244,20 @@ const buy = async (model, context) => {
         throw new Error('this id not associate any gift')
     }
 
-    let coinHistory = await db.coinHistory.findOne({ user: user.id })
+    let coinBalance = await db.coinBalance.findOne({ user: user.id })
     // if  user have coin update it 
-    if (coinHistory != undefined && coinHistory != null && coinHistory.activeCoin >= gift.coin) {
-        let activeCoin = coinHistory.activeCoin
+    if (coinBalance != undefined && coinBalance != null && coinBalance.activeCoin >= gift.coin) {
+        let activeCoin = coinBalance.activeCoin
         activeCoin -= gift.coin
         coin.activeCoin = activeCoin
-        await coinHistory.save()
+        await coinBalance.save()
     }
     else {
         throw new Error("you don't have enough coin to this gift")
     }
 
     log.end();
-    return coinHistory
+    return coinBalance
 
 };
 
@@ -265,7 +265,7 @@ const handlePaymentMethod = async (model, context) => {
     const log = context.logger.start(`services: gifts: handlePaymentMethod ${{ model }}`);
     let payment = await db.payment.findOne({ pi: model.id })
     if (model.status == 'succeeded') {
-        let coin = await db.coinHistory.findOne({ user: payment.userId })
+        let coin = await db.coinBalance.findOne({ user: payment.userId })
         let gift = await db.gift.findOne({ user: payment.giftId })
         // if  user have coin update it 
         if (coin != undefined && coin != null) {
@@ -292,7 +292,7 @@ const handlePaymentMethod = async (model, context) => {
         }
         else {
             // if  user have  no coin then create it 
-            coin = await new db.coinHistory({
+            coin = await new db.coinBalance({
                 user: model.userId,
                 totalCoin: gift.coin,
                 activeCoin: gift.coin,

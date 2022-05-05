@@ -13,7 +13,7 @@ var sender_batch_id = Math.random().toString(36).substring(9);
 const create = async (model, context) => {
     const log = context.logger.start("services:redeem:create");
     // const user = await user.findById(model.userId)
-    // let coinHistory = await db.coinHistory.findOne({ user: user.id })
+    // let coinBalance = await db.coinBalance.findOne({ user: user.id })
     var create_payout_json = {
         "sender_batch_header": {
             "sender_batch_id": sender_batch_id,

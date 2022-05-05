@@ -305,7 +305,14 @@ const configure = (app, logger) => {
         api.redeem.updateStatus
     );
 
-
+    app.post("/api/callRates/add",
+        permit.context.builder,
+        api.callRates.add
+    );
+    app.get("/api/callRates/list",
+        permit.context.validateToken,
+        api.callRates.getCallRates
+    );
     log.end();
 };
 

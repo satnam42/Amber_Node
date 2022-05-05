@@ -47,7 +47,7 @@ const sendCallNotification = async (body, context) => {
     let rtcRes = await service.generateRtcToken(modal, context)
 
     const user = await db.user.findById(body.receiverId)
-    const callerCoinHistory = await db.coinHistory.findOne({ user: context.user.id })
+    const callerCoinHistory = await db.coinBalance.findOne({ user: context.user.id })
 
     if (callerCoinHistory.activeCoin < 59) {
         throw new Error("you dont have enough coin")
@@ -135,7 +135,7 @@ const random = async (modal, context) => {
     }
 
     const user = await db.user.findById(recUser.id)
-    const callerCoinHistory = await db.coinHistory.findOne({ user: context.user.id })
+    const callerCoinHistory = await db.coinBalance.findOne({ user: context.user.id })
     if (callerCoinHistory.activeCoin < 59) {
         throw new Error("you dont have enough coin")
     }
