@@ -111,11 +111,13 @@ const conversationList = async (id, context) => {
         const user = conversation[index]
         for (let i = 0; i < blockedUsers.length; i++) {
             const blockedUser = blockedUsers[i];
+            console.log('blockedUser', blockedUser)
+            console.log('user', user)
             if (blockedUser) {  // console.log(blockedUser.toUser.toString() == user._id.toString())
-                if (blockedUser.toUser.toString() == user._id.toString()) {
+                if (blockedUser.toUser && user._id && blockedUser.toUser.toString() == user._id.toString()) {
                     conversation[index].isBlocked = true
                 } else {
-                    if (user) {
+                    if (user && user._id) {
                         // console.log(blockedUser.byUser.toString() == user._id.toString())
                         if (blockedUser.byUser.toString() == user._id.toString()) {
                             conversation[index].isBlocked = true
