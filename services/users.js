@@ -267,6 +267,24 @@ const profile = async (id, context) => {
     ])
     if (user.length > 0) {
         user = user[0]
+        const blockedUsers = await db.block.find({ $or: [{ byUser: context.user.id }, { toUser: context.user.id }] })
+
+        // for (let index = 0; index < users.length; index++) {
+        // const user = users[index]
+        for (let i = 0; i < blockedUsers.length; i++) {
+            const blockedUser = blockedUsers[i];
+            console.log(blockedUser.toUser.toString() == user._id.toString())
+            if (blockedUser.toUser.toString() == user._id.toString()) {
+                user.isBlocked = true
+            } else {
+                console.log(blockedUser.byUser.toString() == user._id.toString())
+                if (blockedUser.byUser.toString() == user._id.toString()) {
+                    user.isBlocked = true
+                }
+            }
+            // }
+
+        }
     } else {
         throw new Error("user not found");
     }
@@ -441,6 +459,8 @@ const followers = async (id, context) => {
         throw new Error('user id is required')
     }
     const user = await db.user.findById(id).populate('followers.userId')
+
+
     log.end();
     return user.followers
 

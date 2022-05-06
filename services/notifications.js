@@ -47,10 +47,13 @@ const sendCallNotification = async (body, context) => {
     let rtcRes = await service.generateRtcToken(modal, context)
 
     const user = await db.user.findById(body.receiverId)
-    const callerCoinHistory = await db.coinBalance.findOne({ user: context.user.id })
+    let callRate = await db.callRate.findOne({ status: 'active' });
+    if (context.user.gender == "male") {
+        const callerCoinHistory = await db.coinBalance.findOne({ user: context.user.id })
 
-    if (callerCoinHistory.activeCoin < 59) {
-        throw new Error("you dont have enough coin")
+        if (!callerCoinHistory || callerCoinHistory.activeCoin < 59) {
+            throw new Error("you dont have enough coin")
+        }
     }
     if (!user) {
         throw new Error('called  user not found')
@@ -78,6 +81,7 @@ const sendCallNotification = async (body, context) => {
             "name": body.username,
             "imageUrl": body.imageUrl,
             historyId: history.id,
+            callRate: callRate.rate,
             token: rtcRes.token,
             userId: rtcRes.userId.toString()
 
@@ -104,6 +108,7 @@ const random = async (modal, context) => {
     if (!modal.channelId || modal.channelId == "") {
         throw new Error('channelId is required')
     }
+    let callRate = await db.callRate.findOne({ status: 'active' });
 
     let randomUser = await getRandomUser(context)
     // let randomUser = await db.user.aggregate([
@@ -168,6 +173,7 @@ const random = async (modal, context) => {
             "name": context.user.username,
             // "imageUrl": caller.imageUrl,
             historyId: history.id,
+            callRate: callRate.rate,
             token: receiverRtc.token,
             userId: receiverRtc.userId.toString(),
             receiverId: recUser.id
