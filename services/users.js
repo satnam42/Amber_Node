@@ -555,6 +555,7 @@ const generateRtcToken = async (modal, context) => {
     // if (!modal.userId) {
     //     throw new Error("user id is required");
     // }
+    let callRate = await db.callRate.findOne({ status: 'active' });
     var digits = '0123456789';
     let randomNo = '';
     // for (let i = 0; i < 10; i++) {
@@ -572,7 +573,8 @@ const generateRtcToken = async (modal, context) => {
     log.end
     return {
         token: token,
-        userId: uid
+        userId: uid,
+        rate: callRate.rate
     }
 }
 
