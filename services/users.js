@@ -570,7 +570,8 @@ const generateRtcToken = async (modal, context) => {
     const role = modal.isPublisher ? RtcRole.PUBLISHER : RtcRole.SUBSCRIBER;
     const channel = modal.channelId;
     const token = RtcTokenBuilder.buildTokenWithUid(appID.trim(), appCertificate.trim(), channel, uid, role, privilegeExpiredTs);
-    log.end
+    log.end()
+
     return {
         token: token,
         userId: uid,
