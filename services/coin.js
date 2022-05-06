@@ -253,8 +253,8 @@ const deduct = async (model, context) => {
     let toUser = await db.user.findById(model.to)
     const callRate = await db.callRate.findOne({ status: 'active' })
     let calDuration = model.callTime
-    let diamond = calDuration * callRate.rate || 60
-
+    let diamond = calDuration * 10
+    let coinDeduct = calDuration * callRate.rate || 60
     if (fromUser.gender == 'male') {
         if (fromUser) {
             // ==============manipulating  receiver coin==================
@@ -296,7 +296,7 @@ const deduct = async (model, context) => {
         } if (toUser) {
             let coinBalance = await db.coinBalance.findOne({ user: model.from })
             log.info(' =====coin deducted  Before ====', coinBalance.activeCoin)
-            coinBalance.activeCoin -= model.callTime
+            coinBalance.activeCoin -= coinDeduct
             if (!isPositiveInteger(coinBalance.activeCoin)) {
                 coinBalance.activeCoin = 0
             }
