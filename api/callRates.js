@@ -16,6 +16,19 @@ const add = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+const set = async (req, res) => {
+    const log = req.context.logger.start(`api:callRates:add`);
+    try {
+        const callRate = await service.set(req.params.id, req.context);
+        const message = "Call Rate Set Successfully";
+        log.end();
+        return response.success(res, message, callRate);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
 
 const getCallRates = async (req, res) => {
     const log = req.context.logger.start(`api:callRates:currentUser`);
@@ -36,3 +49,4 @@ const getCallRates = async (req, res) => {
 
 exports.add = add;
 exports.getCallRates = getCallRates;
+exports.set = set;

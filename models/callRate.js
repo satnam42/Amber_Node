@@ -5,7 +5,7 @@ const callRate = mongoose.Schema({
     rate: { type: Number, default: 0 },
     status: {
         type: String,
-        default: "active",
+        default: "inactive",
         enum: ["active", "inactive"],
     },
 

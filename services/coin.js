@@ -251,8 +251,9 @@ const deduct = async (model, context) => {
 
     let fromUser = await db.user.findById(model.from)
     let toUser = await db.user.findById(model.to)
+    const callRate = await db.callRate.findOne({ status: 'active' })
     let calDuration = model.callTime
-    let diamond = calDuration * 10
+    let diamond = calDuration * callRate.rate || 60
 
     if (fromUser.gender == 'male') {
         if (fromUser) {

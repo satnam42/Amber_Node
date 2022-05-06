@@ -5,7 +5,6 @@ const buildCallRate = async (model, context) => {
     const log = context.logger.start(`services:callRates:buildGift${model}`);
     const callRate = await new db.callRate({
         rate: rate,
-        status: 'active',
     }).save();
 
     log.end();
@@ -15,11 +14,35 @@ const buildCallRate = async (model, context) => {
 const create = async (model, context) => {
     const log = context.logger.start("services:callRates:create");
     let callRate = await db.callRate.findOne({ status: 'active' });
-    if (callRate) {
-        callRate.status = "inactive"
-    }
-    await callRate.save()
+    // if (callRate) {
+    //     callRate.status = "inactive"
+    //     await callRate.save()
+    // }
     callRate = buildCallRate(model, context);
+    log.end();
+    return callRate;
+};
+
+const set = async (id, context) => {
+    const log = context.logger.start("services:callRates:create");
+    if (!id) {
+        throw new Error('call id is required')
+    }
+
+    let setCallRate = await db.callRate.findOne({ status: 'active' });
+    if (setCallRate) {
+        setCallRate.status = "inactive"
+        await setCallRate.save()
+    }
+
+    const callRate = await db.callRate.findById(id)
+    if (callRate) {
+        callRate.status = "active"
+        await callRate.save()
+    } else {
+        throw new Error("callRate  not found with given id")
+    }
+
     log.end();
     return callRate;
 };
@@ -38,3 +61,4 @@ const getCallRates = async (query, context) => {
 
 exports.create = create;
 exports.getCallRates = getCallRates;
+exports.set = set;

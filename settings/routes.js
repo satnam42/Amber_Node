@@ -306,12 +306,18 @@ const configure = (app, logger) => {
     );
 
     app.post("/api/callRates/add",
-        permit.context.builder,
+        permit.context.validateToken,
         api.callRates.add
     );
     app.get("/api/callRates/list",
         permit.context.validateToken,
         api.callRates.getCallRates
+    );
+
+    app.put(
+        "/api/callRates/set/:id",
+        permit.context.validateToken,
+        api.callRates.set
     );
     log.end();
 };
