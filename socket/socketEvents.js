@@ -107,8 +107,8 @@ const connect = async (io, logger) => {
             data.callerId
             if (data.receiverId == data.callerId) {
                 socket.emit('oops', {
-                    event: 'token is not valid',
-                    data: 'token is not valid'
+                    event: 'callUser',
+                    data: 'you cannot call to  yourself'
                 });
                 // throw new Error('you cannot call to  yourself')
             }
@@ -121,14 +121,26 @@ const connect = async (io, logger) => {
                 const callerCoinHistory = await db.coinBalance.findOne({ user: caller.id })
 
                 if (!callerCoinHistory || callerCoinHistory.activeCoin < 59) {
-                    throw new Error("you dont have enough coin")
+                    socket.emit('oops', {
+                        event: 'callUser',
+                        data: 'you dont have enough coin'
+                    });
+                    // throw new Error("you dont have enough coin")
                 }
             }
             if (!user) {
-                throw new Error('called  user not found')
+                socket.emit('oops', {
+                    event: 'callUser',
+                    data: 'called  user not found'
+                });
+                // throw new Error('called  user not found')
             }
             if (!user.callStatus == "active") {
-                throw new Error('user is busy on another call')
+                socket.emit('oops', {
+                    event: 'callUser',
+                    data: 'user is busy on another call'
+                });
+                // throw new Error('user is busy on another call')
             }
 
             const history = await new db.history({
@@ -155,7 +167,7 @@ const connect = async (io, logger) => {
         })
 
         socket.on('acceptCall', (data) => {
-            ioChat.to(userSocket[data.Id]).emit('callAccepted', data.signal)
+            ioChat.to(userSocket[data.Id]).emit('acceptCall', data.signal)
         })
 
         socket.on('close', (data) => {
