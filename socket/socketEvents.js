@@ -112,7 +112,7 @@ const connect = async (io, logger) => {
                 });
                 // throw new Error('you cannot call to  yourself')
             }
-            let rtcRes = await serviceU.generateRtcToken(modal, logger)
+            let rtcRes = await serviceU.generateRtcToken(modal, { logger })
 
             const user = await db.user.findById(data.receiverId)
             const caller = await db.user.findById(data.callerId)
