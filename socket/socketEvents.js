@@ -163,11 +163,11 @@ const connect = async (io, logger) => {
 
                 },
             };
-            ioChat.to(userSocket[data.receiverId]).emit('callUser', message)
+            ioChat.to(userSocket[data.receiverId]).emit('receiveCall', message)
         })
 
         socket.on('acceptCall', (data) => {
-            ioChat.to(userSocket[data.Id]).emit('acceptCall', data.signal)
+            ioChat.to(userSocket[data.Id]).emit('acceptCall', data)
         })
 
         socket.on('close', (data) => {
