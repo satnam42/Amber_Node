@@ -5,6 +5,7 @@ var _ = require('lodash');
 var eventEmitter = new events.EventEmitter();
 const service = require('../services/notifications')
 const { deduct } = require('../services/coin')
+const serviceU = require("../services/users");
 
 const connect = async (io, logger) => {
     // const sockets = async (http, logger) => {
@@ -98,7 +99,72 @@ const connect = async (io, logger) => {
 
 
         }); //end of set-room event.
+        socket.on('callUser', async (data) => {
+            let modal = {}
+            modal.channelId = data.channelName
+            modal.isPublisher = false
+            data.receiverId
+            data.callerId
+            if (data.receiverId == data.callerId) {
+                socket.emit('oops', {
+                    event: 'token is not valid',
+                    data: 'token is not valid'
+                });
+                // throw new Error('you cannot call to  yourself')
+            }
+            let rtcRes = await serviceU.generateRtcToken(modal, logger)
 
+            const user = await db.user.findById(data.receiverId)
+            const caller = await db.user.findById(data.callerId)
+
+            if (caller.gender == "male") {
+                const callerCoinHistory = await db.coinBalance.findOne({ user: caller.id })
+
+                if (!callerCoinHistory || callerCoinHistory.activeCoin < 59) {
+                    throw new Error("you dont have enough coin")
+                }
+            }
+            if (!user) {
+                throw new Error('called  user not found')
+            }
+            if (!user.callStatus == "active") {
+                throw new Error('user is busy on another call')
+            }
+
+            const history = await new db.history({
+                toUser: data.receiverId,
+                fromUser: caller.id,
+            }).save();
+
+
+            const message = {
+                data: {  //you can send only notification or only data(or include both)
+                    type: "callReceive",
+                    callType: 'simple',
+                    "channelName": data.channelName.toString(),
+                    "name": data.username,
+                    "imageUrl": data.imageUrl,
+                    historyId: history.id,
+                    // callRate: callRate.rate,
+                    token: rtcRes.token,
+                    userId: rtcRes.userId.toString()
+
+                },
+            };
+            ioChat.to(userSocket[data.receiverId]).emit('callUser', message)
+        })
+
+        socket.on('acceptCall', (data) => {
+            ioChat.to(userSocket[data.Id]).emit('callAccepted', data.signal)
+        })
+
+        socket.on('close', (data) => {
+            ioChat.to(userSocket[data.to]).emit('close')
+        })
+
+        socket.on('rejected', (data) => {
+            ioChat.to(userSocket[data.to]).emit('rejected')
+        })
         //showing msg on typing.
         socket.on('typing', function () {
             socket.to(socket.room).broadcast.emit('typing', " typing...");
