@@ -7,30 +7,32 @@ const redeem = mongoose.Schema({
         ref: "user",
         required: true
     },
-    amount: {
-        type: String,
-        default: "",
-    },
-    senderBatchId: {
-        type: String,
-        default: "",
-    },
+    // amount: {
+    //     type: String,
+    //     default: "",
+    // },
+    // senderBatchId: {
+    //     type: String,
+    //     default: "",
+    // },
     diamond: {
         type: String,
         default: "",
     },
+
     status: {
         type: String,
-        default: "",
+        default: "requested",
+        enum: ["requested", "in-process", "rejected", "completed"],
     },
-    receiptUrl: {
+    receiptNo: {
         type: String,
         default: "",
     },
-    payoutId: {
-        type: String,
-        default: ''
-    }
+    // payoutId: {
+    //     type: String,
+    //     default: ''
+    // }
 
 }, { timestamps: true });
 

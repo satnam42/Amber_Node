@@ -26,8 +26,21 @@ const updateStatus = async (req, res) => {
         return response.payPalfailure(res, err.response.message || err.message, err.httpStatusCode || 400);
     }
 };
+const request = async (req, res) => {
+    const log = req.context.logger.start(`api:redeem:request`);
+    try {
+        const request = await service.request(req.body, req.context);
+        log.end();
+        return response.data(res, request);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
 
 
 exports.create = create;
 exports.updateStatus = updateStatus;
+exports.request = request;
 

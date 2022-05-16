@@ -1,4 +1,5 @@
 const ObjectId = require("mongodb").ObjectId
+const { defaultsDeep } = require("lodash");
 const paypal = require('paypal-rest-sdk');
 
 paypal.configure({
@@ -60,6 +61,7 @@ const handleRedeem = (model) => {
     })
 
 }
+
 const updateStatus = (model) => {
     const log = context.logger.start(`services:redeem:updateStatus${model}`);
 
@@ -67,6 +69,21 @@ const updateStatus = (model) => {
     // if(result){
     // todo handle  response 
     // }
+    log.end()
+    return model
+}
+
+
+const request = (model, context) => {
+    const log = context.logger.start(`services:redeem:request${model}`);
+    const coinBalance = await db.coinBalance.findOne({ user: model.userId })
+    if (coinBalance && coinBalance.activeCoin < 600) {
+        throw new Error("you don't have enough diamond to redeem")
+    }
+    new db.redeem({
+        user: model.userId,
+        diamond: coinBalance.activeCoin,
+    })
     log.end()
     return model
 
@@ -77,3 +94,4 @@ const updateStatus = (model) => {
 
 exports.create = create;
 exports.updateStatus = updateStatus;
+exports.request = request;
