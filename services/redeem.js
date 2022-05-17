@@ -62,36 +62,83 @@ const handleRedeem = (model) => {
 
 }
 
-const updateStatus = (model) => {
-    const log = context.logger.start(`services:redeem:updateStatus${model}`);
-
-    // const result = await handleRedeem(create_payout_json)
-    // if(result){
-    // todo handle  response 
-    // }
+const updateStatus = async (id, model, context) => {
+    if (!context.user.isAdmin) {
+        throw new Error("you are not authorized to perform this action")
+    }
+    if (!model.status) {
+        throw new Error("status is required")
+    }
+    const log = context.logger.start(`services:redeem:updateStatus${id}`);
+    let request = await db.redeem.findById(id)
+    if (!request) {
+        throw new Error('request not found')
+    }
+    request.status = model.status
+    await request.save()
     log.end()
-    return model
+    return request
 }
 
 
 const request = async (model, context) => {
     const log = context.logger.start(`services:redeem:request${model}`);
     const coinBalance = await db.coinBalance.findOne({ user: model.userId })
-    if (coinBalance && coinBalance.activeCoin < 600) {
-        throw new Error("you don't have enough diamond to redeem")
+    if (context.user.accountNo && context.user.ifscCode && context.user.accountNo !== "" && context.user.ifscCoden !== "") {
+        if (coinBalance && coinBalance.activeCoin < 600) {
+            throw new Error("you don't have enough diamond to redeem")
+        }
+        await new db.redeem({
+            user: model.userId,
+            diamond: coinBalance.activeCoin,
+        })
+        log.end()
+        return 'request created successfully'
+    } else {
+        throw new Error("please update your bank detail first")
     }
-    new db.redeem({
-        user: model.userId,
-        diamond: coinBalance.activeCoin,
-    })
+
+}
+
+const checkRequestStatus = async (id, context) => {
+    const log = context.logger.start(`services:redeem:checkRequestStatus${id}`);
+    if (!id) {
+        throw new Error('request id is required')
+    }
+    let request = await db.redeem.findById(id)
+    if (!request) {
+        throw new Error('request not found')
+    }
     log.end()
-    return model
+    return request
+}
 
-
-
+const allRequestList = async (context) => {
+    const log = context.logger.start(`services:redeem:allRequestList`);
+    let requests = await db.redeem.find()
+    // if (!request) {
+    //     throw new Error('request not found')
+    // }
+    log.end()
+    return requests
+}
+const requestListByUserId = async (id, context) => {
+    const log = context.logger.start(`services:redeem:allRequestList`);
+    if (!id) {
+        throw new Error('user id is required')
+    }
+    let requests = await db.redeem.find({ user: id })
+    // if (!request) {
+    //     throw new Error('request not found')
+    // }
+    log.end()
+    return requests
 }
 
 
 exports.create = create;
 exports.updateStatus = updateStatus;
 exports.request = request;
+exports.checkRequestStatus = checkRequestStatus;
+exports.allRequestList = allRequestList;
+exports.requestListByUserId = requestListByUserId;

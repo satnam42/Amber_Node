@@ -40,6 +40,8 @@ const user = mongoose.Schema({
   }],
   bio: { type: String, default: "" },
   website: { type: String, default: "" },
+  ifscCode: { type: String, default: "" },
+  accountNo: { type: String, default: "" },
   isAdmin: { type: String, default: false },
   callStatus: {
     type: String, default: "active",

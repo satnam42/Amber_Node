@@ -724,6 +724,22 @@ const removePicOrVideo = async (id, data, context) => {
     log.end()
     return user
 };
+const addBankDetail = async (id, model, context) => {
+    const log = context.logger.start(`services: users: addBankDetail`);
+    if (model.accountNo == "" && model.ifscCoden == "") {
+        throw new Error("account no and ifsc code is required")
+    }
+    let user = await db.user.findById(id)
+    if (!user) {
+        log.end();
+        throw new Error("invalid user");
+    }
+    user.ifscCode = model.ifscCode;
+    user.accountNo = model.accountNo;
+    await user.save()
+    log.end();
+    return user
+};
 
 
 exports.create = create;
@@ -754,4 +770,5 @@ exports.logout = logout
 exports.usersByFilter = usersByFilter
 exports.remove = remove
 exports.removePicOrVideo = removePicOrVideo
+exports.addBankDetail = addBankDetail
 

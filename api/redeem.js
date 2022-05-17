@@ -39,8 +39,48 @@ const request = async (req, res) => {
     }
 };
 
+const allRequestList = async (req, res) => {
+    const log = req.context.logger.start(`api:redeem:allRequestList`);
+    try {
+        const request = await service.allRequestList(req.context);
+        log.end();
+        return response.data(res, request);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+const checkRequestStatus = async (req, res) => {
+    const log = req.context.logger.start(`api:redeem:request`);
+    try {
+        const request = await service.checkRequestStatus(req.params.id, req.context);
+        log.end();
+        return response.data(res, request);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+const requestListByUserId = async (req, res) => {
+    const log = req.context.logger.start(`api:redeem:request`);
+    try {
+        const request = await service.requestListByUserId(req.params.id, req.context);
+        log.end();
+        return response.data(res, request);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
 
 exports.create = create;
 exports.updateStatus = updateStatus;
 exports.request = request;
+exports.checkRequestStatus = checkRequestStatus;
+exports.allRequestList = allRequestList;
+exports.requestListByUserId = requestListByUserId;
 

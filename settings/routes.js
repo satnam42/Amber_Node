@@ -88,7 +88,11 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.uploadStory
     );
-
+    app.put(
+        "/api/users/addBankDetail/:id",
+        permit.context.validateToken,
+        api.users.addBankDetail
+    );
     // app.put(
     //     "/api/users/removeStory/:id",
     //     permit.context.builder,
@@ -301,8 +305,24 @@ const configure = (app, logger) => {
     );
 
     app.post("/api/redeem/updateStatus",
-        permit.context.builder,
+        permit.context.validateToken,
         api.redeem.updateStatus
+    );
+    app.post("/api/redeem/request",
+        permit.context.builder,
+        api.redeem.request
+    );
+    app.get("/api/redeem/allRequestList",
+        permit.context.validateToken,
+        api.redeem.allRequestList
+    );
+    app.get("/api/redeem/checkRequestStatus/:id",
+        permit.context.validateToken,
+        api.redeem.checkRequestStatus
+    );
+    app.get("/api/redeem/requestListByUserId/:id",
+        permit.context.validateToken,
+        api.redeem.requestListByUserId
     );
 
     app.post("/api/callRates/add",

@@ -772,5 +772,44 @@ module.exports = [{
         }
     }
 },
+{
+    url: "/addBankDetail/{id}",
+    put: {
+        summary: "addBankDetail",
+        description: "addBankDetail",
+        parameters: [{
+            in: "header",
+            name: "x-access-token",
+            description: "token to access api",
+            required: true,
+            type: "string"
+        },
+        {
+            in: "path",
+            type: "string",
+            name: "id",
+            description: "user id",
+            required: true
+        },
+        {
+            in: "body",
+            name: "body",
+            description: "Model of bank Detail",
+            required: true,
+            schema: {
+                $ref: "#/definitions/bankDetail"
+            }
+        }
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
 
 ];
