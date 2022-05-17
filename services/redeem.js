@@ -74,7 +74,7 @@ const updateStatus = (model) => {
 }
 
 
-const request = (model, context) => {
+const request = async (model, context) => {
     const log = context.logger.start(`services:redeem:request${model}`);
     const coinBalance = await db.coinBalance.findOne({ user: model.userId })
     if (coinBalance && coinBalance.activeCoin < 600) {
