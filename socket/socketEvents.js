@@ -100,6 +100,12 @@ const connect = async (io, logger) => {
 
         }); //end of set-room event.
         socket.on('callUser', async (data) => {
+            log.info('callUser', data)
+            // if (!data.to)
+            //     socket.emit('oops', {
+            //         event: 'rejected',
+            //         data: 'user id is required'
+            //     });
             let modal = {}
             modal.channelId = data.channelName
             modal.isPublisher = false
@@ -167,16 +173,35 @@ const connect = async (io, logger) => {
         })
 
         socket.on('acceptCall', (data) => {
+            log.info('acceptCall', data)
+            if (!data.to)
+                socket.emit('oops', {
+                    event: 'acceptCall',
+                    data: 'user id is required'
+                });
             ioChat.to(userSocket[data.Id]).emit('acceptCall', data)
         })
 
         socket.on('close', (data) => {
+            log.info('close', data)
+            if (!data.to)
+                socket.emit('oops', {
+                    event: 'close',
+                    data: 'user id is required'
+                });
             ioChat.to(userSocket[data.to]).emit('close')
         })
 
         socket.on('rejected', (data) => {
+            log.info('rejected', data)
+            if (!data.to)
+                socket.emit('oops', {
+                    event: 'rejected',
+                    data: 'user id is required'
+                });
             ioChat.to(userSocket[data.to]).emit('rejected')
         })
+
         //showing msg on typing.
         socket.on('typing', function () {
             socket.to(socket.room).broadcast.emit('typing', " typing...");
@@ -240,170 +265,170 @@ const connect = async (io, logger) => {
         });
 
 
-        socket.on('set-channel', async function (cannelName) {
-            log.info('join-cannel', { cannelName })
-            socket.leave(socket.room);
-            if (!cannelName || cannelName == "" || cannelName == undefined) {
-                socket.emit('oops',
-                    {
-                        event: 'set-channel',
-                        data: "cannelName is required"
-                    });
-            } else {
-                //leaving room. 
-                // socket.leave(socket.room);
-                socket.room = cannelName;
-                log.info("socket.room", socket.room)
-                socket.join(socket.room);
-                ioChat.to(userSocket[socket.userId]).emit('set-room', socket.room);
-            }
+        // socket.on('set-channel', async function (cannelName) {
+        //     log.info('join-cannel', { cannelName })
+        //     socket.leave(socket.room);
+        //     if (!cannelName || cannelName == "" || cannelName == undefined) {
+        //         socket.emit('oops',
+        //             {
+        //                 event: 'set-channel',
+        //                 data: "cannelName is required"
+        //             });
+        //     } else {
+        //         //leaving room. 
+        //         // socket.leave(socket.room);
+        //         socket.room = cannelName;
+        //         log.info("socket.room", socket.room)
+        //         socket.join(socket.room);
+        //         ioChat.to(userSocket[socket.userId]).emit('set-room', socket.room);
+        //     }
 
-        }); //end of set-cannel event.
+        // }); //end of set-cannel event.
 
-        socket.on('call-end', async function (data) {
-            // let count = 0
-            // let updateHistoryRes
-            log.info('call-end called', { data })
-            // if (data.receiverId == "" || data.receiverId == undefined) {
-            //     count++
-            //     socket.emit('oops',
-            //         {
-            //             event: 'call-end',
-            //             data: "receiverId is required"
-            //         });
-            // }
+        // socket.on('call-end', async function (data) {
+        //     // let count = 0
+        //     // let updateHistoryRes
+        //     log.info('call-end called', { data })
+        //     // if (data.receiverId == "" || data.receiverId == undefined) {
+        //     //     count++
+        //     //     socket.emit('oops',
+        //     //         {
+        //     //             event: 'call-end',
+        //     //             data: "receiverId is required"
+        //     //         });
+        //     // }
 
-            // if (data.callerId == "" || data.callerId == undefined) {
-            //     count++
-            //     socket.emit('oops',
-            //         {
-            //             event: 'call-end',
-            //             data: "callerId is required"
-            //         });
-            // }
-            // if (data.historyId == "" || data.historyId == undefined) {
-            //     count++
-            //     socket.emit('oops',
-            //         {
-            //             event: 'call-end',
-            //             data: "historyId is required"
-            //         });
-            // }
+        //     // if (data.callerId == "" || data.callerId == undefined) {
+        //     //     count++
+        //     //     socket.emit('oops',
+        //     //         {
+        //     //             event: 'call-end',
+        //     //             data: "callerId is required"
+        //     //         });
+        //     // }
+        //     // if (data.historyId == "" || data.historyId == undefined) {
+        //     //     count++
+        //     //     socket.emit('oops',
+        //     //         {
+        //     //             event: 'call-end',
+        //     //             data: "historyId is required"
+        //     //         });
+        //     // }
 
-            // if (data.time == "" || data.time == undefined) {
-            //     count++
-            //     socket.emit('oops',
-            //         {
-            //             event: 'call-end',
-            //             data: "dateTime is required"
-            //         });
-            // }
+        //     // if (data.time == "" || data.time == undefined) {
+        //     //     count++
+        //     //     socket.emit('oops',
+        //     //         {
+        //     //             event: 'call-end',
+        //     //             data: "dateTime is required"
+        //     //         });
+        //     // }
 
-            // if (data.duration == "" || data.duration == undefined) {
-            //     count++
-            //     socket.emit('oops',
-            //         {
-            //             event: 'call-end',
-            //             data: "duration is required"
-            //         });
-            // }
+        //     // if (data.duration == "" || data.duration == undefined) {
+        //     //     count++
+        //     //     socket.emit('oops',
+        //     //         {
+        //     //             event: 'call-end',
+        //     //             data: "duration is required"
+        //     //         });
+        //     // }
 
 
 
-            // if (count === 0) {
-            //     const history = await db.history.findById(data.historyId)
-            //     log.info('history', history)
-            //     if (history) {
-            //         const user = await db.user.findById(history.toUser)
-            //         user.callStatus == "inactive"
-            //         log.info("===call duration===", data.duration)
-            //         await user.save()
-            //         if (data.duration > 0) {
-            //             deduct({ from: history.fromUser, to: history.toUser, callTime: parseInt(data.duration) || 0 }, { logger })
-            //         }
-            //         updateHistoryRes = await updateHistory(history, data, log)
-            //         if (history.fromUser) {
+        //     // if (count === 0) {
+        //     //     const history = await db.history.findById(data.historyId)
+        //     //     log.info('history', history)
+        //     //     if (history) {
+        //     //         const user = await db.user.findById(history.toUser)
+        //     //         user.callStatus == "inactive"
+        //     //         log.info("===call duration===", data.duration)
+        //     //         await user.save()
+        //     //         if (data.duration > 0) {
+        //     //             deduct({ from: history.fromUser, to: history.toUser, callTime: parseInt(data.duration) || 0 }, { logger })
+        //     //         }
+        //     //         updateHistoryRes = await updateHistory(history, data, log)
+        //     //         if (history.fromUser) {
 
-            //             const user = await db.user.findById(history.fromUser)
-            //             user.callStatus == "inactive"
-            //             await user.save()
-            //         }
-            //     } else {
-            //         socket.emit('oops',
-            //             {
-            //                 event: 'call-end',
-            //                 data: "history not found"
-            //             });
+        //     //             const user = await db.user.findById(history.fromUser)
+        //     //             user.callStatus == "inactive"
+        //     //             await user.save()
+        //     //         }
+        //     //     } else {
+        //     //         socket.emit('oops',
+        //     //             {
+        //     //                 event: 'call-end',
+        //     //                 data: "history not found"
+        //     //             });
 
-            //     }
-            //     // socket.leave(socket.room);
-            // }
+        //     //     }
+        //     //     // socket.leave(socket.room);
+        //     // }
 
-            ioChat.to(socket.room).emit('call-end',);
+        //     ioChat.to(socket.room).emit('call-end',);
 
-        });
+        // });
 
-        socket.on('call-start', async function (data) {
-            //     let count = 0
-            //     let history
-            //     log.info('call-start called', { data })
-            //     if (data.receiverId == "" || data.receiverId == undefined) {
-            //         count++
-            //         socket.emit('oops',
-            //             {
-            //                 event: 'call-start',
-            //                 data: "receiverId is required"
-            //             });
-            //     }
+        // socket.on('call-start', async function (data) {
+        //     //     let count = 0
+        //     //     let history
+        //     //     log.info('call-start called', { data })
+        //     //     if (data.receiverId == "" || data.receiverId == undefined) {
+        //     //         count++
+        //     //         socket.emit('oops',
+        //     //             {
+        //     //                 event: 'call-start',
+        //     //                 data: "receiverId is required"
+        //     //             });
+        //     //     }
 
-            //     if (data.callerId == "" || data.callerId == undefined) {
-            //         count++
-            //         socket.emit('oops',
-            //             {
-            //                 event: 'call-start',
-            //                 data: "callerId is required"
-            //             });
-            //     }
-            //     if (count === 0) {
-            //         const user = await db.user.findById(data.receiverId)
-            //         log.info('user ==== receiverId', user.firstName)
-            //         if (user.callStatus == 'active') {
-            //             socket.emit('oops',
-            //                 {
-            //                     event: 'call-start',
-            //                     data: "user is busy"
-            //                 });
-            //         } else {
-            //             user.callStatus == "active"
-            //             await user.save()
-            //             if (data.callerId) {
-            //                 const user = await db.user.findById(data.callerId)
-            //                 log.info('user ==== callerId', user.firstName)
-            //                 user.callStatus == "active"
-            //                 await user.save()
-            //                 try {
-            //                     history = await createHistory(data, log)
-            //                 } catch (error) {
-            //                     socket.emit('oops',
-            //                         {
-            //                             event: 'call-start',
-            //                             data: error.message
-            //                         });
-            //                 }
-            //             }
-            //             // socket.leave(socket.room);
-            //         }
-            //     }
-            ioChat.to(socket.room).emit('call-start',);
+        //     //     if (data.callerId == "" || data.callerId == undefined) {
+        //     //         count++
+        //     //         socket.emit('oops',
+        //     //             {
+        //     //                 event: 'call-start',
+        //     //                 data: "callerId is required"
+        //     //             });
+        //     //     }
+        //     //     if (count === 0) {
+        //     //         const user = await db.user.findById(data.receiverId)
+        //     //         log.info('user ==== receiverId', user.firstName)
+        //     //         if (user.callStatus == 'active') {
+        //     //             socket.emit('oops',
+        //     //                 {
+        //     //                     event: 'call-start',
+        //     //                     data: "user is busy"
+        //     //                 });
+        //     //         } else {
+        //     //             user.callStatus == "active"
+        //     //             await user.save()
+        //     //             if (data.callerId) {
+        //     //                 const user = await db.user.findById(data.callerId)
+        //     //                 log.info('user ==== callerId', user.firstName)
+        //     //                 user.callStatus == "active"
+        //     //                 await user.save()
+        //     //                 try {
+        //     //                     history = await createHistory(data, log)
+        //     //                 } catch (error) {
+        //     //                     socket.emit('oops',
+        //     //                         {
+        //     //                             event: 'call-start',
+        //     //                             data: error.message
+        //     //                         });
+        //     //                 }
+        //     //             }
+        //     //             // socket.leave(socket.room);
+        //     //         }
+        //     //     }
+        //     ioChat.to(socket.room).emit('call-start',);
 
-        })
+        // })
 
-        socket.on('call-decline', async function (data) {
-            log.info("call-decline")
-            log.info("socket.room", socket.room)
-            ioChat.to(socket.room).emit('call-decline', {});
-            socket.leave(socket.room);
-        })
+        // socket.on('call-decline', async function (data) {
+        //     log.info("call-decline")
+        //     log.info("socket.room", socket.room)
+        //     ioChat.to(socket.room).emit('call-decline', {});
+        //     socket.leave(socket.room);
+        // })
 
 
 
