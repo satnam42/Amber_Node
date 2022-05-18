@@ -91,12 +91,17 @@ const request = async (model, context) => {
         if (coinBalance && coinBalance.activeCoin < 600) {
             throw new Error("you don't have enough diamond to redeem")
         }
-        await new db.redeem({
+        const redeem = await new db.redeem({
             user: model.userId,
             diamond: coinBalance.activeCoin,
-        })
-        coinBalance.activeCoin = 0
-        await coinBalance.save()
+        }).save()
+        if (redeem) {
+            coinBalance.activeCoin = 0
+            await coinBalance.save()
+        }
+        else {
+            throw new Error("something went wrong")
+        }
         log.end()
         return 'request created successfully'
     } else {
