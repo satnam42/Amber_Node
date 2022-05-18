@@ -34,11 +34,11 @@ exports.toModel = entity => {
         website: entity.website,
         country: entity.country,
         token: entity.token,
-        isBlocked: entity.isBlocked ? entity.isBlocked : false
+        isBlocked: entity.isBlocked ? entity.isBlocked : false,
+        isBankDetailFilled: entity.accountNo && entity.swiftCode && entity.accountNo !== "" && entity.swiftCode !== "" ? true : false
     };
-    // if (entity.isBlocked == true || entity.isBlocked == false) {
-    //     model.isBlocked = entity.isBlocked
-    // }
+
+
 
     if (entity.images && entity.images.length > 0) {
         for (let index = 0; index < entity.images.length; index++) {

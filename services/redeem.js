@@ -84,7 +84,10 @@ const updateStatus = async (id, model, context) => {
 const request = async (model, context) => {
     const log = context.logger.start(`services:redeem:request${model}`);
     const coinBalance = await db.coinBalance.findOne({ user: model.userId })
-    if (context.user.accountNo && context.user.ifscCode && context.user.accountNo !== "" && context.user.ifscCoden !== "") {
+    if (context.user.gender == 'male') {
+        throw new Error("something went wrong")
+    }
+    if (context.user.accountNo && context.user.swiftCode && context.user.accountNo !== "" && context.user.swiftCode !== "") {
         if (coinBalance && coinBalance.activeCoin < 600) {
             throw new Error("you don't have enough diamond to redeem")
         }
@@ -92,6 +95,8 @@ const request = async (model, context) => {
             user: model.userId,
             diamond: coinBalance.activeCoin,
         })
+        coinBalance.activeCoin = 0
+        await coinBalance.save()
         log.end()
         return 'request created successfully'
     } else {

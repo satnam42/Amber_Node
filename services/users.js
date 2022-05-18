@@ -731,10 +731,11 @@ const addBankDetail = async (id, model, context) => {
     }
     let user = await db.user.findById(id)
     if (!user) {
+
         log.end();
         throw new Error("invalid user");
     }
-    user.ifscCode = model.ifscCode;
+    user.swiftCode = model.swiftCode;
     user.accountNo = model.accountNo;
     await user.save()
     log.end();

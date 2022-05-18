@@ -2,7 +2,7 @@ module.exports = [
     {
         name: "bankDetail",
         properties: {
-            ifscCode: {
+            swiftCode: {
                 type: "string"
             },
             accountNo: {
