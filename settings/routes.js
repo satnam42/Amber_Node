@@ -309,7 +309,7 @@ const configure = (app, logger) => {
         api.redeem.updateStatus
     );
     app.post("/api/redeem/request",
-        permit.context.builder,
+        permit.context.validateToken,
         api.redeem.request
     );
     app.get("/api/redeem/allRequestList",

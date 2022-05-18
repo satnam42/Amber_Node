@@ -726,7 +726,7 @@ const removePicOrVideo = async (id, data, context) => {
 };
 const addBankDetail = async (id, model, context) => {
     const log = context.logger.start(`services: users: addBankDetail`);
-    if (model.accountNo == "" && model.ifscCoden == "") {
+    if (model.accountNo == "" && model.swiftCode == "") {
         throw new Error("account no and ifsc code is required")
     }
     let user = await db.user.findById(id)
