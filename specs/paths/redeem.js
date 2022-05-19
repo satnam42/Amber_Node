@@ -52,7 +52,9 @@ module.exports = [
                     schema: {
                         $ref: "#/definitions/request"
                     }
-                }],
+                }
+
+            ],
             responses: {
                 default: {
                     description: "Unexpected error",
@@ -104,7 +106,7 @@ module.exports = [
     },
     {
         url: "/checkRequestStatus/{id}",
-        put: {
+        get: {
             summary: "checkRequestStatus",
             description: "checkRequestStatus",
             parameters: [
@@ -136,7 +138,7 @@ module.exports = [
     },
     {
         url: "/requestListByUserId/{id}",
-        put: {
+        get: {
             summary: "requestListByUserId",
             description: "requestListByUserId",
             parameters: [
@@ -147,6 +149,47 @@ module.exports = [
                     description: "token to access api",
                     required: true,
                     type: "string"
+                },
+                {
+                    in: "path",
+                    type: "string",
+                    name: "id",
+                    description: "user id",
+                    required: true
+                }
+            ],
+            responses: {
+                default: {
+                    description: "Unexpected error",
+                    schema: {
+                        $ref: "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
+    {
+        url: "/updateStatus/{id}",
+        put: {
+            summary: "updateStatus",
+            description: "updateStatus",
+            parameters: [
+
+                {
+                    in: "header",
+                    name: "x-access-token",
+                    description: "token to access api",
+                    required: true,
+                    type: "string"
+                },
+                {
+                    in: "body",
+                    name: "body",
+                    description: "model of  redeemUpdate",
+                    required: true,
+                    schema: {
+                        $ref: "#/definitions/redeemUpdate"
+                    }
                 },
                 {
                     in: "path",

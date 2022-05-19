@@ -63,13 +63,14 @@ const handleRedeem = (model) => {
 }
 
 const updateStatus = async (id, model, context) => {
+    const log = context.logger.start(`services:redeem:updateStatus${id}`);
+
     if (!context.user.isAdmin) {
         throw new Error("you are not authorized to perform this action")
     }
     if (!model.status) {
         throw new Error("status is required")
     }
-    const log = context.logger.start(`services:redeem:updateStatus${id}`);
     let request = await db.redeem.findById(id)
     if (!request) {
         throw new Error('request not found')

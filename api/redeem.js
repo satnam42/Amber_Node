@@ -17,13 +17,13 @@ const create = async (req, res) => {
 const updateStatus = async (req, res) => {
     const log = req.context.logger.start(`api:redeem:updateStatus`);
     try {
-        const user = await service.create(req.body, req.context);
+        const user = await service.updateStatus(req.params.id, req.context);
         log.end();
         return response.data(res, user);
     } catch (err) {
         log.error(err);
         log.end();
-        return response.payPalfailure(res, err.response.message || err.message, err.httpStatusCode || 400);
+        return response.failure(res, err.message);
     }
 };
 const request = async (req, res) => {

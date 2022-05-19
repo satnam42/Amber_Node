@@ -304,7 +304,7 @@ const configure = (app, logger) => {
         api.redeem.create
     );
 
-    app.post("/api/redeem/updateStatus",
+    app.put("/api/redeem/updateStatus/:id",
         permit.context.validateToken,
         api.redeem.updateStatus
     );
