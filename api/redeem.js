@@ -17,7 +17,7 @@ const create = async (req, res) => {
 const updateStatus = async (req, res) => {
     const log = req.context.logger.start(`api:redeem:updateStatus`);
     try {
-        const user = await service.updateStatus(req.params.id, req.context);
+        const user = await service.updateStatus(req.params.id, req.body, req.context);
         log.end();
         return response.data(res, user);
     } catch (err) {
