@@ -6,7 +6,7 @@ var eventEmitter = new events.EventEmitter();
 const service = require('../services/notifications')
 const { deduct } = require('../services/coin')
 const serviceU = require("../services/users");
-
+const imageUrl = require('config').get('image').url
 const connect = async (io, logger) => {
     // const sockets = async (http, logger) => {
     const log = logger.start(`sockets:socketEvents:connect`);
@@ -245,10 +245,25 @@ const connect = async (io, logger) => {
                 }
 
                 let msgDate = moment.utc(data.date).format()
+                // let gift = await db.gift.findById(data.gift)
+                // let giftUrl = ""
+                // if (gift && gift.icon) {
+                //     giftUrl = `${imageUrl}${gift.icon}`
+                // }
+                let giftObj = {}
+                if (data.gift && data.gift.title) {
+                    giftObj = {
+                        title: data.gift.title,
+                        icon: data.gift.icon ? `${imageUrl}${entity.gift.icon}` : "",
+                        coin: data.gift.coin,
+                        id: data.gift._id
+                    }
+                }
+
                 ioChat.to(socket.room).emit('chat-msg', {
                     msgFrom: socket.userId,
                     msg: data.msg,
-                    gift: data.gift,
+                    gift: giftObj,
                     date: msgDate
                 });
             } catch (e) {

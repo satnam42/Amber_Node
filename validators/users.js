@@ -23,6 +23,10 @@ const create = (req, res, next) => {
         log.end();
         return response.failure(res, "username is required");
     }
+    if (!req.body.firstName) {
+        log.end();
+        return response.failure(res, "firstName is required");
+    }
     if (!req.body.deviceToken) {
         log.end();
         return response.failure(res, "deviceToken is required");
