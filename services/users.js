@@ -6,7 +6,11 @@ const { RtcTokenBuilder, RtcRole } = require('agora-access-token');
 const { appID, appCertificate } = require('config').get('agora')
 const ObjectId = require("mongodb").ObjectId
 const utility = require("../utility/index")
-
+const ffmpeg = require('fluent-ffmpeg');
+const ffprobePath = require('@ffprobe-installer/ffprobe').path;
+ffmpeg.setFfprobePath(ffprobePath);
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+ffmpeg.setFfmpegPath(ffmpegPath);
 const buildUser = async (model, context) => {
     const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob, platform, socialLoginId, deviceToken } = model;
     const log = context.logger.start(`services:users:buildUser${model}`);
@@ -334,16 +338,26 @@ const uploadProfilePic = async (id, files, context) => {
 
 const uploadStory = async (id, files, context) => {
     const log = context.logger.start(`services:users:uploadStory`);
-    let fileName = files[0].filename.replace(/ /g, '')
+    let fileNameWithExt = files[0].filename.replace(/ /g, '')
     let file = files[0]
+    let strIndex = fileNameWithExt.indexOf(".")
+
+    let fileNameWithoutExt = fileNameWithExt.slice(0, strIndex)
+    let thumbName = ''
     if (!id) {
         throw new Error("user id is required");
+    }
+
+    let thumbRes = await makeThumb(file.path, fileNameWithoutExt, file.destination)
+    if (thumbRes.status == 'success') {
+        thumbName = thumbRes.msg
     }
     let user = await db.user.findById(id)
     if (!user) {
         log.end();
         throw new Error("user not found");
     }
+    console.log('thumbRes', thumbRes)
     if (file == undefined || file.size == undefined || file.size <= 0) throw new Error("video  is required");
     // if (user.avatar != "") {
     //     const path = file.destination + '/' + user.avatar
@@ -355,7 +369,10 @@ const uploadStory = async (id, files, context) => {
     //     }
     // }
     // user.avatar = fileName
-    user.videos.push({ name: fileName })
+    user.videos.push({
+        name: fileNameWithExt,
+        thumbnail: thumbName
+    })
     user.story = fileName
     await user.save()
     log.end();
@@ -742,6 +759,41 @@ const addBankDetail = async (id, model, context) => {
     return user
 };
 
+const makeThumb = (path, name, destination) => {
+    return new Promise((resolve, reject) => {
+        ffmpeg(path)
+            .on('end', (data) => {
+
+                console.log('screenshots were saved');
+
+            })
+            .on('error', (err) => {
+                console.log('an error happened: ' + err.message);
+                return reject({
+                    status: 'err',
+                    msg: err.message
+                })
+            })
+            .takeScreenshots({ count: 1, filename: `thumb${name}.png`, timemarks: ['00:00:01.000'], size: '250x250' }, destination)
+            .on('end', () => {
+                console.log('FFmpeg done!')
+                return resolve({
+                    status: 'success',
+                    msg: `thumb${name}.png`
+                })
+            })
+            .on('error', (err) => {
+                console.log('an error happened: ' + err.message);
+                return reject({
+                    status: 'err',
+                    msg: err.message
+                })
+            })
+
+
+    })
+
+}
 
 exports.create = create;
 exports.resetPassword = resetPassword;
