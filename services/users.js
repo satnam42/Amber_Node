@@ -373,7 +373,7 @@ const uploadStory = async (id, files, context) => {
         name: fileNameWithExt,
         thumbnail: thumbName
     })
-    user.story = fileName
+    user.story = fileNameWithExt
     await user.save()
     log.end();
     return 'video uploaded successfully'
