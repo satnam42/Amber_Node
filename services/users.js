@@ -371,7 +371,7 @@ const uploadStory = async (id, files, context) => {
     // user.avatar = fileName
     user.videos.push({
         name: fileNameWithExt,
-        thumbnail: thumbName
+        thumbnail: thumbName ? thumbName : ""
     })
     user.story = fileNameWithExt
     await user.save()
@@ -756,7 +756,7 @@ const makeThumb = (path, name, destination) => {
                     data: err.message
                 })
             })
-            .takeScreenshots({ count: 1, filename: `thumb${name}.png`, timemarks: ['00:00:01.000'], size: '250x250' }, destination)
+            .takeScreenshots({ count: 1, filename: `thumb${name}.png`, timemarks: ['00:00:01.000'], size: '350x350' }, destination)
             .on('end', () => {
                 console.log('FFmpeg done!')
                 return resolve({

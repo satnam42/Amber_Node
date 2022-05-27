@@ -2,7 +2,7 @@
 var events = require('events');
 var moment = require('moment');
 var _ = require('lodash');
-const io = require('./socketio');
+const io = require('../app');
 var eventEmitter = new events.EventEmitter();
 const logger = require("@open-age/logger")("server");
 const service = require('../services/notifications')

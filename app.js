@@ -7,6 +7,7 @@ const auth = require("./permit/auth");
 // const Http = require("http");
 const fs = require('fs');
 const Https = require("https");
+const socketIo = require("socket.io");
 const port = process.env.PORT || appConfig.port || 3000;
 const app = express();
 const admin = require("firebase-admin");
@@ -45,7 +46,7 @@ const boot = async () => {
     log.end();
   });
 
-  const io = await require("socket.io")(server, {
+  module.export = socketIo(server, {
     allowEIO3: true,
     cors: {
       origin: true,
@@ -54,11 +55,11 @@ const boot = async () => {
     }
   });
 
-  module.export = io
+  // module.export = io
 
 
 
-  await require("./socket/socketEvents").connect(io, logger);
+  // await require("./socket/socketEvents").connect(io, logger);
 
 };
 
