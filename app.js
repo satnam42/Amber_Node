@@ -17,7 +17,7 @@ app.use(express.json())
 
 // var https = require('https');
 // var http = require('http');
-var server = Http.createServer(app);
+// var server = Http.createServer(app);
 const options = {
   cert: fs.readFileSync('/etc/letsencrypt/live/amberclubpro.com/fullchain.pem'),
   key: fs.readFileSync('/etc/letsencrypt/live/amberclubpro.com/privkey.pem')
