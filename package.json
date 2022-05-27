@@ -6,13 +6,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint *--fix",
-    "start": "node app.js"
+    "start": "node --experimental-wasm-threads --experimental-wasm-bulk-memory app.js"
   },
   "keywords": [
     "api"
   ],
   "author": "satnam singh",
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffprobe-installer/ffprobe": "^1.4.1",
     "@open-age/logger": "~1.1.0",
     "agora-access-token": "^2.0.4",
     "app-root-path": "^2.1.0",
@@ -23,12 +25,12 @@
     "eslint-config-standard": "^11.0.0",
     "express": "^4.17.1",
     "firebase-admin": "^10.0.2",
+    "fluent-ffmpeg": "^2.1.2",
     "googleapis": "^92.0.0",
     "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.21",
     "moment": "^2.22.2",
     "mongoose": "^5.2.8",
-    "mongoose-auto-increment": "^5.0.1",
     "multer": "^1.4.2",
     "nodemailer": "^6.4.11",
     "param-case": "^3.0.4",

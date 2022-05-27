@@ -6,6 +6,7 @@ const specs = require("../specs");
 const permit = require("../permit")
 const validator = require("../validators");
 const express = require('express');
+const upload = require("./upload");
 const configure = (app, logger) => {
     const log = logger.start("settings:routes:configure");
     app.get("/specs", function (req, res) {
@@ -72,7 +73,7 @@ const configure = (app, logger) => {
     );
 
     app.put(
-        "/api/users/profileImageUpload/:id",
+        "/api/users/profileImageUpload/:id", upload.array("image"),
         permit.context.builder,
         api.users.uploadProfileImage
     );
@@ -84,7 +85,7 @@ const configure = (app, logger) => {
     );
 
     app.put(
-        "/api/users/uploadStory/:id",
+        "/api/users/uploadStory/:id", upload.array("video"),
         permit.context.validateToken,
         api.users.uploadStory
     );

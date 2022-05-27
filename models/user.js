@@ -36,6 +36,7 @@ const user = mongoose.Schema({
   story: { type: String, default: "" },
   videos: [{
     name: { type: String, default: "" },
+    thumbnail: { type: String, default: "" },
     createdAt: { type: Date, default: Date.now() }
   }],
   bio: { type: String, default: "" },

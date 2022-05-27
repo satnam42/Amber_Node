@@ -350,7 +350,7 @@ const uploadStory = async (id, files, context) => {
 
     let thumbRes = await makeThumb(file.path, fileNameWithoutExt, file.destination)
     if (thumbRes.status == 'success') {
-        thumbName = thumbRes.msg
+        thumbName = thumbRes.data
     }
     let user = await db.user.findById(id)
     if (!user) {
@@ -525,22 +525,6 @@ const getUsers = async (query, context) => {
     log.end()
     return users
 };
-// const myStatistics = async (id, context) => {
-//     const log = context.logger.start(`services:users:myStatistics`);
-//     if (!id) {
-//         throw new Error('user id is required')
-//     }
-
-//     const users = await db.user.aggregate([
-//         { $match: { gender: query.gender } },
-//         { $sample: { size: pageSize } },
-//         { $limit: pageSize },
-//         { $skip: skipCount }
-//     ])
-
-//     users.count = await db.user.find().count();
-//     return users
-// };
 
 const removeProfilePic = async (id, context) => {
     const log = context.logger.start(`services:users:removeProfilePic`);
@@ -763,15 +747,13 @@ const makeThumb = (path, name, destination) => {
     return new Promise((resolve, reject) => {
         ffmpeg(path)
             .on('end', (data) => {
-
                 console.log('screenshots were saved');
-
             })
             .on('error', (err) => {
                 console.log('an error happened: ' + err.message);
                 return reject({
                     status: 'err',
-                    msg: err.message
+                    data: err.message
                 })
             })
             .takeScreenshots({ count: 1, filename: `thumb${name}.png`, timemarks: ['00:00:01.000'], size: '250x250' }, destination)
@@ -779,14 +761,14 @@ const makeThumb = (path, name, destination) => {
                 console.log('FFmpeg done!')
                 return resolve({
                     status: 'success',
-                    msg: `thumb${name}.png`
+                    data: `thumb${name}.png`
                 })
             })
             .on('error', (err) => {
                 console.log('an error happened: ' + err.message);
                 return reject({
                     status: 'err',
-                    msg: err.message
+                    data: err.message
                 })
             })
 

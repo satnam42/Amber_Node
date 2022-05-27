@@ -10,18 +10,26 @@ const Https = require("https");
 const port = process.env.PORT || appConfig.port || 3000;
 const app = express();
 const admin = require("firebase-admin");
-// var server = Http.createServer(app);
+
 var serviceAccount = require("./amber-firebase-adminsdk.json");
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
+// var https = require('https');
+// var http = require('http');
+// var server = Http.createServer(app);
 const options = {
   cert: fs.readFileSync('/etc/letsencrypt/live/amberclubpro.com/fullchain.pem'),
   key: fs.readFileSync('/etc/letsencrypt/live/amberclubpro.com/privkey.pem')
 };
+// http.createServer(app).listen(80);
+// https.createServer(options, app).listen(443);
 var server = Https.createServer(options, app);
 // var server = Http.createServer(app);
-
+// app.listen = function () {
+//   var server = http.createServer(this);
+//   return server.listen.apply(server, arguments);
+// };
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -46,30 +54,9 @@ const boot = async () => {
     }
   });
 
-  io.use(async (socket, next) => {
-    try {
-      const token = socket.handshake.query.token;
-      const details = auth.extractToken(token, { logger });
-      if (details.name === "TokenExpiredError") {
-        next(new Error('token expired'));
-        // throw new Error("token expired");
-      }
-      if (details.name === "JsonWebTokenError") {
-        next(new Error('token is invalid'));
-        // throw new Error("token is invalid");
-      }
-      const user = await db.user.findById(details._id)
-      socket.userId = user.id;
+  module.export = io
 
-      next();
-    } catch (err) {
-      next(new Error(err.message));
-      // log.error(err)
-      // log.end()
-      // throw new Error(err.message)
-    }
 
-  });
 
   await require("./socket/socketEvents").connect(io, logger);
 
