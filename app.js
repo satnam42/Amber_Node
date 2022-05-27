@@ -7,7 +7,6 @@ const auth = require("./permit/auth");
 // const Http = require("http");
 const fs = require('fs');
 const Https = require("https");
-const socketIo = require("socket.io");
 const port = process.env.PORT || appConfig.port || 3000;
 const app = express();
 const admin = require("firebase-admin");
@@ -18,7 +17,7 @@ app.use(express.json())
 
 // var https = require('https');
 // var http = require('http');
-// var server = Http.createServer(app);
+var server = Http.createServer(app);
 const options = {
   cert: fs.readFileSync('/etc/letsencrypt/live/amberclubpro.com/fullchain.pem'),
   key: fs.readFileSync('/etc/letsencrypt/live/amberclubpro.com/privkey.pem')
@@ -46,7 +45,7 @@ const boot = async () => {
     log.end();
   });
 
-  module.export = socketIo(server, {
+  const io = await require("socket.io")(server, {
     allowEIO3: true,
     cors: {
       origin: true,
@@ -55,11 +54,33 @@ const boot = async () => {
     }
   });
 
-  // module.export = io
+  io.use(async (socket, next) => {
 
+    try {
+      const token = socket.handshake.query.token;
+      const details = auth.extractToken(token, { logger });
+      if (details.name === "TokenExpiredError") {
+        next(new Error('token expired'));
+        // throw new Error("token expired");
+      }
+      if (details.name === "JsonWebTokenError") {
+        next(new Error('token is invalid'));
+        // throw new Error("token is invalid");
+      }
+      const user = await db.user.findById(details._id)
+      socket.userId = user.id;
 
+      next();
+    } catch (err) {
+      next(new Error(err.message));
+      // log.error(err)
+      // log.end()
+      // throw new Error(err.message)
+    }
 
-  // await require("./socket/socketEvents").connect(io, logger);
+  });
+
+  await require("./socket/socketEvents").connect(io, logger);
 
 };
 
