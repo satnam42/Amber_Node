@@ -7,6 +7,7 @@ const { appID, appCertificate } = require('config').get('agora')
 const ObjectId = require("mongodb").ObjectId
 const utility = require("../utility/index")
 const ffmpeg = require('fluent-ffmpeg');
+const nodemailer = require('nodemailer')
 const ffprobePath = require('@ffprobe-installer/ffprobe').path;
 ffmpeg.setFfprobePath(ffprobePath);
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
@@ -777,6 +778,100 @@ const makeThumb = (path, name, destination) => {
 
 }
 
+
+// forgetPassword
+const forgotPassword = async (model, context) => {
+    const log = context.logger.start('services:users:forgotPassword')
+    const user = await db.user.findOne({ email: { $eq: model.email } });
+    if (!user) {
+        throw new Error("The email address " + model.email + " is not associated with any account. Please check your email address and try again.");
+    }
+    const data = await buildOtp(user, context)
+    if (!data) {
+        throw new Error('something went wrong')
+    }
+    log.end()
+
+    return data
+}
+const buildOtp = async (user, context) => {
+    const log = context.logger.start('services:users:buildOtp')
+    // four digit otp genration logic
+    var digits = '0123456789';
+    let OTP = '';
+    for (let i = 0; i < 4; i++) {
+        OTP += digits[Math.floor(Math.random() * 10)];
+    }
+    let message = `hi ${user.firstName || user.username} Your 4 digit One Time Password: <br>${OTP}<br></br>
+              otp valid only 4 minutes`
+    let = subject = "One Time Password"
+    const isEmailSent = await sendMail(user.email, message, subject)
+    if (!isEmailSent) {
+        throw new Error('something went wrong')
+    }
+    const otpToken = auth.getOtpToken(OTP, user.id, true, context)
+    log.end()
+    let data = {
+        token: otpToken
+    }
+    log.end()
+    return data
+}
+const sendMail = async (email, message, subject) => {
+    var smtpTrans = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: `amber.app.xd@gmail.com`,
+            pass: `Admin@123`
+        }
+    });
+    // email send to registered email
+    var mailOptions = {
+        from: 'Amber',
+        to: email,
+        subject: subject,
+        html: message
+    };
+    let mailSent = await smtpTrans.sendMail(mailOptions)
+    if (mailSent) {
+        console.log("Message sent: %s", mailSent.messageId);
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(mailSent));
+        return true
+    } else {
+        throw new Error("Unable to send email try after sometime");
+    }
+}
+
+
+const changePassword = async (model, token, context) => {
+    const log = context.logger.start('services:users:changePassword')
+    const otpDetail = await auth.extractToken(token, context)
+    if (otpDetail.otp.name === "TokenExpiredError") {
+        throw new Error("session expired please try again");
+    }
+    if (otpDetail.otp.name === "TokenExpiredError") {
+        throw new Error("session expired please try again");
+    }
+    if (otpDetail.otp == undefined || otpDetail.otp.name === "JsonWebTokenError") {
+        throw new Error("token is invalid");
+    }
+    if (otpDetail.otp !== undefined && otpDetail.otp != model.otp) {
+        throw new Error("please enter valid otp");;
+    }
+    let user = context.user
+    user = await db.user.findById(user.id);
+    if (!user) {
+        throw new Error("user not found");
+    }
+    const newPassword = encrypt.getHash(model.newPassword, context);
+    user.password = newPassword;
+    user.updatedOn = new Date();
+    await user.save();
+    log.end()
+    return "password updated successfully"
+}
+
+
 exports.create = create;
 exports.resetPassword = resetPassword;
 exports.update = update;
@@ -787,6 +882,8 @@ exports.search = search;
 exports.random = random;
 exports.getUsers = getUsers;
 exports.getCountries = getCountries;
+exports.forgotPassword = forgotPassword;
+exports.changePassword = changePassword;
 
 // ============follow==============
 

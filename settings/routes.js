@@ -156,6 +156,18 @@ const configure = (app, logger) => {
         api.users.usersByFilter
     );
 
+
+    app.post(
+        "/api/users/forgotPassword",
+        permit.context.builder,
+        api.users.forgotPassword
+    );
+    app.post(
+        "/api/users/changePassword",
+        permit.context.validateToken,
+        api.users.changePassword
+    );
+
     app.post("/api/blocks/block",
         permit.context.validateToken,
         validator.blocks.block,

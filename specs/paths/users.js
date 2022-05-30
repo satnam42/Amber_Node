@@ -811,5 +811,61 @@ module.exports = [{
         }
     }
 },
+{
+    url: "/forgotPassword",
+    post: {
+        summary: "forgotPassword",
+        description: "forgotPassword",
+        parameters: [{
+            in: "body",
+            name: "body",
+            description: "Model of forgotPassword",
+            required: true,
+            schema: {
+                $ref: "#/definitions/forgotPassword"
+            }
+        }],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
 
+{
+    url: "/changePassword",
+    post: {
+        summary: "change Password",
+        description: "change Password",
+        parameters: [{
+            in: "header",
+            name: "x-access-token",
+            description: "token to access api",
+            required: true,
+            type: "string"
+        },
+        {
+            in: "body",
+            name: "body",
+            description: "Model of change Password",
+            required: true,
+            schema: {
+                $ref: "#/definitions/changePassword"
+            }
+        }
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
 ];

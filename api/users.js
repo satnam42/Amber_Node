@@ -335,6 +335,39 @@ const addBankDetail = async (req, res) => {
     }
 };
 
+
+const changePassword = async (req, res) => {
+    const log = req.context.logger.start("api:users:changePassword");
+    try {
+        const msg = await service.changePassword(req.body, req.headers["x-access-token"], req.context);
+        log.end();
+        return response.success(res, msg, "");
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
+
+//forgotPassword api
+const forgotPassword = async (req, res) => {
+    const log = req.context.logger.start("api:users:forgotPassword");
+    try {
+        const data = await service.forgotPassword(req.body, req.context);
+        const message = "OTP successfully sent on register email";
+        log.end();
+        return response.success(res, message, data);
+
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+
+};
+
+
 exports.create = create;
 exports.login = login;
 exports.resetPassword = resetPassword;
@@ -358,4 +391,7 @@ exports.usersByFilter = usersByFilter;
 exports.remove = remove;
 exports.removePicOrVideo = removePicOrVideo;
 exports.addBankDetail = addBankDetail;
+// exports.sendMail = sendMail;
+exports.forgotPassword = forgotPassword;
+exports.changePassword = changePassword;
 
