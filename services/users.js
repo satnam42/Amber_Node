@@ -754,6 +754,7 @@ const removePicOrVideo = async (id, data, context) => {
     log.end()
     return user
 };
+
 const addBankDetail = async (id, model, context) => {
     const log = context.logger.start(`services: users: addBankDetail`);
     if (model.accountNo == "" && model.swiftCode == "") {
@@ -805,7 +806,6 @@ const makeThumb = (path, name, destination) => {
     })
 
 }
-
 
 // forgetPassword
 const forgotPassword = async (model, context) => {
@@ -867,7 +867,7 @@ const sendMail = async (email, message, subject) => {
         service: 'Gmail',
         auth: {
             user: `amber.app.xd@gmail.com`,
-            pass: `Admin@123`
+            pass: `amber#app@321`
         }
     });
     // email send to registered email
