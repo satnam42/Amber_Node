@@ -111,6 +111,10 @@ const configure = (app, logger) => {
         validator.users.unfollow,
         api.users.unfollow
     );
+    app.post("/api/users/removeFollower",
+        permit.context.validateToken,
+        api.users.removeFollower
+    );
 
     app.get("/api/users/following/:id",
         permit.context.validateToken,
@@ -162,6 +166,12 @@ const configure = (app, logger) => {
         permit.context.builder,
         api.users.forgotPassword
     );
+    app.post(
+        "/api/users/otpVerify",
+        permit.context.validateToken,
+        api.users.otpVerify
+    );
+
     app.post(
         "/api/users/changePassword",
         permit.context.validateToken,

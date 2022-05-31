@@ -835,6 +835,38 @@ module.exports = [{
         }
     }
 },
+{
+    url: "/otpVerify",
+    post: {
+        summary: "otpVerify",
+        description: "otpVerify",
+        parameters: [{
+            in: "header",
+            name: "x-access-token",
+            description: "token to access api",
+            required: true,
+            type: "string"
+        },
+        {
+            in: "body",
+            name: "body",
+            description: "Model of otp Verify",
+            required: true,
+            schema: {
+                $ref: "#/definitions/otp"
+            }
+        }
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
 
 {
     url: "/changePassword",
@@ -858,6 +890,38 @@ module.exports = [{
             }
         }
         ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
+{
+    url: "/removeFollower",
+    post: {
+        summary: "removeFollower",
+        description: "removeFollower ",
+        parameters: [
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "body",
+                name: "body",
+                description: "remove Follower  model",
+                required: true,
+                schema: {
+                    $ref: "#/definitions/removeFollower"
+                }
+            }],
         responses: {
             default: {
                 description: "Unexpected error",

@@ -458,6 +458,34 @@ const unfollow = async (model, context) => {
     log.end()
     return "unfollow successfully"
 };
+const removeFollower = async (model, context) => {
+    const log = context.logger.start("services:users:unFollow");
+    // ===========unfollower logic end ===============
+    // remove the id of the user you want to unfollow from following array
+    if (model.followerUserId == model.userId) {
+        log.end();
+        throw new Error("user and follower not be same")
+    }
+
+    const query = {
+
+        _id: model.userId,
+        following: { $elemMatch: { userId: model.followerUserId } }
+
+    }
+
+    const update = {
+
+        $pull: { followers: { userId: model.followerUserId } }
+
+    }
+
+    const updated = await db.user.updateOne(query, update)
+
+
+    log.end()
+    return "user removed successfully"
+};
 const following = async (id, context) => {
 
     const log = context.logger.start(`services:users:following`);
@@ -752,7 +780,7 @@ const makeThumb = (path, name, destination) => {
             })
             .on('error', (err) => {
                 console.log('an error happened: ' + err.message);
-                return reject({
+                return resolve({
                     status: 'err',
                     data: err.message
                 })
@@ -767,7 +795,7 @@ const makeThumb = (path, name, destination) => {
             })
             .on('error', (err) => {
                 console.log('an error happened: ' + err.message);
-                return reject({
+                return resolve({
                     status: 'err',
                     data: err.message
                 })
@@ -817,6 +845,23 @@ const buildOtp = async (user, context) => {
     log.end()
     return data
 }
+
+const otpVerify = async (model, token, context) => {
+    const log = context.logger.start('services:users:otpVerify')
+    const otpDetail = await auth.extractToken(token, context)
+    if (otpDetail.otp.name === "TokenExpiredError") {
+        throw new Error("otp expired");
+    }
+    if (otpDetail.otp.name === "JsonWebTokenError") {
+        throw new Error("otp is invalid");
+    }
+    if (otpDetail.otp !== undefined && otpDetail.otp != model.otp) {
+        throw new Error("please enter valid otp");;
+    }
+    log.end()
+    return "otp verify successfully"
+}
+
 const sendMail = async (email, message, subject) => {
     var smtpTrans = nodemailer.createTransport({
         service: 'Gmail',
@@ -855,9 +900,7 @@ const changePassword = async (model, token, context) => {
     if (otpDetail.otp == undefined || otpDetail.otp.name === "JsonWebTokenError") {
         throw new Error("token is invalid");
     }
-    if (otpDetail.otp !== undefined && otpDetail.otp != model.otp) {
-        throw new Error("please enter valid otp");;
-    }
+
     let user = context.user
     user = await db.user.findById(user.id);
     if (!user) {
@@ -884,6 +927,8 @@ exports.getUsers = getUsers;
 exports.getCountries = getCountries;
 exports.forgotPassword = forgotPassword;
 exports.changePassword = changePassword;
+exports.otpVerify = otpVerify;
+exports.removeFollower = removeFollower;
 
 // ============follow==============
 

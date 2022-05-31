@@ -6,7 +6,9 @@ const block = mongoose.Schema({
         ref: "user",
         required: false,
     },
-
+    type: {
+        type: String, default: "",
+    },
     toUser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",

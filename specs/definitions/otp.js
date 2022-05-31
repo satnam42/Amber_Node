@@ -1,8 +1,10 @@
+
+
 module.exports = [
     {
-        name: "changePassword",
+        name: "otp",
         properties: {
-            newPassword: {
+            otp: {
                 type: "string"
             },
 

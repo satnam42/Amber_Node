@@ -80,7 +80,6 @@ const update = async (req, res) => {
     }
 };
 
-
 const uploadProfileImage = async (req, res) => {
     const log = req.context.logger.start(`api:users:uploadProfileImage`);
     try {
@@ -141,6 +140,19 @@ const unfollow = async (req, res) => {
     const log = req.context.logger.start(`api:users:unfollow`);
     try {
         const resMsg = await service.unfollow(req.body, req.context);
+        log.end();
+        return response.success(res, resMsg, '');
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
+const removeFollower = async (req, res) => {
+    const log = req.context.logger.start(`api:users:removeFollower`);
+    try {
+        const resMsg = await service.removeFollower(req.body, req.context);
         log.end();
         return response.success(res, resMsg, '');
     } catch (err) {
@@ -239,6 +251,7 @@ const removeProfilePic = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const removePicOrVideo = async (req, res) => {
     const log = req.context.logger.start(`api:users:removePicOrVideo`);
     try {
@@ -335,13 +348,24 @@ const addBankDetail = async (req, res) => {
     }
 };
 
-
 const changePassword = async (req, res) => {
     const log = req.context.logger.start("api:users:changePassword");
     try {
         const msg = await service.changePassword(req.body, req.headers["x-access-token"], req.context);
         log.end();
         return response.success(res, msg, "");
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+const otpVerify = async (req, res) => {
+    const log = req.context.logger.start("api:users:otpVerify");
+    try {
+        const msg = await service.otpVerify(req.body, req.headers["x-access-token"], req.context);
+        log.end();
+        return response.success(res, msg, '');
     } catch (err) {
         log.error(err);
         log.end();
@@ -379,6 +403,7 @@ exports.getUsers = getUsers;
 exports.getCountries = getCountries;
 exports.follow = follow;
 exports.unfollow = unfollow;
+exports.removeFollower = removeFollower;
 exports.following = following;
 exports.followers = followers;
 exports.socialLogin = socialLogin;
@@ -394,4 +419,5 @@ exports.addBankDetail = addBankDetail;
 // exports.sendMail = sendMail;
 exports.forgotPassword = forgotPassword;
 exports.changePassword = changePassword;
+exports.otpVerify = otpVerify;
 
