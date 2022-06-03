@@ -23,7 +23,7 @@ const create = async (model, context) => {
     const log = context.logger.start("services:feedbacks:create");
     let feedback = await db.feedback.findOne({ user: model.userId, });
     if (feedback) {
-        feedback = model.msg
+        feedback.msg = model.msg
         await feedback.save()
         log.end();
     } else {
