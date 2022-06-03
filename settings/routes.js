@@ -362,6 +362,17 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.callRates.set
     );
+
+    app.post("/api/feedbacks/add",
+        permit.context.validateToken,
+        api.feedbacks.create
+    );
+
+    app.get("/api/feedbacks/list",
+        permit.context.validateToken,
+        api.feedbacks.getFeedbacks
+    );
+
     log.end();
 };
 
