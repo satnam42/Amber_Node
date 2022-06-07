@@ -65,7 +65,7 @@ const create = async (model, context) => {
         throw new Error(`${model.username} already taken choose another!`);
     } else {
         model.password = encrypt.getHash(model.password, context);
-        user = buildUser(model, context);
+        user = await buildUser(model, context);
         // if (user.platform != "") {
         user.token = auth.getToken(user.id, false, context);
         // }

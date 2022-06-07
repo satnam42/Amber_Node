@@ -6,12 +6,7 @@ module.exports = [
             username: {
                 type: "string"
             },
-            firstName: {
-                type: "string"
-            },
-            lastName: {
-                type: "string"
-            },
+
             email: {
                 type: "string"
             },
@@ -24,9 +19,7 @@ module.exports = [
             dob: {
                 type: "date"
             },
-            phoneNo: {
-                type: "string"
-            },
+
             password: {
                 type: "string"
             },
