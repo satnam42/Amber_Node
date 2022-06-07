@@ -1,6 +1,7 @@
 "use strict";
 const service = require("../services/coin");
 const response = require("../exchange/response");
+const mapper = require("../mappers/coin");
 
 const add = async (req, res) => {
     const log = req.context.logger.start(`api:coins:add`);
@@ -16,6 +17,19 @@ const add = async (req, res) => {
     }
 };
 
+const uploadIcon = async (req, res) => {
+    const log = req.context.logger.start(`api:coins:uploadIcon`);
+    try {
+        const image = await service.uploadIcon(req.params.id, req.files, req.context);
+        log.end();
+        return response.data(res, image);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
 
 
 const getCoinList = async (req, res) => {
@@ -24,7 +38,7 @@ const getCoinList = async (req, res) => {
         const coins = await service.getCoinList(req.query, req.context);
         const message = "coin  list fetched successfully";
         log.end();
-        return response.page(res, coins, Number(req.query.pageNo), Number(req.query.pageSize), coins.count);
+        return response.page(res, mapper.toSearchModel(coins), Number(req.query.pageNo), Number(req.query.pageSize), coins.count);
         // return response.success(res, message, coin);
     } catch (err) {
         log.error(err);
@@ -62,9 +76,9 @@ const checkPaymentStatus = async (req, res) => {
 const myCoins = async (req, res) => {
     const log = req.context.logger.start(`api:coins:checkPaymentStatus`);
     try {
-        const buy = await service.myCoins(req.params.id, req.context);
+        const coins = await service.myCoins(req.params.id, req.context);
         log.end();
-        return response.data(res, buy);
+        return response.data(res, mapper.toSearchModel(coins));
     } catch (err) {
         log.error(err);
         log.end();
@@ -90,3 +104,4 @@ exports.buy = buy;
 exports.checkPaymentStatus = checkPaymentStatus;
 exports.myCoins = myCoins;
 exports.deduct = deduct;
+exports.uploadIcon = uploadIcon;

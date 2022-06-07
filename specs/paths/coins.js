@@ -173,4 +173,41 @@ module.exports = [
             }
         }
     },
+    {
+        url: "/uploadIcon/{id}",
+        put: {
+            summary: "uploadIcon ",
+            description: "uploadIcon ",
+            parameters: [{
+                in: "formData",
+                name: "image",
+                type: "file",
+                description: "The file to upload.",
+                required: true,
+            },
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "path",
+                type: "string",
+                name: "id",
+                description: "coin id",
+                required: true
+            }
+            ],
+            responses: {
+                default: {
+                    description: "Unexpected error",
+                    schema: {
+                        $ref: "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
 ];

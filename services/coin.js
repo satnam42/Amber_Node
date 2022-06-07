@@ -318,11 +318,41 @@ const deduct = async (model, context) => {
     return "coin deduct successfully"
 };
 
+const uploadIcon = async (id, files, context) => {
+    const log = context.logger.start(`services:coin:uploadIcon`);
+    let fileName = files[0].filename.replace(/ /g, '')
+    let file = files[0]
+    if (!id) {
+        throw new Error("coin id is required");
+    }
+    let coin = await db.coin.findById(id)
+    if (!coin) {
+        log.end();
+        throw new Error("coin not found");
+    }
+    if (file == undefined || file.size == undefined || file.size <= 0) throw new Error("image is required");
+    if (coin.icon != "") {
+        const path = file.destination + '/' + coin.icon
+        try {
+            fs.unlinkSync(path);
+            console.log(`image successfully removed from ${path}`);
+        } catch (error) {
+            console.error('there was an error to remove image:', error.message);
+        }
+    }
+    coin.icon = fileName
+    await coin.save()
+    log.end();
+    return 'icon uploaded successfully'
+
+}
+
 exports.create = create;
 exports.getCoinList = getCoinList;
 exports.buy = buy;
 exports.checkPaymentStatus = checkPaymentStatus;
 exports.myCoins = myCoins;
 exports.deduct = deduct;
+exports.uploadIcon = uploadIcon;
 
 

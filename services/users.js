@@ -80,9 +80,9 @@ const create = async (model, context) => {
     } else {
         model.password = encrypt.getHash(model.password, context);
         user = buildUser(model, context);
-        if (user.platform != "") {
-            user.token = auth.getToken(user.id, false, context);
-        }
+        // if (user.platform != "") {
+        user.token = auth.getToken(user.id, false, context);
+        // }
         log.end();
         return user
     }
@@ -460,8 +460,6 @@ const unfollow = async (model, context) => {
 };
 const removeFollower = async (model, context) => {
     const log = context.logger.start("services:users:unFollow");
-    // ===========unfollower logic end ===============
-    // remove the id of the user you want to unfollow from following array
     if (model.followerUserId == model.userId) {
         log.end();
         throw new Error("user and follower not be same")
@@ -470,7 +468,7 @@ const removeFollower = async (model, context) => {
     const query = {
 
         _id: model.userId,
-        following: { $elemMatch: { userId: model.followerUserId } }
+        followers: { $elemMatch: { userId: model.followerUserId } }
 
     }
 

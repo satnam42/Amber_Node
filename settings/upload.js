@@ -11,7 +11,6 @@ var storage = multer.diskStorage({
             progress += chunk.length;
             var perc = parseInt((progress / total) * 100);
             console.log('percent complete: ' + perc + '%\n');
-            // response.write('percent complete: '+perc+'%\n');
         });
 
         if (file.originalname.match(/\.(mp4|MPEG-4|mkv|avi|mov)$/)) {

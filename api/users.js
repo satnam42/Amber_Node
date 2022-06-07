@@ -10,7 +10,7 @@ const create = async (req, res) => {
         const user = await service.create(req.body, req.context);
         const message = "User Register Successfully";
         log.end();
-        return response.success(res, message, user);
+        return response.authorized(res, message, mapper.toModel(user), user.token);
     } catch (err) {
         log.error(err);
         log.end();

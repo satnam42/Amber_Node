@@ -73,7 +73,8 @@ const configure = (app, logger) => {
     );
 
     app.put(
-        "/api/users/profileImageUpload/:id", upload.array("image"),
+        "/api/users/profileImageUpload/:id",
+        upload.array("image"),
         permit.context.builder,
         api.users.uploadProfileImage
     );
@@ -85,7 +86,8 @@ const configure = (app, logger) => {
     );
 
     app.put(
-        "/api/users/uploadStory/:id", upload.array("video"),
+        "/api/users/uploadStory/:id",
+        upload.array("video"),
         permit.context.validateToken,
         api.users.uploadStory
     );
@@ -288,6 +290,7 @@ const configure = (app, logger) => {
         api.gifts.myGifts
     );
     app.put('/api/gifts/uploadIcon/:id',
+        upload.array("image"),
         permit.context.validateToken,
         api.gifts.uploadIcon
     );
@@ -320,6 +323,12 @@ const configure = (app, logger) => {
         express.raw({ type: '*/*' }),
         permit.context.builder,
         api.coins.checkPaymentStatus
+    );
+    app.put('/api/coins/uploadIcon/:id',
+        upload.array("image"),
+        permit.context.validateToken,
+
+        api.coins.uploadIcon
     );
 
     app.post("/api/redeem/create",
