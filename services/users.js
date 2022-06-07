@@ -13,19 +13,16 @@ ffmpeg.setFfprobePath(ffprobePath);
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 ffmpeg.setFfmpegPath(ffmpegPath);
 const buildUser = async (model, context) => {
-    const { username, email, gender, firstName, lastName, phoneNo, password, country, status, dob, platform, socialLoginId, deviceToken } = model;
+    const { username, email, gender, password, country, status, dob, platform, socialLoginId, deviceToken } = model;
     const log = context.logger.start(`services:users:buildUser${model}`);
     const user = await new db.user({
         username: username,
-        firstName: firstName,
-        lastName: lastName,
         email: email,
         gender: gender,
         country: country,
         platform: platform,
         socialLoginId: socialLoginId,
         dob: dob,
-        phoneNo: phoneNo,
         status: status,
         deviceToken: deviceToken,
         password: password
@@ -36,20 +33,9 @@ const buildUser = async (model, context) => {
 
 const setUser = async (model, user, context) => {
     const log = context.logger.start("services:users:setUser");
-    if (model.username !== "string" && model.username !== undefined) {
-        user.username = model.username;
-    }
-    if (model.firstName !== "string" && model.firstName !== undefined) {
-        user.firstName = model.firstName;
-    }
-    if (model.lastName !== "string" && model.lastName !== undefined) {
-        user.lastName = model.lastName;
-    }
+
     if (model.dob !== "string" && model.dob !== undefined) {
         user.dob = model.dob;
-    }
-    if (model.phoneNo !== "string" && model.phoneNo !== undefined) {
-        user.phoneNo = model.phoneNo;
     }
     if (model.email !== "string" && model.email !== undefined) {
         user.email = model.email;

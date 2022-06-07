@@ -2,12 +2,7 @@ module.exports = [
     {
         name: "userUpdate",
         properties: {
-            firstName: {
-                type: "string"
-            },
-            lastName: {
-                type: "string"
-            },
+
             email: {
                 type: "string"
             },
@@ -20,9 +15,7 @@ module.exports = [
             dob: {
                 type: "date"
             },
-            phoneNo: {
-                type: "string"
-            },
+
             website: {
                 type: "string"
             },
