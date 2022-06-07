@@ -11,10 +11,7 @@ const create = (req, res, next) => {
         log.end();
         return response.failure(res, "email is required");
     }
-    if (!req.body.phoneNo) {
-        log.end();
-        return response.failure(res, "phoneNo is required");
-    }
+
     if (!req.body.password) {
         log.end();
         return response.failure(res, "password is required");
