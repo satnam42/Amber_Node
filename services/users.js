@@ -619,9 +619,7 @@ const usersByFilter = async (query, context) => {
     let pageNo = Number(query.pageNo) || 1;
     let pageSize = Number(query.pageSize) || 10;
     let skipCount = pageSize * (pageNo - 1);
-    if (!query.country) {
-        throw new Error('country is required')
-    }
+
 
     let filter = []
     // ===============================================for you=================================================
