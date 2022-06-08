@@ -668,6 +668,12 @@ const usersByFilter = async (query, context) => {
             { $skip: skipCount }
         ]
     }
+    else if (query.list) {
+        filter = [
+            { $limit: pageSize },
+            { $skip: skipCount }
+        ]
+    }
     else {
         throw new Error('At least one filter is required')
     }

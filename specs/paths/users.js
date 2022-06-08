@@ -686,13 +686,20 @@ module.exports = [{
                 type: "string",
                 name: "country",
                 description: "country",
-                required: true
+                required: false
             },
             {
                 in: "nearByMe",
                 type: "string",
                 name: "lat,long",
                 description: "enter lat long comma separator like(1321313,2131331) ",
+                required: false
+            },
+            {
+                in: "query",
+                type: "boolean",
+                name: "list",
+                description: "set it true if you want a list of user",
                 required: false
             },
             {

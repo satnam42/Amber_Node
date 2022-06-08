@@ -78,7 +78,7 @@ const myCoins = async (req, res) => {
     try {
         const coins = await service.myCoins(req.params.id, req.context);
         log.end();
-        return response.data(res, mapper.toSearchModel(coins));
+        return response.data(res, coins);
     } catch (err) {
         log.error(err);
         log.end();
