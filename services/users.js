@@ -619,7 +619,7 @@ const usersByFilter = async (query, context) => {
     let pageNo = Number(query.pageNo) || 1;
     let pageSize = Number(query.pageSize) || 10;
     let skipCount = pageSize * (pageNo - 1);
-
+    console.log('query', query)
 
     let filter = []
     // ===============================================for you=================================================
@@ -628,8 +628,9 @@ const usersByFilter = async (query, context) => {
         filter = [{
             $match: { gender: context.user.gender == 'male' ? 'female' : 'male', country: query.country },
         },
-        { $limit: pageSize },
-        { $skip: skipCount }]
+        { $skip: skipCount },
+        { $limit: pageSize }
+        ]
     }
 
     // ================================================= nearBy==================================================
@@ -644,8 +645,10 @@ const usersByFilter = async (query, context) => {
             }
 
         },
-        { $limit: pageSize },
-        { $skip: skipCount }]
+        { $skip: skipCount },
+        { $limit: pageSize }
+
+        ]
     }
 
     // ========================================== popular ========================================================
@@ -662,14 +665,14 @@ const usersByFilter = async (query, context) => {
                 }
             },
             { $sort: { followers: -1 } },
-            { $limit: pageSize },
-            { $skip: skipCount }
+            { $skip: skipCount },
+            { $limit: pageSize }
         ]
     }
     else if (query.list) {
         filter = [
-            { $limit: pageSize },
-            { $skip: skipCount }
+            { $skip: skipCount },
+            { $limit: pageSize }
         ]
     }
     else {
