@@ -33,6 +33,7 @@ const connect = async (io, logger) => {
         socket.on("connect_error", (err) => {
             console.log(err.message); // prints the message associated with the error
         });
+
         log.info(userId + "  logged In");
         userSocket[socket.userId] = socket.id;
         log.info("userSocket", userSocket)
@@ -220,7 +221,7 @@ const connect = async (io, logger) => {
                 if (data.gift && data.gift.title) {
                     giftObj = {
                         title: data.gift.title,
-                        icon: data.gift.icon ? `${imageUrl}${entity.gift.icon}` : "",
+                        iconUrl: data.gift.iconUrl,
                         coin: data.gift.coin,
                         id: data.gift._id
                     }
