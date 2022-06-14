@@ -12,6 +12,7 @@ const ffprobePath = require('@ffprobe-installer/ffprobe').path;
 ffmpeg.setFfprobePath(ffprobePath);
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 ffmpeg.setFfmpegPath(ffmpegPath);
+
 const buildUser = async (model, context) => {
     const { username, email, gender, password, country, status, dob, platform, socialLoginId, deviceToken } = model;
     const log = context.logger.start(`services:users:buildUser${model}`);
@@ -59,10 +60,11 @@ const setUser = async (model, user, context) => {
 
 const create = async (model, context) => {
     const log = context.logger.start("services:users:create");
-    await utility.verifyFCMToken(model.deviceToken)
-    let user = await db.user.findOne({ username: model.username });
+    // await utility.verifyFCMToken(model.deviceToken)
+    let user = await db.user.findOne({ $or: [{ username: model.username }, { email: model.email }] });
     if (user) {
-        throw new Error(`${model.username} already taken choose another!`);
+        let username = user.username === model.username ? user.username : user.email
+        throw new Error(`${username} already taken choose another!`);
     } else {
         model.password = encrypt.getHash(model.password, context);
         user = await buildUser(model, context);
