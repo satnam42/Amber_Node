@@ -16,8 +16,8 @@ const pushNotification = async (deviceToken, title, type, message, conversationI
             "senderId": senderId,
         },
         notification: {
-            title: title,
-            body: message
+            title: type == 'gift' ? "Gift" : title,
+            body: type == 'gift' ? `You Have Received ${message} From ${title}` : message
         },
         token: deviceToken
     };

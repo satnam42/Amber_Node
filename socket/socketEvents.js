@@ -4,9 +4,7 @@ var moment = require('moment');
 var _ = require('lodash');
 var eventEmitter = new events.EventEmitter();
 const service = require('../services/notifications')
-// const { deduct } = require('../services/coin')
 const serviceU = require("../services/users");
-const imageUrl = require('config').get('image').url
 const connect = async (io, logger) => {
     // const sockets = async (http, logger) => {
     const log = logger.start(`sockets:socketEvents:connect`);
@@ -41,7 +39,6 @@ const connect = async (io, logger) => {
 
         //setting room.
         socket.on('set-room', async function (room) {
-
             //leaving room. 
             socket.leave(socket.room);
             try {
@@ -174,7 +171,6 @@ const connect = async (io, logger) => {
             socket.to(socket.room).broadcast.emit('typing', " typing...");
         });
 
-
         socket.on('chat-msg', async function (data) {
             log.info('chat-msg called', { data })
             try {
@@ -203,20 +199,15 @@ const connect = async (io, logger) => {
                 if (user && user.deviceToken != "" && user.deviceToken != undefined) {
                     let response
                     if (data.gift) {
-                        response = service.pushNotification(user.deviceToken, sender.firstName, "gift", data.gift, socket.room, sender.id, sender.image)
+                        response = service.pushNotification(user.deviceToken, sender.username, "gift", data.gift.coin.string(), socket.room, sender.id, sender.image)
 
                     } else {
-                        response = service.pushNotification(user.deviceToken, sender.firstName, "messaging", data.msg, socket.room, sender.id, sender.image)
+                        response = service.pushNotification(user.deviceToken, sender.username, "messaging", data.msg, socket.room, sender.id, sender.image)
                     }
                     log.info('pushNotification', { response })
                 }
 
                 let msgDate = moment.utc(data.date).format()
-                // let gift = await db.gift.findById(data.gift)
-                // let giftUrl = ""
-                // if (gift && gift.icon) {
-                //     giftUrl = `${imageUrl}${gift.icon}`
-                // }
                 let giftObj = {}
                 if (data.gift && data.gift.title) {
                     giftObj = {
@@ -412,10 +403,6 @@ const connect = async (io, logger) => {
         //     socket.leave(socket.room);
         // })
 
-
-
-
-
         //for popping disconnection message.
         socket.on('disconnect', function () {
             log.info(socket.userId + "  logged out");
@@ -426,7 +413,6 @@ const connect = async (io, logger) => {
             // ioChat.emit('onlineStack', userStack);
         }); //end of disconnect event.
     }); //end of io.on(connection).
-    //end of socket.io code for chat feature.
 
     //database operations are kept outside of socket.io code.
 
