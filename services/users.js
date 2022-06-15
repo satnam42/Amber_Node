@@ -60,7 +60,9 @@ const setUser = async (model, user, context) => {
 
 const create = async (model, context) => {
     const log = context.logger.start("services:users:create");
-    // await utility.verifyFCMToken(model.deviceToken)
+    if (model.deviceToken !== '_') {
+        await utility.verifyFCMToken(model.deviceToken)
+    }
     let user = await db.user.findOne({ $or: [{ username: model.username }, { email: model.email }] });
     if (user) {
         let username = user.username === model.username ? user.username : user.email
@@ -403,6 +405,7 @@ const follow = async (model, context) => {
     log.end()
     return "follow successfully"
 };
+
 const unfollow = async (model, context) => {
     const log = context.logger.start("services:users:unFollow");
     // ===========unfollower logic end ===============
@@ -446,6 +449,7 @@ const unfollow = async (model, context) => {
     log.end()
     return "unfollow successfully"
 };
+
 const removeFollower = async (model, context) => {
     const log = context.logger.start("services:users:unFollow");
     if (model.followerUserId == model.userId) {
@@ -626,7 +630,8 @@ const usersByFilter = async (query, context) => {
     let filter = []
     // ===============================================for you=================================================
 
-    if (query.gender !== "" && query.gender == undefined) {
+    if (query.gender !== "" && query.gender !== undefined) {
+        if (query.country == undefined || query.country == '' || query.country == 'string') throw new Error('country is required')
         filter = [{
             $match: { gender: context.user.gender == 'male' ? 'female' : 'male', country: query.country },
         },
@@ -656,6 +661,7 @@ const usersByFilter = async (query, context) => {
     // ========================================== popular ========================================================
 
     else if (query.popular) {
+        if (query.country == undefined || query.country == '' || query.country == 'string') throw new Error('country is required')
         filter = [
             { $match: { gender: context.user.gender == 'male' ? 'female' : 'male', country: query.country } },
             {
@@ -673,6 +679,7 @@ const usersByFilter = async (query, context) => {
     }
     else if (query.list) {
         filter = [
+            { $match: { gender: context.user.gender == 'male' ? 'female' : 'male' } },
             { $skip: skipCount },
             { $limit: pageSize }
         ]
