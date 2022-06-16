@@ -939,4 +939,41 @@ module.exports = [{
         }
     }
 },
+{
+    url: "/ImageUpload/{id}",
+    put: {
+        summary: "upload  Pic ",
+        description: "upload  Pic ",
+        parameters: [{
+            in: "formData",
+            name: "image",
+            type: "file",
+            description: "The file to upload.",
+            required: true,
+        },
+        // {
+        //     in: "header",
+        //     name: "x-access-token",
+        //     description: "token to access api",
+        //     required: true,
+        //     type: "string"
+        // },
+        {
+            in: "path",
+            type: "string",
+            name: "id",
+            description: "user id",
+            required: true
+        }
+        ],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
 ];

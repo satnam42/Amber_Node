@@ -92,6 +92,18 @@ const uploadProfileImage = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+const uploadImage = async (req, res) => {
+    const log = req.context.logger.start(`api:users:uploadProfileImage`);
+    try {
+        const image = await service.uploadProfilePic(req.params.id, req.files, req.context);
+        log.end();
+        return response.data(res, image);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
 
 const uploadStory = async (req, res) => {
     const log = req.context.logger.start(`api:users:uploadStory`);
@@ -372,8 +384,6 @@ const otpVerify = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
-
-
 //forgotPassword api
 const forgotPassword = async (req, res) => {
     const log = req.context.logger.start("api:users:forgotPassword");
@@ -420,4 +430,5 @@ exports.addBankDetail = addBankDetail;
 exports.forgotPassword = forgotPassword;
 exports.changePassword = changePassword;
 exports.otpVerify = otpVerify;
+exports.uploadImage = uploadImage;
 

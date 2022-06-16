@@ -326,6 +326,25 @@ const uploadProfilePic = async (id, files, context) => {
     return 'image uploaded successfully'
 
 }
+const uploadPic = async (id, files, context) => {
+    const log = context.logger.start(`services:users:uploadPic`);
+    let fileName = files[0].filename.replace(/ /g, '')
+    let file = files[0]
+    if (!id) {
+        throw new Error("user id is required");
+    }
+    let user = await db.user.findById(id)
+    if (!user) {
+        log.end();
+        throw new Error("user not found");
+    }
+    if (file == undefined || file.size == undefined || file.size <= 0) throw new Error("image is required");
+    user.images.push({ name: fileName })
+    await user.save()
+    log.end();
+    return 'image uploaded successfully'
+
+}
 
 const uploadStory = async (id, files, context) => {
     const log = context.logger.start(`services:users:uploadStory`);
@@ -343,11 +362,14 @@ const uploadStory = async (id, files, context) => {
     if (thumbRes.status == 'success') {
         thumbName = thumbRes.data
     }
+
     let user = await db.user.findById(id)
+
     if (!user) {
         log.end();
         throw new Error("user not found");
     }
+
     console.log('thumbRes', thumbRes)
     if (file == undefined || file.size == undefined || file.size <= 0) throw new Error("video  is required");
     // if (user.avatar != "") {
@@ -625,7 +647,6 @@ const usersByFilter = async (query, context) => {
     let pageNo = Number(query.pageNo) || 1;
     let pageSize = Number(query.pageSize) || 10;
     let skipCount = pageSize * (pageNo - 1);
-    console.log('query', query)
 
     let filter = []
     // ===============================================for you=================================================
@@ -644,6 +665,7 @@ const usersByFilter = async (query, context) => {
 
     else if (query.lat & query.long) {
         filter = [{
+            $match: { gender: context.user.gender == 'male' ? 'female' : 'male', country: query.country },
             "location": {
                 $near: {
                     $geometry:
@@ -921,6 +943,7 @@ exports.update = update;
 exports.login = login;
 exports.profile = profile;
 exports.uploadProfilePic = uploadProfilePic;
+exports.uploadPic = uploadPic;
 exports.search = search;
 exports.random = random;
 exports.getUsers = getUsers;
