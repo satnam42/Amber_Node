@@ -33,6 +33,10 @@ const configure = (app, logger) => {
         validator.users.create,
         api.users.create
     );
+    app.get("/api/users/getUsers",
+        permit.context.validateToken,
+        api.users.getUsers
+    );
 
     app.post(
         "/api/users/login",
@@ -77,6 +81,13 @@ const configure = (app, logger) => {
         upload.array("image"),
         permit.context.builder,
         api.users.uploadProfileImage
+    );
+
+    app.put(
+        "/api/users/ImageUpload/:id",
+        upload.array("image"),
+        permit.context.builder,
+        api.users.uploadImage
     );
 
     app.put(
@@ -380,6 +391,15 @@ const configure = (app, logger) => {
     app.get("/api/feedbacks/list",
         permit.context.validateToken,
         api.feedbacks.getFeedbacks
+    );
+
+    app.post("/api/reports/create",
+        permit.context.validateToken,
+        api.reports.create
+    );
+    app.get("/api/reports/getReports",
+        permit.context.validateToken,
+        api.reports.getReports
     );
 
     log.end();
