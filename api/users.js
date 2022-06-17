@@ -227,7 +227,7 @@ const random = async (req, res) => {
     try {
         const users = await service.random(req.query, req.context);
         log.end();
-        return response.page(res, mapper.toSearchModel(users), Number(req.query.pageNo) || 1, Number(req.query.pageSize) || 10, users.count);
+        return response.page(res, mapper.toSearchRandom(users), Number(req.query.pageNo) || 1, Number(req.query.pageSize) || 10, users.count);
     } catch (err) {
         log.error(err);
         log.end();

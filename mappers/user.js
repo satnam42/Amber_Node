@@ -56,8 +56,36 @@ exports.toModel = entity => {
 };
 
 
+
+
 exports.toSearchModel = entities => {
     return entities.map(entity => {
         return exports.toModel(entity);
     });
+};
+
+exports.toSearchRandom = entities => {
+    return entities.map(entity => {
+        return exports.toRandom(entity);
+    });
+};
+
+exports.toRandom = entity => {
+    const model = {
+        id: entity._id,
+        username: entity.username,
+        dob: entity.dob,
+        gender: entity.gender,
+        avatar: entity.avatar ? `${imageUrl}${entity.avatar}` : "",
+        country: entity.country,
+    };
+
+    if (entity.randomImages && entity.randomImages.length > 0) {
+        for (let index = 0; index < entity.randomImages.length; index++) {
+            entity.randomImages[index] = `${imageUrl}${entity.randomImages[index]}`;
+        }
+        model.randomImages = entity.randomImages
+    }
+    return model;
+
 };

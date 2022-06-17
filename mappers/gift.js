@@ -2,6 +2,9 @@
 const imageUrl = require('config').get('image').url
 
 exports.toModel = entity => {
+    if (entity.gift !== undefined) {
+        entity = entity.gift
+    }
     const model = {
         id: entity._id,
         title: entity.title,

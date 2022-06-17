@@ -545,15 +545,24 @@ const random = async (query, context) => {
     // const userId = context.user.id || context.user._id
 
     const users = await db.user.aggregate([
-        { $match: { gender: query.gender } },
-        // { $sample: { size: pageSize } },
+        { $match: { gender: context.user.gender == 'male' ? 'female' : 'male', "_id": { $ne: context.user._id } } },
+        { $sample: { size: pageSize } },
         { $limit: pageSize },
         { $skip: skipCount }
     ])
+    const randomImages = []
 
-    users.count = await db.user.find().count();
-    log.end()
+    if (users?.length > 0) {
+        for (const user of users) {
+            // if (user.avatar != '' || user.avatar != "" || user.avatar != "string" || user.avatar != undefined)
+            if (user.avatar && user.avatar.indexOf(".")) {
+                randomImages.push(user.avatar)
+            }
+        }
+    }
+    users[0].randomImages = randomImages
     return users
+    log.end()
 };
 const getUsers = async (query, context) => {
     const log = context.logger.start(`services:users:getUsers`);
@@ -564,7 +573,8 @@ const getUsers = async (query, context) => {
     const users = await db.user.find().skip(skipCount).limit(pageSize)
     users.count = await db.user.find().count();
     log.end()
-    return users
+
+
 };
 
 const removeProfilePic = async (id, context) => {

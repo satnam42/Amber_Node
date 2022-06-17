@@ -36,7 +36,7 @@ const myGifts = async (req, res) => {
     try {
         const myGifts = await service.myGifts(req.params.id, req.context);
         log.end();
-        return response.data(res, mapper.toModel(myGifts));
+        return response.data(res, mapper.toSearchModel(myGifts));
         // return response.data(res, gift);
     } catch (err) {
         log.error(err);

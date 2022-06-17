@@ -391,26 +391,12 @@ module.exports = [{
         summary: "get user random user list",
         description: "get user random user list",
         parameters: [
-            // {
-            //     in: "header",
-            //     name: "x-access-token",
-            //     description: "token to access api",
-            //     required: true,
-            //     type: "string"
-            // },
             {
-                in: "query",
-                type: "string",
-                name: "gender",
-                description: "gender",
-                required: true
-            },
-            {
-                in: "query",
-                type: "string",
-                name: "country",
-                description: "country",
-                required: false
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
             },
             {
                 in: "query",

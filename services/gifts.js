@@ -210,7 +210,32 @@ const myGifts = async (id, context) => {
                     }
                 }
             }
-        }
+        },
+        {
+            "$unwind": {
+                "path": "$earnedCoins",
+                "preserveNullAndEmptyArrays": true
+            }
+        },
+        {
+            "$lookup": {
+                "from": 'gifts',
+                "localField": 'earnedCoins.gift',
+                "foreignField": '_id',
+                "as": 'gift'
+            }
+        },
+        {
+            "$unwind": {
+                "path": "$gift",
+                "preserveNullAndEmptyArrays": true
+            }
+        },
+        {
+            "$project": {
+                "gift": 1,
+            }
+        },
 
     ])
 
