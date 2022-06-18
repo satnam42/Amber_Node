@@ -6,6 +6,8 @@ const coin = mongoose.Schema({
     price: { type: Number, default: 0 },
     isFree: { type: Boolean, default: false },
     category: { type: String, default: "" },
+    isPopular: { type: Boolean, default: false },
+    isOnDailyOffer: { type: Boolean, default: false },
     icon: { type: String, default: "" },
     status: {
         type: String,

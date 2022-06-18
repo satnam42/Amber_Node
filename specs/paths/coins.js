@@ -15,13 +15,12 @@ module.exports = [
                 {
                     in: "body",
                     name: "body",
-                    description: "model of addCoin                                                                                  ",
+                    description: "model of addCoin ",
                     required: true,
                     schema: {
                         $ref: "#/definitions/addCoin"
                     }
                 }
-
             ],
             responses: {
                 default: {
@@ -199,6 +198,108 @@ module.exports = [
                 description: "coin id",
                 required: true
             }
+            ],
+            responses: {
+                default: {
+                    description: "Unexpected error",
+                    schema: {
+                        $ref: "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
+    {
+        url: "/setOffer/{id}/{setOffer}",
+        put: {
+            summary: "setOffer",
+            description: "set Offer  by coin  id ",
+            parameters: [{
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "path",
+                type: "string",
+                name: "id",
+                description: "coin id",
+                required: true
+            },
+            {
+                in: "path",
+                type: "boolean",
+                name: "setOffer",
+                description: "set it true or false",
+                default: false,
+                required: true
+            },
+
+            ],
+            responses: {
+                default: {
+                    description: "Unexpected error",
+                    schema: {
+                        $ref: "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
+    {
+        url: "/setPopular/{id}/{setPopular}",
+        put: {
+            summary: "setPopular",
+            description: "set Popular  by coin  id ",
+            parameters: [{
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "path",
+                type: "string",
+                name: "id",
+                description: "coin id",
+                required: true
+            },
+            {
+                in: "path",
+                type: "boolean",
+                name: "setPopular",
+                description: "set it true or false",
+                default: false,
+                required: true
+            },
+
+            ],
+            responses: {
+                default: {
+                    description: "Unexpected error",
+                    schema: {
+                        $ref: "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
+    {
+        url: "/dailyOffers",
+        get: {
+            summary: "daily Offers coins list",
+            description: "daily Offers coins list",
+            parameters: [
+                {
+                    in: "header",
+                    name: "x-access-token",
+                    description: "token to access api",
+                    required: true,
+                    type: "string"
+                },
             ],
             responses: {
                 default: {

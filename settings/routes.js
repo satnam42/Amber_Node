@@ -143,6 +143,7 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.random
     );
+
     app.delete("/api/users/deleteAccount/:id",
         permit.context.validateToken,
         api.users.remove
@@ -319,11 +320,22 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.coins.getCoinList
     );
+    app.get("/api/coins/dailyOffers",
+        permit.context.validateToken,
+        api.coins.getDailyOffers
+    );
     app.get('/api/coins/myCoins/:id',
         permit.context.validateToken,
         api.coins.myCoins
     );
-
+    // app.put('/api/coins/setPopular/:id/:setPopular',
+    //     permit.context.validateToken,
+    //     api.coins.setPopular
+    // );
+    // app.put('/api/coins/setOffer/:id/:setOffer',
+    //     permit.context.validateToken,
+    //     api.coins.setOffer
+    // );
     app.post('/api/coins/deduct',
         permit.context.validateToken,
         api.coins.deduct

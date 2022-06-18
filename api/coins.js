@@ -98,6 +98,44 @@ const deduct = async (req, res) => {
     }
 };
 
+const setPopular = async (req, res) => {
+    const log = req.context.logger.start(`api:coins:setPopular`);
+    try {
+        const coin = await service.setPopular(req.params.id, req.params.setPopular, req.context);
+        log.end();
+        return response.data(res, coin);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+const setOffer = async (req, res) => {
+    const log = req.context.logger.start(`api:coins:setOffer`);
+    try {
+        const coin = await service.setOffer(req.params.id, req.params.setOffer, req.context);
+        log.end();
+        return response.data(res, coins);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+const getDailyOffers = async (req, res) => {
+    const log = req.context.logger.start(`api:coins:currentUser`);
+    try {
+        const coins = await service.getDailyOffers(req.context);
+        log.end();
+        return response.data(res, mapper.toSearchModel(coins));
+        // return response.success(res, message, coin);
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+};
+
 exports.add = add;
 exports.getCoinList = getCoinList;
 exports.buy = buy;
@@ -105,3 +143,6 @@ exports.checkPaymentStatus = checkPaymentStatus;
 exports.myCoins = myCoins;
 exports.deduct = deduct;
 exports.uploadIcon = uploadIcon;
+exports.getDailyOffers = getDailyOffers;
+exports.getDailyOffers = setOffer;
+exports.getDailyOffers = setPopular;

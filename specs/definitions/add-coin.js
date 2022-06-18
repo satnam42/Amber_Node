@@ -1,15 +1,23 @@
 module.exports = [
     {
-        name: "deductCoin",
+        name: "addCoin",
         properties: {
-            from: {
+            coins: {
                 type: "string"
             },
-            to: {
-                type: "string"
-            },
-            callTime: {
+            price: {
                 type: "number"
+            },
+            category: {
+                type: "string"
+            },
+            isPopular: {
+                type: "boolean",
+                default: false
+            },
+            isOnDailyOffer: {
+                type: "boolean",
+                default: false
             },
         }
     }

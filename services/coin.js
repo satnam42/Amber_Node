@@ -6,12 +6,14 @@ const endpointSecret = 'whsec_Q2i0yFexQBvHn5QSLsldY4ZFMRBY2MYK';
 const { isPositiveInteger } = require("../utility")
 
 const buildCoin = async (model, context) => {
-    const { coins, price, status, isFree, category } = model;
+    const { coins, price, status, isOnOffer, dailyOffer, isFree, category } = model;
     const log = context.logger.start(`services:coins:buildCoin${model}`);
     const coin = await new db.coin({
         coins: coins,
         price: price,
         status: status,
+        isPopular: isPopular,
+        isOnDailyOffer: isOnDailyOffer,
         isFree: isFree,
         category: category,
     }).save();
@@ -347,6 +349,43 @@ const uploadIcon = async (id, files, context) => {
 
 }
 
+const setOffer = async (id, isOnDailyOffer, context) => {
+    const log = context.logger.start(`services: coins: setOffer ${id}`);
+    if (!id) {
+        throw new Error('coin id is Required')
+    }
+    const coin = await db.coin.findById(id)
+    if (!coin) {
+        throw new Error('coin not found')
+    }
+    coin.isOnDailyOffer = isOnDailyOffer
+    await coin.save()
+    log.end();
+    return coins
+};
+
+const setPopular = async (id, isPopular, context) => {
+    const log = context.logger.start(`services: coins: setPopular ${id}`);
+    if (!id) {
+        throw new Error('coin id is Required')
+    }
+    let coin = await db.coin.findById(id)
+    if (!coin) {
+        throw new Error('coin not found')
+    }
+    coin.isPopular = isPopular
+    await coin.save()
+    log.end();
+    return coins
+};
+
+const getDailyOffers = async (context) => {
+    const log = context.logger.start(`services: coins: getDailyOffers`);
+    let coins = await db.coin.find({ isOnDailyOffer: true })
+    log.end();
+    return coins
+};
+
 exports.create = create;
 exports.getCoinList = getCoinList;
 exports.buy = buy;
@@ -354,5 +393,8 @@ exports.checkPaymentStatus = checkPaymentStatus;
 exports.myCoins = myCoins;
 exports.deduct = deduct;
 exports.uploadIcon = uploadIcon;
+exports.getDailyOffers = getDailyOffers;
+exports.setOffer = setOffer;
+exports.setPopular = setPopular;
 
 
