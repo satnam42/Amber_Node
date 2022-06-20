@@ -559,8 +559,10 @@ const random = async (query, context) => {
                 randomImages.push(user.avatar)
             }
         }
+        users[0].randomImages = randomImages
     }
-    users[0].randomImages = randomImages
+
+
     return users
     log.end()
 };
