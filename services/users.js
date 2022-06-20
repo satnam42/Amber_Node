@@ -547,8 +547,9 @@ const random = async (query, context) => {
     const users = await db.user.aggregate([
         { $match: { gender: context.user.gender == 'male' ? 'female' : 'male', "_id": { $ne: context.user._id } } },
         { $sample: { size: pageSize } },
-        { $limit: pageSize },
-        { $skip: skipCount }
+        { $skip: skipCount },
+        { $limit: pageSize }
+
     ])
     const randomImages = []
 
