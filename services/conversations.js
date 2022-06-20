@@ -98,7 +98,7 @@ const conversationList = async (id, context) => {
         {
             $project: {
                 "_id": 0,
-                "firstName": "$user.firstName",
+                "firstName": "$user.username",
                 "userId": "$user._id",
                 "image": "$user.avatar",
                 "conversationId": "$conversationsId"
