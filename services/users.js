@@ -546,7 +546,7 @@ const random = async (query, context) => {
 
     const users = await db.user.aggregate([
         { $match: { gender: context.user.gender == 'male' ? 'female' : 'male', "_id": { $ne: context.user._id } } },
-        { $sample: { size: pageSize } },
+        { $sample: { size: 10 } },
         { $skip: skipCount },
         { $limit: pageSize }
 
