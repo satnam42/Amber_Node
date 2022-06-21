@@ -328,14 +328,14 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.coins.myCoins
     );
-    // app.put('/api/coins/setPopular/:id/:setPopular',
-    //     permit.context.validateToken,
-    //     api.coins.setPopular
-    // );
-    // app.put('/api/coins/setOffer/:id/:setOffer',
-    //     permit.context.validateToken,
-    //     api.coins.setOffer
-    // );
+    app.put('/api/coins/setPopular/:id/:setPopular',
+        permit.context.validateToken,
+        api.coins.setPopular
+    );
+    app.put('/api/coins/setOffer/:id/:setOffer',
+        permit.context.validateToken,
+        api.coins.setOffer
+    );
     app.post('/api/coins/deduct',
         permit.context.validateToken,
         api.coins.deduct
