@@ -7,6 +7,8 @@ exports.toModel = entity => {
         coins: entity.coins,
         price: entity.price,
         isFree: entity.isFree,
+        isPopular: entity?.isPopular,
+        isOnDailyOffer: entity?.isOnDailyOffer,
         category: entity.category,
         status: entity.status,
         iconUrl: entity.icon ? `${imageUrl}${entity.icon}` : "",

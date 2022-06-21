@@ -30,8 +30,6 @@ const uploadIcon = async (req, res) => {
     }
 };
 
-
-
 const getCoinList = async (req, res) => {
     const log = req.context.logger.start(`api:coins:currentUser`);
     try {
@@ -85,6 +83,7 @@ const myCoins = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const deduct = async (req, res) => {
     const log = req.context.logger.start(`api:coins:deduct`);
     try {
@@ -110,6 +109,7 @@ const setPopular = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const setOffer = async (req, res) => {
     const log = req.context.logger.start(`api:coins:setOffer`);
     try {
@@ -122,6 +122,7 @@ const setOffer = async (req, res) => {
         return response.failure(res, err.message);
     }
 };
+
 const getDailyOffers = async (req, res) => {
     const log = req.context.logger.start(`api:coins:currentUser`);
     try {
