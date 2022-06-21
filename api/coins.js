@@ -144,5 +144,5 @@ exports.myCoins = myCoins;
 exports.deduct = deduct;
 exports.uploadIcon = uploadIcon;
 exports.getDailyOffers = getDailyOffers;
-exports.getDailyOffers = setOffer;
-exports.getDailyOffers = setPopular;
+exports.setOffer = setOffer;
+exports.setPopular = setPopular;

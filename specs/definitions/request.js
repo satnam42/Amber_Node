@@ -5,6 +5,9 @@ module.exports = [
             userId: {
                 type: "string"
             },
+            type: {
+                type: "string"
+            },
 
         }
     }

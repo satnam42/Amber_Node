@@ -19,6 +19,11 @@ const redeem = mongoose.Schema({
         type: String,
         default: "",
     },
+    type: {
+        type: String,
+        default: "noSet",
+        enum: ["manual", "paypal", "noSet"],
+    },
 
     status: {
         type: String,
