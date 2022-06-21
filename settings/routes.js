@@ -341,7 +341,6 @@ const configure = (app, logger) => {
         api.coins.deduct
     );
 
-
     app.post("/api/coins/checkPaymentStatus",
         express.raw({ type: '*/*' }),
         permit.context.builder,
