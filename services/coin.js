@@ -1,5 +1,5 @@
 const { logout } = require("./users");
-
+"use strict";
 const ObjectId = require("mongodb").ObjectId
 const stripe = require('stripe')('sk_test_51KfdqKSIbgCXqMm2fnVDKcAd1LV0rVXZ9QiRvd0bm5JQYIeQXbF26NgYQA7RqiuSF3hUotbvt4FNPlsuI6OQgrPz00bCL9VA9k');
 const endpointSecret = 'whsec_Q2i0yFexQBvHn5QSLsldY4ZFMRBY2MYK';
@@ -361,7 +361,7 @@ const setOffer = async (id, isOnDailyOffer, context) => {
     coin.isOnDailyOffer = isOnDailyOffer
     await coin.save()
     log.end();
-    return coins
+    return coin
 };
 
 const setPopular = async (id, isPopular, context) => {
@@ -376,7 +376,7 @@ const setPopular = async (id, isPopular, context) => {
     coin.isPopular = isPopular
     await coin.save()
     log.end();
-    return coins
+    return coin
 };
 
 const getDailyOffers = async (context) => {
