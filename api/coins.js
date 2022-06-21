@@ -115,7 +115,7 @@ const setOffer = async (req, res) => {
     try {
         const coin = await service.setOffer(req.params.id, req.params.setOffer, req.context);
         log.end();
-        return response.data(res, coins);
+        return response.data(res, coin);
     } catch (err) {
         log.error(err);
         log.end();
