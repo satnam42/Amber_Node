@@ -4,6 +4,7 @@ const notifications = mongoose.Schema({
     type: { type: String },
     from: { type: mongoose.Schema.ObjectId, ref: 'user' },
     to: { type: mongoose.Schema.ObjectId, ref: 'user' },
+    text: { type: String, default: "" },
     status: {
         type: String,
         default: "un-seen",

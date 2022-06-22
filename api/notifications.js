@@ -34,9 +34,25 @@ const random = async (req, res) => {
     }
 
 };
+const save = async (req, res) => {
+    const log = req.context.logger.start("api:notifications:save");
+    try {
+        const notification = await service.save(req.body, req.context);
+        log.end();
+        return response.data(res, notification);
+        // return response.authorized(res, message, user, user.token);
+    }
+    catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+
+};
 
 
 exports.sendCallNotification = sendCallNotification;
 exports.random = random;
+exports.save = save;
 
 

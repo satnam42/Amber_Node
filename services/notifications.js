@@ -206,7 +206,24 @@ const getRandomUser = async () => {
 
     return randomUser
 }
-
+const buildNotifications = async (model, context) => {
+    const { from, to, type, text, } = model;
+    const log = context.logger.start(`services:notifications:buildUser${model}`);
+    const notification = await new db.notification({
+        from: from,
+        to: to,
+        text: text,
+    }).save();
+    log.end();
+    return notification
+}
+const create = async (model, context) => {
+    const log = context.logger.start("services:notifications:create");
+    const notification = await buildNotifications(model, context);
+    log.end();
+    return notification
+}
 exports.pushNotification = pushNotification
 exports.sendCallNotification = sendCallNotification
 exports.random = random
+exports.create = create

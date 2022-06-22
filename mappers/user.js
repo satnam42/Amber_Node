@@ -55,9 +55,6 @@ exports.toModel = entity => {
 
 };
 
-
-
-
 exports.toSearchModel = entities => {
     return entities.map(entity => {
         return exports.toModel(entity);
