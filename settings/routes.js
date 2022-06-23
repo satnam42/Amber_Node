@@ -269,6 +269,16 @@ const configure = (app, logger) => {
         api.notifications.random
     );
 
+    app.put('/api/notifications/seen/:id',
+        permit.context.validateToken,
+        api.notifications.seen
+    );
+
+    app.get('/api/notifications/byUserId/:id',
+        permit.context.validateToken,
+        api.notifications.byUserId
+    );
+
     app.post("/api/gifts/add",
         permit.context.builder,
         api.gifts.add

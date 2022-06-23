@@ -4,8 +4,16 @@ const admin = require("firebase-admin");
 const utility = require("../utility/index")
 const imageUrl = require('config').get('image').url
 
-const pushNotification = async (deviceToken, title, type, message, conversationId, senderId, senderImage) => {
-    console.log(`pushNotification==deviceToken====${deviceToken}====title===${title}=====type===${type}======message===${message}`)
+const pushNotification = async (user, title, type, message, conversationId, senderId, senderImage, context) => {
+    console.log(`pushNotification==deviceToken====${user.deviceToken}====title===${title}=====type===${type}======message===${message}`)
+    let text = type == 'gift' ? `You Have Received ${message} From ${title}` : message
+    let noti = {
+        type: type,
+        text: text,
+        title: title,
+        to: user.id,
+        from: senderId
+    }
     let payload = {
         data: {  //you can send only notification or only data(or include both)
             type: type,
@@ -17,22 +25,25 @@ const pushNotification = async (deviceToken, title, type, message, conversationI
         },
         notification: {
             title: type == 'gift' ? "Gift" : title,
-            body: type == 'gift' ? `You Have Received ${message} From ${title}` : message
+            body: text
         },
-        token: deviceToken
+        token: user.deviceToken
     };
 
     // const options = {
     //     priority: "high",
     //     timeToLive: 60 * 60 * 24
     // };
-    const res = await admin.messaging().send(payload)
-    console.log(res)
-    // admin.messaging().sendToDevice(deviceToken, payload, options).then(response => {
-    //     console.log('message Successfully sent :', response);
-    // }).catch(error => {
-    //     console.log('Error sending message:', error);
-    // });
+
+    admin.messaging().send(payload).then(response => {
+        console.log('message Successfully sent :', response);
+        save(noti, context)
+        return response
+    }).catch(error => {
+        console.log('Error sending message:', error);
+        return error
+    });
+
 
 }
 
@@ -92,8 +103,21 @@ const sendCallNotification = async (body, context) => {
         },
         token: registrationToken
     };
-
-    const res = await admin.messaging().send(message)
+    let noti = {
+        type: 'callReceive',
+        text: body.username,
+        title: 'call',
+        to: body.receiverId,
+        from: context.user.id
+    }
+    const res = await admin.messaging().send(message).then(response => {
+        console.log('message Successfully sent :', response);
+        save(noti, context)
+        return response
+    }).catch(error => {
+        console.log('Error sending message:', error);
+        return error
+    });
 
     log.end()
 
@@ -207,23 +231,46 @@ const getRandomUser = async () => {
     return randomUser
 }
 const buildNotifications = async (model, context) => {
-    const { from, to, type, text, } = model;
+    const { from, to, title, text, type } = model;
     const log = context.logger.start(`services:notifications:buildUser${model}`);
     const notification = await new db.notification({
         from: from,
+        type: type,
+        title: title,
         to: to,
         text: text,
     }).save();
     log.end();
     return notification
 }
-const create = async (model, context) => {
-    const log = context.logger.start("services:notifications:create");
+const save = async (model, context) => {
+    const log = context.logger.start("services:notifications:save");
     const notification = await buildNotifications(model, context);
     log.end();
     return notification
 }
+
+const seen = async (id, context) => {
+    const log = context.logger.start(`services: notifications: seen`);
+    if (!id) {
+        throw new Error('notification id is Required')
+    }
+    let notification = await db.notification.findById(id)
+    notification.status = "seen"
+    await notification.save()
+    return notification
+};
+const notificationsByUserId = async (id, context) => {
+    const log = context.logger.start(`services: notifications: notificationsByUserId`);
+    if (!id) {
+        throw new Error('user id is Required')
+    }
+    let notifications = await db.notification.find({ to: id, $ne: { status: 'seen' } })
+    return notifications
+};
 exports.pushNotification = pushNotification
 exports.sendCallNotification = sendCallNotification
 exports.random = random
-exports.create = create
+exports.save = save
+exports.seen = seen
+exports.notificationsByUserId = notificationsByUserId

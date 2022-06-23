@@ -94,6 +94,7 @@ const request = async (model, context) => {
         }
         const redeem = await new db.redeem({
             user: model.userId,
+            type: model.type,
             diamond: coinBalance.activeCoin,
         }).save()
         if (redeem) {

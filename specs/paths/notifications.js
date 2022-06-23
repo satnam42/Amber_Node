@@ -63,6 +63,66 @@ module.exports = [
             }
         }
     },
+    {
+        url: "/byUserId/{id}",
+        get: {
+            summary: "notifications list ",
+            description: "notifications list by user id ",
+            parameters: [{
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "path",
+                type: "string",
+                name: "id",
+                description: "user id",
+                required: true
+            },
 
+            ],
+            responses: {
+                default: {
+                    description: "Unexpected error",
+                    schema: {
+                        $ref: "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
+    {
+        url: "/seen/{id}",
+        put: {
+            summary: "seen notification ",
+            description: "seen notifications by id",
+            parameters: [
+                {
+                    in: "header",
+                    name: "x-access-token",
+                    description: "token to access api",
+                    required: true,
+                    type: "string"
+                },
+                {
+                    in: "path",
+                    type: "string",
+                    name: "id",
+                    description: "notification id",
+                    required: true
+                },],
+            responses: {
+                default: {
+                    description: "Unexpected error",
+                    schema: {
+                        $ref: "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
 
 ];

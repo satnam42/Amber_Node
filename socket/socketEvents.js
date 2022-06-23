@@ -199,10 +199,10 @@ const connect = async (io, logger) => {
                 if (user && user.deviceToken != "" && user.deviceToken != undefined) {
                     let response
                     if (data.gift) {
-                        response = service.pushNotification(user.deviceToken, sender.username, "gift", data.gift.coin.string(), socket.room, sender.id, sender.image)
+                        response = service.pushNotification(user, sender.username, "gift", data.gift.coin.string(), socket.room, sender.id, sender.image, { logger })
 
                     } else {
-                        response = service.pushNotification(user.deviceToken, sender.username, "messaging", data.msg, socket.room, sender.id, sender.image)
+                        response = service.pushNotification(user, sender.username, "messaging", data.msg, socket.room, sender.id, sender.image, { logger })
                     }
                     log.info('pushNotification', { response })
                 }

@@ -69,8 +69,7 @@ const configure = async (app, logger) => {
     extended: true,
     limit: "50mb",
     parameterLimit: 50000
-  })
-  );
+  }));
 
   // app.use(
   //   bodyParser({
