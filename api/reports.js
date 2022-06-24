@@ -8,7 +8,7 @@ const create = async (req, res) => {
         const report = await service.create(req.body, req.context);
         const message = "Report Register Successfully";
         log.end();
-        return response.authorized(res, message, mapper.toModel(report), report.token);
+        return response.authorized(res, message, report, report.token);
     } catch (err) {
         log.error(err);
         log.end();
