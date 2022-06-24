@@ -124,6 +124,7 @@ const configure = (app, logger) => {
         validator.users.unfollow,
         api.users.unfollow
     );
+
     app.post("/api/users/removeFollower",
         permit.context.validateToken,
         api.users.removeFollower
@@ -169,11 +170,11 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.logout
     );
+
     app.get("/api/users/usersByFilter",
         permit.context.validateToken,
         api.users.usersByFilter
     );
-
 
     app.post(
         "/api/users/forgotPassword",
@@ -225,28 +226,6 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.history.update
     );
-
-    app.post("/api/club/join",
-        permit.context.validateToken,
-        validator.club.joinOrLeave,
-        api.club.join
-    );
-
-    app.post("/api/club/leave",
-        permit.context.validateToken,
-        validator.club.joinOrLeave,
-        api.club.leave
-    );
-
-    app.get("/api/club/membersByClubName/:name",
-        permit.context.validateToken,
-        api.club.getMembersByClubName
-    );
-
-    // app.get("/api/club/membersByFilter",
-    //     permit.context.validateToken,
-    //     api.club.getMembersByFilter
-    // );
 
     app.get('/api/conversations/getOldConversations',
         permit.context.builder,
