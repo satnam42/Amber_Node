@@ -16,6 +16,7 @@ const failure = (res, message) => {
     error: message
   });
 };
+
 const payPalfailure = (res, message, code) => {
   res.status(code).json({
     isSuccess: false,

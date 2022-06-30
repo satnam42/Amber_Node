@@ -948,8 +948,30 @@ const changePassword = async (model, token, context) => {
     log.end()
     return "password updated successfully"
 }
+const settings = async (model, context) => {
+    const log = context.logger.start('services:users:settings')
+    let user = await db.user.findById(model.userId);
+    if (!user) {
+        throw new Error("user not found");
+    }
+    if (user.settings.allNotifications != undefined) {
+        user.settings.allNotifications = model.allNotifications;
 
+    } if (user.settings.messagesNotification != undefined) {
+        user.settings.messagesNotification = model.messagesNotification;
 
+    } if (user.settings.callNotification != undefined) {
+        user.settings.callNotification = model.callNotification;
+
+    } if (user.settings.followerNotification != undefined) {
+        user.settings.followerNotification = model.followerNotification;
+    }
+    user.updatedOn = new Date();
+    await user.save();
+    log.end()
+    return user
+
+}
 exports.create = create;
 exports.resetPassword = resetPassword;
 exports.update = update;
@@ -984,4 +1006,5 @@ exports.usersByFilter = usersByFilter
 exports.remove = remove
 exports.removePicOrVideo = removePicOrVideo
 exports.addBankDetail = addBankDetail
+exports.settings = settings
 

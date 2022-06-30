@@ -41,6 +41,12 @@ const user = mongoose.Schema({
   swiftCode: { type: String, default: "" },
   accountNo: { type: String, default: "" },
   isAdmin: { type: String, default: false },
+  setting: {
+    allNotifications: { type: String, default: false },
+    messagesNotification: { type: String, default: false },
+    callNotification: { type: String, default: false },
+    followerNotification: { type: String, default: false }
+  },
   callStatus: {
     type: String, default: "active",
     enum: ["active", "inactive"],

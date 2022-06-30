@@ -1,7 +1,6 @@
 const message = require("../models/message")
 const ObjectId = require('mongodb').ObjectID
 
-
 const getOldChat = async (query, context) => {
     const log = context.logger.start('services:conversations:getOldChat')
     let pageNo = Number(query.pageNo) || 1
@@ -124,17 +123,6 @@ const conversationList = async (id, context) => {
         }
 
     }
-
-    // for (let index = 0; index < conversation.length; index++) {
-    //     const isBlocked = await db.block.findOne({ byUser: conversation[index].userId, toUser: id })
-    //     if (isBlocked) {
-    //         conversation[index].isBlocked = true
-    //     } else {
-    //         conversation[index].isBlocked = false
-    //     }
-    // }
-    console.log('conversation', conversation)
-
     log.end()
     return conversation
 }

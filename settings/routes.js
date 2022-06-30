@@ -170,6 +170,10 @@ const configure = (app, logger) => {
         permit.context.validateToken,
         api.users.logout
     );
+    app.post("/api/users/settings",
+        permit.context.validateToken,
+        api.users.settings
+    );
 
     app.get("/api/users/usersByFilter",
         permit.context.validateToken,

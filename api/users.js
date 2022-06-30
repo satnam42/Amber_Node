@@ -400,6 +400,20 @@ const forgotPassword = async (req, res) => {
     }
 
 };
+const settings = async (req, res) => {
+    const log = req.context.logger.start("api:users:settings");
+    try {
+        const data = await service.settings(req.body, req.context);
+        log.end();
+        return response.data(res, message, data);
+
+    } catch (err) {
+        log.error(err);
+        log.end();
+        return response.failure(res, err.message);
+    }
+
+};
 
 
 exports.create = create;
@@ -431,4 +445,5 @@ exports.forgotPassword = forgotPassword;
 exports.changePassword = changePassword;
 exports.otpVerify = otpVerify;
 exports.uploadImage = uploadImage;
+exports.settings = settings;
 

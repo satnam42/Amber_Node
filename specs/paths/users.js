@@ -962,4 +962,36 @@ module.exports = [{
         }
     }
 },
+{
+    url: "/settings",
+    post: {
+        summary: "settings",
+        description: "settings ",
+        parameters: [
+            {
+                in: "header",
+                name: "x-access-token",
+                description: "token to access api",
+                required: true,
+                type: "string"
+            },
+            {
+                in: "body",
+                name: "body",
+                description: "model of settings",
+                required: true,
+                schema: {
+                    $ref: "#/definitions/settings"
+                }
+            }],
+        responses: {
+            default: {
+                description: "Unexpected error",
+                schema: {
+                    $ref: "#/definitions/Error"
+                }
+            }
+        }
+    }
+},
 ];
